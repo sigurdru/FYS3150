@@ -1,0 +1,211 @@
+\documentclass[reprint, english,notitlepage]{revtex4-1}  % defines the basic parameters of the document
+% if you want a single-column, remove reprint
+
+% allows special characters (including æøå)
+\usepackage[utf8]{inputenc}
+\usepackage [norsk]{babel} %if you write norwegian
+%\usepackage[english]{babel}  %if you write english
+
+
+%% note that you may need to download some of these packages manually, it depends on your setup.
+%% I recommend downloading TeXMaker, because it includes a large library of the most common packages.
+
+\usepackage{physics,amssymb}  % mathematical symbols (physics imports amsmath)
+\usepackage{graphicx}         % include graphics such as plots
+\usepackage{xcolor}           % set colors
+\usepackage{hyperref}         % automagic cross-referencing (this is GODLIKE)
+\usepackage{tikz}             % draw figures manually
+\usepackage{listings}         % display code
+\usepackage{subfigure}        % imports a lot of cool and useful figure commands
+\usepackage{verbatim}
+\usepackage{adjustbox}
+
+
+% defines the color of hyperref objects
+% Blending two colors:  blue!80!black  =  80% blue and 20% black
+\hypersetup{ % this is just my personal choice, feel free to change things
+    colorlinks,
+    linkcolor={red!50!black},
+    citecolor={blue!50!black},
+    urlcolor={blue!80!black}}
+
+%% Defines the style of the programming listing
+%% This is actually my personal template, go ahead and change stuff if you want
+\lstset{ %
+	inputpath=,
+	backgroundcolor=\color{white!88!black},
+	basicstyle={\ttfamily\scriptsize},
+	commentstyle=\color{magenta},
+	language=Python,
+	morekeywords={True,False},
+	tabsize=4,
+	stringstyle=\color{green!55!black},
+	frame=single,
+	keywordstyle=\color{blue},
+	showstringspaces=false,
+	columns=fullflexible,
+	keepspaces=true}
+
+\newcommand\numberthis{\addtocounter{equation}{1}\tag{\theequation}}
+\newcommand{\ihat}{\boldsymbol{\hat{\textbf{\i}}}}
+\newcommand{\jhat}{\boldsymbol{\hat{\textbf{\j}}}}
+\newcommand{\khat}{\boldsymbol{\hat{\textbf{k}}}}
+\newcommand{\del}[1]{\textbf{#1)}}
+\newcommand{\svar}[1]{\underline{\underline{{#1}}}}
+
+
+\begin{document}
+
+
+
+\title{FYS3150 - Project 1}
+\date{\today}
+\author{Sigurd Sørlie Rustad and Vegard Falmår}
+
+
+\newpage
+
+\begin{abstract}
+Abstract om du vil
+\end{abstract}
+\maketitle                                % creates the title, author, date & abstract
+
+
+\section{Theory}
+
+\subsection{Matrix formulation of the discrete one-dimensional Poisson equation}
+The one-dimensional Poisson equation with Dirichlet boundary conditions is given by equation \ref{eq:Poisson_1D}.
+\begin{equation}
+  \label{eq:Poisson_1D}
+  - \frac{\mathrm d^2 u(x)}{\mathrm d x^2} = f(x), \quad x \in (0, 1), \quad u(0) = u(1) = 0
+\end{equation}
+We defnine the discretized approximation to $u$ to be $v_i$ at points $x_i = i h$ evenly spaced between $x_0 = 0$ and $x_{n+1} = 1$. The step length between the points is $h = 1/(n + 1)$. The boundary conditions from equation \ref{eq:Poisson_1D} then give $v_0 = v_{n+1} = 0$. An approximation to the second derivative of $u$, derived from the Taylor expansion, is
+\begin{equation}
+  \label{eq:discrete_2nd_deriavative}
+  \frac{-v_{i-1} + 2 v_i - v_{i+1}}{h^2} = f_i \quad for i = 1, 2, ..., n
+\end{equation}
+where $f_i = f(x_i)$.
+
+Written out for all $i$, equation \ref{eq:discrete_2nd_deriavative} becomes
+
+\begin{align*}
+  - v_0 + 2 v_1 - v_2 &= h^2 f_1 \\
+  - v_1 + 2 v_2 - v_3 &= h^2 f_2 \\
+  ... \\
+  - v_{n-2} + 2 v_{n-1} - v_n &= h^2 f_{n-1} \\
+  - v_{n-1} + 2 v_n - v_{n+1} &= h^2 f_n \\
+\end{align*}
+In general, this can be rearranged slightly so that
+\begin{align*}
+  2 v_1 - v_2 &= h^2 f_1 + v_0 \\
+  - v_1 + 2 v_2 - v_3 &= h^2 f_2 \\
+  ... \\
+  - v_{n-2} + 2 v_{n-1} - v_n &= h^2 f_{n-1} \\
+  - v_{n-1} + 2 v_n &= h^2 f_n + v_{n+1} \\
+\end{align*}
+This system of equations can be written in matrix form as
+\begin{equation}
+  \label{eq:Poisson_1D_matrix}
+  \boldsymbol A \boldsymbol v = \boldsymbol{\tilde{b}},
+\end{equation}
+explicitly
+\begin{equation*}{}
+  \begin{bmatrix}
+2  & -1 & 0  & 0 & ... & 0 \\
+-1 & 2  & -1 & 0 & ... & 0 \\
+.  &    &    &   &     & \\
+.  &    &    &   &     & \\
+.  &    &    &   &     & \\
+0  & ...& 0  &-1 & 2   & -1  \\
+0  & ...& 0  & 0 &-1 & 2  \\
+\end{bmatrix}
+  \begin{bmatrix}
+ v_1  \\
+ v_2  \\
+.   \\
+.   \\
+.   \\
+ v_{n-1} \\
+v_n \\
+\end{bmatrix}
+=
+\begin{bmatrix}
+h^2 f_1 + v_0 \\
+h^2 f_2  \\
+.   \\
+.   \\
+.   \\
+h^2 f_{n-1} \\
+h^2 f_n + v_{n+1}\\
+\end{bmatrix}
+\end{equation*}
+With $v_0 = v_{n+1} = 0$, the right side reduces to $\tilde b_i = h^2 f_i$.
+
+
+
+\onecolumngrid
+\vspace{1cm} % some extra space
+\newpage
+
+\begin{thebibliography}{}
+\bibitem[Engeland, Hjorth-Jensen, Viefers, Raklev og Flekkøy (2020)]{Kompendium81} Engeland, Hjorth-Jensen, Viefers, Raklev og Flekkøy,  2020, \textit{Kompendium i FYS2140 Kvantefysikk, Versjon 3}, s. 81
+\bibitem[Griffiths (2018)]{Griffiths44} Griffiths, D. J, Schroeter, D. F.,  2018, \textit{Introduction to Quantum Mechanics, Third edition}, s. 44
+\bibitem[Griffiths (2018)]{Griffiths75} Griffiths, D. J, Schroeter, D. F.,  2018, \textit{Introduction to Quantum Mechanics, Third edition}, s. 75
+\bibitem[Griffiths (2018)]{Griffiths133} Griffiths, D. J, Schroeter, D. F.,  2018, \textit{Introduction to Quantum Mechanics, Third edition}, s. 133
+
+\end{thebibliography}
+
+\section{Appendix}
+
+\subsection{Utregninger til oppgave 3c}
+
+Likning
+\begin{align*}
+  \textbf B_0 \cdot \boldsymbol \nabla &= \frac{B(\theta)}{r(\theta)} \frac{\partial}{\partial \theta}
+\end{align*}
+blir
+\begin{align*}
+  \mu_0 \rho(\theta) \frac{\partial^2}{\partial t^2} \left( \frac{\xi(\theta, t)}{h_a(\theta)} \right) &= \frac{1}{h_a^2(\theta)} \frac{B(\theta)}{r(\theta)} \frac{\partial}{\partial \theta} \left( h_a^2(\theta) \frac{B(\theta)}{r(\theta)} \frac{\partial}{\partial \theta} \left( \frac{\xi}{h_a(\theta)} \right) \right) \\
+  \mu_0 \rho(\theta) \left( - \frac{\omega^2 \xi(\theta, t)}{h_a(\theta)} \right) &= \frac{1}{h_a^2(\theta)} \frac{B(\theta)}{r(\theta)} \frac{\partial}{\partial \theta} \left( h_a^2(\theta) \frac{B(\theta)}{r(\theta)} \frac{\partial}{\partial \theta} \left( \frac{\xi}{h_a(\theta)} \right) \right) \\
+  - \mu_0 \rho(\theta) \frac{\omega^2 \Xi(\theta) e^{i \omega t}}{h_a(\theta)} &= \frac{1}{h_a^2(\theta)} \frac{B(\theta)}{r(\theta)} \frac{\partial}{\partial \theta} \left( h_a^2(\theta) \frac{B(\theta)}{r(\theta)} \frac{\partial}{\partial \theta} \left( \frac{\Xi(\theta) e^{i \omega t}}{h_a(\theta)} \right) \right)
+\end{align*}
+
+Den tidsavhengige faktoren $e^{i \omega t}$ kan strykes på begge sider siden derivasjonen med hensyn på $\theta$ som vist ikke virker på den. Da får vi
+\begin{align*}
+  - \mu_0 \rho(\theta) \frac{ \omega^2 \Xi(\theta) }{h_a(\theta)} &= \frac{1}{h_a^2(\theta)} \frac{B(\theta)}{r(\theta)} \frac{\partial}{\partial \theta} \left( h_a^2(\theta) \frac{B(\theta)}{r(\theta)} \frac{\partial}{\partial \theta} \left( \frac{ \Xi(\theta) }{h_a(\theta)} \right) \right) \\
+  &\text{Deler på $B^2(\theta)$ på begge sider} \\
+  - \frac{\mu_0 \rho(\theta)}{B^2(\theta)} \omega^2 \frac{\Xi(\theta)}{h_a(\theta)} &= \frac{1}{B(\theta) h_a^2(\theta)} \frac{1}{r(\theta)} \frac{\partial}{\partial \theta} \left( B(\theta) h_a^2(\theta) \frac{1}{r(\theta)} \frac{\partial}{\partial \theta} \left( \frac{ \Xi(\theta) }{h_a(\theta)} \right) \right) \\
+  v_A(\theta) &= \frac{B(\theta)}{\sqrt{\mu_0 \rho(\theta)}} \quad \text{ gir} \\
+  - \frac{\omega^2}{v_A^2(\theta)} \frac{\Xi(\theta)}{h_a(\theta)} &= \frac{1}{B(\theta) h_a^2(\theta)} \frac{1}{r(\theta)} \frac{\partial}{\partial \theta} \left( B(\theta) h_a^2(\theta) \frac{1}{r(\theta)} \frac{\partial}{\partial \theta} \left( \frac{ \Xi(\theta) }{h_a(\theta)} \right) \right)
+\end{align*}
+
+
+
+
+
+\section{Kode}
+
+% \subsection{\textit{main.py}}
+% \lstinputlisting[language=Python]{../main.py}
+%
+% \subsection{Output fra \textit{main.py}}
+% \verbatiminput{../main_output.txt}
+%
+% \subsection{\textit{oppg1.py}} \label{kode:oppg1.py}
+% \lstinputlisting[language=Python]{../code/oppg1.py}
+%
+% \subsection{\textit{oppg2.py}} \label{kode:oppg2.py}
+% \lstinputlisting[language=Python]{../code/oppg2.py}
+%
+% \subsection{\textit{oppg3.py}} \label{kode:oppg3.py}
+% \lstinputlisting[language=Python]{../code/oppg3.py}
+%
+% \subsection{\textit{oppg4.py}} \label{kode:oppg4.py}
+% \lstinputlisting[language=Python]{../code/oppg4.py}
+%
+% \subsection{\textit{appendix.py}} \label{kode:appendix.py}
+% \lstinputlisting[language=Python]{../code/appendix.py}
+
+
+
+\end{document}
