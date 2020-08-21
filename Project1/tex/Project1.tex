@@ -141,6 +141,68 @@ h^2 f_n + v_{n+1}\\
 \end{equation*}
 With $v_0 = v_{n+1} = 0$, the right side reduces to $\tilde b_i = h^2 f_i$.
 
+\subsection{Solve matrix equation}
+
+In order to solve the tridiagonal matrix below we need to develop an algorithm. As mentioned in the exercise set we first need to do a decomposition and forward substitution.
+\begin{equation*}
+\mathbf{A} = \begin{bmatrix}
+b_1& c_1 & 0 &\dots   & \dots &\dots \\
+a_1 & b_2 & c_2 &\dots &\dots &\dots \\
+& a_2 & b_3 & c_3 & \dots & \dots \\
+& \dots   & \dots &\dots   &\dots & \dots \\
+&   &  &a_{n-2}  &b_{n-1}& c_{n-1} \\
+&    &  &   &a_{n-1} & b_n \\
+\end{bmatrix}\begin{bmatrix}
+v_1\\
+v_2\\
+\dots \\
+\dots  \\
+\dots \\
+v_n\\
+\end{bmatrix}
+=\begin{bmatrix}
+\tilde{b}_1\\
+\tilde{b}_2\\
+\dots \\
+\dots \\
+\dots \\
+\tilde{b}_n\\
+\end{bmatrix}.
+\end{equation*}
+
+Looking at the first matrix multiplication we get the following expression.
+
+\begin{equation}
+	b_1 v_1 + c_1 v_2 = \tilde{b} \implies v_1 + \alpha_1 v_2 = \rho _1, \ \ \alpha_1 = \frac{c_1}{b_1} \wedge \rho_1 = \frac{\tilde{b}_1}{b_1} 
+	\label{eq:mat1}
+\end{equation}
+
+Doing the second matrix multiplication we get
+
+\begin{equation}
+	a_1 v_1 + b_2 v_2 + c_2 v_3 = \tilde{b}_2
+	\label{eq:mat2}
+\end{equation}
+
+If we multiply equation \ref{eq:mat1} by $a_1$, and subtract it from equation \ref{eq:mat2} the resulting expression becomes
+
+\begin{align*}
+	(b_2 - \alpha_1 a_1) v_2 + c_2 v_3 &= \tilde{b}_2 - \rho_1 a_1 \\
+	\implies v_2 + \frac{c_2}{b_2 - \alpha_1 a_1}v_3 &= \frac{\tilde{b}_2 - \rho_1 a_1}{b_2 - \alpha_1 a_1} \\
+	\implies v_2 + \alpha_2 v_3 &= \rho_2 \\
+	\text{where}\ \ \alpha_2 = \frac{c_2}{b_2 - \alpha_1 a_1} &\wedge \rho_2 = \frac{\tilde{b}_2 - \rho_1 a_1}{b_2 - \alpha_1 a_1}
+\end{align*}
+
+Noticing the pattern in $\rho$ and $\alpha$ we can generalize the terms.
+
+\begin{equation}
+	\alpha_n = \frac{c_n}{b_n - \alpha_{n-1}a_{n-1}} \ \ \text{for} \ \ n = 2, 3, ..., n-1
+	\label{eq:alpha}
+\end{equation}
+\begin{equation}
+	\rho_n = \frac{\tilde{b}_{n} - \rho_{n-1} a_{n-1}}{b_{n} - \alpha_{n-1} a_{n-1}}\ \ \text{for} \ \ n = 2, 3, ..., n
+	\label{eq:rho}
+\end{equation}
 
 
 \onecolumngrid
