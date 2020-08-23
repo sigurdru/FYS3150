@@ -17,7 +17,7 @@ int main (int argc, char* argv[]) {
         n = atoi(argv[1]);
         h = 1.0/(n-1);
     }
-    double x[n];
+    double *x = new double[n];
     for (int i=0; i<n; i++) {
         x[i] = i*h;
     }
@@ -54,9 +54,9 @@ int main (int argc, char* argv[]) {
     }
 
     // output the results, | computed | exact |
-    std::cout << h << std::endl;    // h
+    std::cout << "x,computed,exact" << std::endl;    // h
     for (int i=0; i<n; i++) {
-        std::cout << x[i] << " " << v[i] << " "
+        std::cout << x[i] << "," << v[i] << ","
             << exact(x[i]) << std::endl;
     }
 
@@ -68,6 +68,7 @@ int main (int argc, char* argv[]) {
     delete [] rho;
     delete [] b_tilde;
     delete [] v;
+    delete [] x;
 
     return 0;
 }

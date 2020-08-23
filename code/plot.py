@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import sys
+import pandas as pd
 
 plt.style.use('seaborn')
 plt.rc('text', usetex=True)
@@ -8,17 +9,11 @@ plt.rc('font', family='Computer Modern')
 
 n, fname = sys.argv[1:]
 n = int(n)
-x = np.zeros(n)
-comp = np.zeros(n)
-exact = np.zeros(n)
-with open(fname, 'r') as infile:
-    header = infile.readline()
-    h = float(header)
-    for i, line in enumerate(infile):
-        x_val, c, e = [float(num) for num in line.split()]
-        x[i] = x_val
-        comp[i] = c
-        exact[i] = e
+h = 1/(n-1)
+df = pd.read_csv(fname)
+x = df['x'].values
+comp = df['computed'].values
+exact = df['exact'].values
 
 fig, ax = plt.subplots()
 ax.set_title(f'h = {h:.1e}')
