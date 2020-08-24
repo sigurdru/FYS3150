@@ -1,5 +1,4 @@
 import matplotlib.pyplot as plt
-import numpy as np
 import sys
 import pandas as pd
 
@@ -21,4 +20,4 @@ ax.plot(x, comp, label='Computed')
 ax.plot(x, exact, label='Exact')
 ax.legend()
 fig.tight_layout()
-fig.savefig(f'../Project1/output/plot_{n}.pdf')
+fig.savefig(f'../output/plot_{n}.pdf')

@@ -5,6 +5,6 @@ else
     echo bash $0 1001
     exit 1
 fi
-fname="../Project1/output/output_${n}.txt"
-./lineq.exe $n > $fname
+fname="../output/output_${n}.txt"
+./lineq.exe $n > $fname && \
 python3 plot.py $n $fname

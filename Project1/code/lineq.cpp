@@ -1,6 +1,6 @@
 #include <iostream>
 #include <cmath>
-#include <stdlib.h>
+// #include <stdlib.h> // use for writing to file?
 
 inline double f (double x) {return 100.0*exp(-10.0*x);}
 
@@ -39,7 +39,7 @@ int main (int argc, char* argv[]) {
     b[n-1] = 2;
     b_tilde[n-1] = f(x[n-1]);
     
-    // forward sub
+    // forward substitution
     alpha[0] = c[0]/b[0];
     rho[0] = b_tilde[0]/b[0];
     for (int i=1; i<n; i++) {
@@ -53,11 +53,18 @@ int main (int argc, char* argv[]) {
         v[i-1] = rho[i-1] - alpha[i-1]*v[i];
     }
 
-    // output the results, | computed | exact |
-    std::cout << "x,computed,exact" << std::endl;    // h
+    // output the results
+    std::cout << "x,computed,exact,rel_error,log10(error)" << std::endl;
+    double x_val, comp_val, exact_val, rel_error, log_error;
     for (int i=0; i<n; i++) {
-        std::cout << x[i] << "," << v[i] << ","
-            << exact(x[i]) << std::endl;
+        x_val = x[i];
+        comp_val = v[i];
+        exact_val = exact(x[i]);
+        rel_error = fabs((comp_val - exact_val)/exact_val);
+        log_error = log10(rel_error);
+        std::cout << x_val << "," << comp_val << ","
+            << exact_val << "," << rel_error << ","
+            << log_error << std::endl;
     }
 
     // cleanup
