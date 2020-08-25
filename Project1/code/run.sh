@@ -6,5 +6,9 @@ else
     exit 1
 fi
 fname="../output/output_${n}.txt"
+echo Compiling
+make compile && \
+echo Computing
 ./lineq.exe $n > $fname && \
+echo Plotting
 python3 plot.py $n $fname
