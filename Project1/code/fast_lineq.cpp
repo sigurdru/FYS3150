@@ -3,26 +3,30 @@
 #include <chrono>
 #include <iostream>
 
-void FastLineq::initialize(int n, double f(double x)) {
+void FastLineq::initialize(int n, double f(double x), double exact(double x)) {
+    // std::cout << "start init" << std::endl;
     m_n = n;
-    m_a, m_c = -1;
+    m_a = -1;
     m_b = 2;
+    m_c = -1;
     m_v = new double[m_n];
     m_btilde = new double[m_n];
     m_alpha = new double[m_n];
     m_x = new double[m_n];
-    m_h = 1 / (m_n - 1);
-    std::cout << "start init" << std::endl;
+    m_exact = new double[m_n];
+    m_h = 1.0/(m_n - 1);
     for (int i = 0; i < m_n - 1; i++){
         m_x[i] = m_h * i;
         m_btilde[i] = f(m_x[i]) * pow(m_h, 2);
+        m_exact[i] = exact(m_x[i]);
     }
+    m_exact[m_n - 1] = exact(m_x[m_n - 1]);
     m_btilde[m_n - 1] = f(m_x[m_n - 1]) * pow(m_h, 2);
     m_alpha[0] = m_c / m_b;
     m_rho[0] = m_btilde[0] / m_b;
 }
 void FastLineq::solve() {
-    std::cout << "start solve" << std::endl;
+    // std::cout << "start solve" << std::endl;
     auto start = std::chrono::high_resolution_clock::now();
     // forward substitution
     for (int i = 1; i < m_n; i++){
@@ -36,4 +40,5 @@ void FastLineq::solve() {
     }
     auto stop = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+    // std::cout << "Duration: " << duration.count() << std::endl;
 }
