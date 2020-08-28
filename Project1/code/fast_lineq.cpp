@@ -20,6 +20,7 @@ void FastLineq::initialize(int n, double f(double x), double exact(double x)) {
         m_btilde[i] = f(m_x[i]) * pow(m_h, 2);
         m_exact[i] = exact(m_x[i]);
     }
+    m_x[m_n - 1] = m_h*(m_n - 1);
     m_exact[m_n - 1] = exact(m_x[m_n - 1]);
     m_btilde[m_n - 1] = f(m_x[m_n - 1]) * pow(m_h, 2);
     m_alpha[0] = m_c / m_b;
@@ -42,3 +43,13 @@ void FastLineq::solve() {
     auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
     // std::cout << "Duration: " << duration.count() << std::endl;
 }
+
+FastLineq::~FastLineq () {
+    // delete [] m_x;
+    // delete [] m_v;
+    // delete [] m_exact;
+    // delete [] m_alpha;
+    // delete [] m_rho;
+    // delete [] m_btilde;
+}
+

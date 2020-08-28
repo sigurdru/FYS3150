@@ -50,3 +50,15 @@ void SlowLineq::solve() {
     auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
     // std::cout << "Duration: " << duration.count() << std::endl;
 }
+    
+SlowLineq::~SlowLineq () {
+    delete [] m_a; 
+    delete [] m_b;
+    delete [] m_c;
+    delete [] m_x;
+    delete [] m_v;
+    delete [] m_exact;
+    delete [] m_alpha;
+    delete [] m_rho;
+    delete [] m_btilde;
+}
