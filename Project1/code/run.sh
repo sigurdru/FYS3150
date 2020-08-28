@@ -9,5 +9,6 @@ fi
 fname="../output/output_${n}.txt"
 echo Computing
 ./main.exe $n $fname $algo > $fname && \
+# valgrind --leak-check=yes ./main.exe $n $fname $algo > $fname && \
 echo Plotting
 python3 plot.py $n $fname
