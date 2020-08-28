@@ -12,17 +12,15 @@ void FastLineq::initialize(int n, double f(double x), double exact(double x)) {
     m_v = new double[m_n];
     m_btilde = new double[m_n];
     m_alpha = new double[m_n];
+    m_rho = new double[m_n];
     m_x = new double[m_n];
     m_exact = new double[m_n];
     m_h = 1.0/(m_n - 1);
-    for (int i = 0; i < m_n - 1; i++){
+    for (int i = 0; i < m_n; i++){
         m_x[i] = m_h * i;
         m_btilde[i] = f(m_x[i]) * pow(m_h, 2);
         m_exact[i] = exact(m_x[i]);
     }
-    m_x[m_n - 1] = m_h*(m_n - 1);
-    m_exact[m_n - 1] = exact(m_x[m_n - 1]);
-    m_btilde[m_n - 1] = f(m_x[m_n - 1]) * pow(m_h, 2);
     m_alpha[0] = m_c / m_b;
     m_rho[0] = m_btilde[0] / m_b;
 }
@@ -32,7 +30,7 @@ void FastLineq::solve() {
     // forward substitution
     for (int i = 1; i < m_n; i++){
         m_rho[i] = (m_btilde[i] + m_rho[i - 1]) / (2 + m_alpha[i - 1]);
-        m_alpha[i] = 1 / (2 + m_alpha[i - 1]);
+        m_alpha[i] = -1 / (2 + m_alpha[i - 1]);
     }
     // backward substitution
     m_v[m_n - 1] = m_rho[m_n - 1];
