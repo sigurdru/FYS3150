@@ -8,6 +8,7 @@ Code dependencies:
 - C++
     - something
 - Python
+    - numpy
     - matplotlib
     - pandas
 

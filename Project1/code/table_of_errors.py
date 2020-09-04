@@ -31,8 +31,7 @@ for root, dirs, files in os.walk(path):
 
 for key in sorted(d):
     error = d[key]
-    error = f'${error:.2e}'.replace('e-0', r' \cdot 10^{-') + r'}$'
-    tab.append([f'{key:d}', error])
+    tab.append([f'{key:d}', f'{error:.2f}'])
 
 fname = path + algo + '_errors'
 tab = Table(tab)

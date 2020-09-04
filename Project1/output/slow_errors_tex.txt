@@ -3,11 +3,11 @@
 \begin{tabular}{||c | c||}
 \hline
 $\log_{10}(h)$ & $\eps$    \\ \hline
--6 & $-6.08e+00}$    \\ \hline
--5 & $-8.84e+00}$    \\ \hline
--4 & $-7.08e+00}$    \\ \hline
--3 & $-5.08e+00}$    \\ \hline
--2 & $-3.08e+00}$    \\ \hline
+-6 & -6.08    \\ \hline
+-5 & -8.84    \\ \hline
+-4 & -7.08    \\ \hline
+-3 & -5.08    \\ \hline
+-2 & -3.08    \\ \hline
 \end{tabular}
 \end{adjustbox}
 \caption{}
