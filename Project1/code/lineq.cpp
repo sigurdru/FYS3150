@@ -22,7 +22,6 @@ void Lineq::write_to_file (std::string fname) {
         exact_val = m_exact[i];
         rel_error = fabs((comp_val - exact_val) / exact_val);
         log_error = log10(rel_error);
-        // if (rel_error < INFINITY && rel_error > max_rel_error) {
         if (log_error < 0 && rel_error > max_rel_error) {
             max_rel_error = rel_error;
             max_log_error = log_error;
