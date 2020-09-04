@@ -21,8 +21,8 @@ void SlowLineq::initialize(double *a, double *b, double *c, int n, double f(doub
         m_btilde[i] = f(m_x[i])*pow(m_h, 2);
         m_exact[i] = exact(m_x[i]);
     }
-    m_alpha[0] = m_c[0]/m_b[0];
-    m_rho[0] = m_btilde[0]/m_b[0];
+    m_alpha[1] = m_c[1]/m_b[1];
+    m_rho[1] = m_btilde[1]/m_b[1];
 }
 
 void SlowLineq::solve() {
@@ -30,13 +30,13 @@ void SlowLineq::solve() {
     auto start = std::chrono::high_resolution_clock::now();
 
     // forward substitution
-    for (int i = 1; i < m_n; i++){
+    for (int i = 2; i < m_n; i++){
         m_rho[i] = (m_btilde[i] - m_rho[i - 1] * m_a[i - 1]) / (m_b[i] - m_alpha[i - 1] * m_a[i - 1]);
         m_alpha[i] = m_c[i] / (m_b[i] - m_alpha[i - 1] * m_a[i - 1]);
     }
     // backward substitution
-    m_comp[m_n - 1] = m_rho[m_n - 1];
-    for (int i = m_n; i > 0; i--){
+    m_comp[m_n - 2] = m_rho[m_n - 2];
+    for (int i = m_n-1; i > 1; i--){
         m_comp[i - 1] = m_rho[i - 1] - m_alpha[i - 1] * m_comp[i];
     }
     auto stop = std::chrono::high_resolution_clock::now();

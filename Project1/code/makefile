@@ -1,10 +1,7 @@
-all: compile execute
+compile_all: compile compile_test
 
 compile:
 	g++ -o main.exe -Wall main.cpp lineq.cpp fast_lineq.cpp slow_lineq.cpp
 
-compile_alternative:
-	g++ -o main.exe $(wildcard *.cpp)
-
-execute:
-	./main.exe
+compile_test:
+	g++ -o test_lineq.exe -Wall test_lineq.cpp lineq.cpp fast_lineq.cpp slow_lineq.cpp

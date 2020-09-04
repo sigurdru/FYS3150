@@ -22,10 +22,12 @@ void FastLineq::initialize(int n, double f(double x), double exact(double x)) {
 void FastLineq::solve() {
     // std::cout << "start solve" << std::endl;
     auto start = std::chrono::high_resolution_clock::now();
-    // forward substitution
+    // boundary conditions
     m_comp[0] = 0.0;
+    m_comp[m_n-1] = 0.0;
+    // forward substitution
     m_comp[1] /= 2.0;
-    for (int i = 2; i < m_n; i++){
+    for (int i = 2; i < m_n-1; i++){
         m_comp[i] += m_comp[i-1];
         m_comp[i] *= d[i];
     }
