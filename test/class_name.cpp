@@ -1,6 +1,7 @@
 #include "class_name.hpp"
 #include <cmath>
 #include <iostream>
+#include <armadillo>
 
 void TestCalc::initialize(double x, double y, int n){
     m_x = x; m_y = y; m_n = n;
@@ -12,6 +13,14 @@ void TestCalc::calculations1(){
     double product = m_x*m_y;
     std::cout << product << std::endl;
     std::cout << "done" << std::endl;
+    arma::mat A = arma::mat(1,1);
+    for (int i = 0; i<2; i++){
+        for (int j = 0; j<2; j++){
+            A(i,j) = 1;
+        }
+    }
+    arma::mat B = A*A;
+    std::cout << A << std::endl;
 }
 void TestCalc::calculations2(){
     for (int i = 0; i < m_n; i++){

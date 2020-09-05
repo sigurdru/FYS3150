@@ -70,6 +70,20 @@ Abstract om du vil
 \end{abstract}
 \maketitle                                % creates the title, author, date & abstract
 
+\section{introduction}
+
+We can describe the evolution of many physical systems with the help of differential equations, but because of their complexity we  are unable to solve these equations to find an analytical solution. Therefore we have to use numerical methods on computers in order to approximate the solution. Computers are limited in both their memory and accuracy so we have to be careful when both selecting the numerical method and how we implement it. In this report we are going to explore these issues by trying to solve the one-dimensional Poisson equation with Dirichlet boundary conditions, described in equation \ref{eq:Poisson_1D} in the theory section.
+
+The example function we are going to use in our studies is described by the equation (\ref{eq:f}) and has an analytical solution (\ref{eq:u}) we can use to compare our results.
+\begin{equation}
+	-\frac{d^2u}{dx^2} = f(x) = 100e^{-10x}
+	\label{eq:f}
+\end{equation}
+\begin{equation}
+	u(x) = 1 - (1 - e^{-10})x - e^{-10x}
+	\label{eq:u}
+\end{equation}
+In order to solve equation (\ref{eq:f}) we end up with a set of linear equations described by a tridiagonal matrix multiplied with a vector (see the theory section for further explanation). Now there are many ways we can solve these equations, each with their own pros and cons. The methods we are going to explore is one where we solve for a general tridiagonal matrix, one where we specialize the algorithm to our tridiagonal matrix and lastly by using LU decomposition.
 
 \section{Theory}
 
@@ -141,9 +155,9 @@ h^2 f_n + v_{n+1}\\
 \end{equation*}
 With $v_0 = v_{n+1} = 0$, the right side reduces to $\tilde b_i = h^2 f_i$.
 
-\subsection{Solve matrix equation}
+\subsection{Solve tridiagonal matrix equation}
 
-In order to solve the tridiagonal matrix below we need to develop an algorithm. As mentioned in the exercise set we first need to do a decomposition and forward substitution.
+In order to solve the tridiagonal matrix below we need to develop an algorithm. As mentioned in the exercise set \citep{oppgavetekst} we first need to do a decomposition and forward substitution.
 \begin{equation*}
 \mathbf{A}\mathbf{v} = \begin{bmatrix}
 b_1& c_1 & 0 &\dots   & \dots &\dots \\
@@ -236,14 +250,34 @@ Now the last step is to do a backward substitution. Starting with $v_n = \rho_n$
 \begin{equation}
 	v_{i-1} = \rho_{i-1} - \alpha_{i-1}v_i \ \ \text{for} \ \ i = n, n-1, ..., 2
 \end{equation}
+
+Now in this report we are going to consider a matrix with elements $b_n = 2$ and $a_n = c_n = -1$. We can insert this into equations (\ref{eq:alpha}) and (\ref{eq:rho}) to get the expressions (\ref{eq:alpha_spes}) and (\ref{eq:rho_spes}).
+\begin{equation}
+\alpha_i = \frac{-1}{2 + \alpha_{i-1}}
+\label{eq:alpha_spes}
+\end{equation}
+\begin{equation}
+	\rho_i = \frac{\tilde{b} + \rho_{i-1}}{2 + \alpha_{i-1}}
+	\label{eq:rho_spes}
+\end{equation}
+
+\section{Method}
+
+First numerical test 
+
+\section{Results}
+
+\section{Discussion}
+
+\section{Conclution}
+
 \onecolumngrid
 \vspace{1cm} % some extra space
 \newpage
-
 \begin{thebibliography}{}
 \bibitem[Engeland, Hjorth-Jensen, Viefers, Raklev og Flekkøy (2020)]{Kompendium81} Engeland, Hjorth-Jensen, Viefers, Raklev og Flekkøy,  2020, \textit{Kompendium i FYS2140 Kvantefysikk, Versjon 3}, s. 81
 \bibitem[Griffiths (2018)]{Griffiths44} Griffiths, D. J, Schroeter, D. F.,  2018, \textit{Introduction to Quantum Mechanics, Third edition}, s. 44
-
+\bibitem {oppgavetekst} HER REFERERERERERER VI TIL OPPGAVETEKSTEN
 \end{thebibliography}
 
 \section{Appendix}

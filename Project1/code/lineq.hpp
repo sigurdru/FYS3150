@@ -1,6 +1,9 @@
 #ifndef LINEQ_HPP
 #define LINEQ_HPP
 #include <string>
+// NY
+#include <armadillo>
+// NY
 
 class Lineq {
 protected:
@@ -34,5 +37,18 @@ public:
     void solve();
     ~FastLineq();
 };
+// NY
+class LULineq : public Lineq {
+private:
+    int m_a, m_b, m_c;
+    arma::dmat m_A;
+    arma::dmat m_btilde;
+    arma::dmat m_L, m_U;
+    arma::dmat m_X, m_comp_mat;
+public:
+    void solve(int n, double f(double x), double exact(double x));
+    // ~LULineq();
+};
+// NY
 
 #endif
