@@ -3,6 +3,7 @@
 \begin{tabular}{||c | c||}
 \hline
 $\log_{10}(h)$ & $\eps$    \\ \hline
+-7 & -9.65    \\ \hline
 -6 & -10.18    \\ \hline
 -5 & -9.08    \\ \hline
 -4 & -7.08    \\ \hline

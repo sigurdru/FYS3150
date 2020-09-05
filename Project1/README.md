@@ -1,5 +1,4 @@
-# FYS3150 Project 1
-
+# FYS3150 Project 1 
 Sigurd Sørlie Rustad and Vegard Falmår.
 
 The report Project1.pdf is found in the tex directory.
@@ -47,7 +46,7 @@ If the test fails for either the fast or the slow algorithm, python error messag
 ```
 cd code
 make compile_all
-bash run.sh fast 2      # runs the fast algorithm with h = 0.01
+bash run.sh fast 7      # runs the fast algorithm with h = 10^(-7)
 bash test.sh            # runs the test code
 bash run.sh all         # produces all the results
 ```
