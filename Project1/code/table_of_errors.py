@@ -24,8 +24,8 @@ def read(fname):
 
 for root, dirs, files in os.walk(path):
     for fname in files:
-        if (fname[0:4] == algo) and (fname[-9:] == 'error.txt'):
-            n = int(fname[5])
+        if (fname[0:len(algo)] == algo) and (fname[-9:] == 'error.txt'):
+            n = int(fname[len(algo) + 1])
             error = read(os.path.join(path, fname))
             d[-n] = error
 

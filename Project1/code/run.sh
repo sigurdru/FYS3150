@@ -15,7 +15,6 @@ if [ "$1" == "all" ]; then
     algos=(
         "fast"
         "slow"
-        "LU"
     )
     for algo in ${algos[@]}; do
         echo
@@ -28,6 +27,17 @@ if [ "$1" == "all" ]; then
         done
         python3 table_of_errors.py $algo
     done
+    algo="LU"   # We want to run this algo only up to n=4
+    echo
+    echo $algo
+    declare -i i=2
+    while [ $i -le 4 ]; do
+        echo
+        execute $algo $i
+        (( i++ ))
+    done
+    python3 table_of_errors.py $algo
+
 elif [ $# -eq 2 ]; then
     execute $1 $2
 else

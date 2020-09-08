@@ -5,7 +5,7 @@ The report Project1.pdf is found in the tex directory.
 
 Code dependencies:
 - C++
-    - something
+    - armadillo
 - Python
     - numpy
     - matplotlib
@@ -28,6 +28,7 @@ Now the code can be run with step size h = 10^(-n):
 ```
 bash run.sh slow n      # with the slow, general algorithm
 bash run.sh fast n      # with the fast, specialized algorithm
+bash run.sh LU n        # with the LU decomposition algorithm
 ```
 This will write the results to file and plot them.
 
