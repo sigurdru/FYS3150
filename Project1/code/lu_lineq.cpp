@@ -17,8 +17,11 @@ void LULineq::solve(int n, double f(double x), double exact(double x)) {
     m_A(0,1) = m_c;
     m_A(m_n-1, m_n-1) = m_b;
     m_A(m_n-1, m_n-2) = m_a;
-    m_btilde(0) = pow(m_h, 2)*f(0);
+    m_x[m_n-1] = m_n*m_h;
+    m_btilde(m_n-1) = pow(m_h, 2)*f(m_x[0]);
+    m_btilde(0) = pow(m_h, 2)*f(m_x[0]);
     m_exact[0] = exact(0);
+    m_exact[0] = exact(m_x[m_n-1]);
     for (int i = 1; i<m_n-1; i++) {
         m_x[i] = i*m_h;
         m_exact[i] = exact(m_x[i]);
@@ -36,19 +39,8 @@ void LULineq::solve(int n, double f(double x), double exact(double x)) {
     }
 
 
-// LULineq::~LULineq () {
-//     delete [] m_n;
-//     delete [] m_h;
-//     delete [] m_x;
-//     delete [] m_exact;
-//     delete [] m_A;
-//     delete [] m_btilde;
-//     delete [] m_X;
-//     delete [] m_comp_mat;
-//     delete [] m_L;
-//     delete [] m_U;
-//     delete [] m_a;
-//     delete [] m_b;
-//     delete [] m_c;
-
-// }
+LULineq::~LULineq () {
+    delete [] m_x;
+    delete [] m_exact;
+    delete [] m_comp;
+}

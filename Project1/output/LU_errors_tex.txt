@@ -1,0 +1,10 @@
+\begin{table}  %[p] % Uncomment to put table in Appendix
+\begin{adjustbox}{width=1\textwidth}
+\begin{tabular}{||c | c||}
+\hline
+$\log_{10}(h)$ & $\eps$    \\ \hline
+\end{tabular}
+\end{adjustbox}
+\caption{}
+\label{}
+\end{table}

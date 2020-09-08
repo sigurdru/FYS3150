@@ -2,6 +2,7 @@ declare -a algos
 algos=(
     "fast"
     "slow"
+    "LU"
 )
 for algo in ${algos[@]}; do
     echo

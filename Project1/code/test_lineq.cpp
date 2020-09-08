@@ -72,6 +72,10 @@ int main (int argc, char* argv[]) {
         solver.initialize(n, f, exact);
         solver.solve();
         solver.write_to_file(fname);
+    } else if (algorithm == "LU") {
+    	LULineq solver;
+    	solver.solve(n, f, exact);
+    	solver.write_to_file(fname);
     } else {
         std::cout << "Unrecognized description of algorithm: "
             << algorithm << std::endl;

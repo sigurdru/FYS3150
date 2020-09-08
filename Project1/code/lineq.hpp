@@ -47,7 +47,7 @@ private:
     arma::dmat m_X, m_comp_mat;
 public:
     void solve(int n, double f(double x), double exact(double x));
-    // ~LULineq();
+     ~LULineq();
 };
 // NY
 

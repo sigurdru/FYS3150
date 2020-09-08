@@ -8,8 +8,8 @@ plt.style.use('seaborn')
 # plt.rc('font', family='Computer Modern')
 
 algo = sys.argv[1]
-msg = 'Algoritm must be "fast" or "slow"'
-assert ((algo == 'fast') or (algo == 'slow')), msg
+msg = 'Algoritm must be "fast", "slow" og "LU"'
+assert ((algo == 'fast') or (algo == 'slow') or (algo == 'LU')), msg
 
 path = '../output/'
 
