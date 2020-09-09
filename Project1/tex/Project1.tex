@@ -72,7 +72,7 @@ Abstract om du vil
 
 \section{introduction}
 
-We can describe the evolution of many physical systems with the help of differential equations, but because of their complexity we  are unable to solve these equations to find an analytical solution. Therefore we have to use numerical methods on computers in order to approximate the solution. Computers are limited in both their memory and accuracy so we have to be careful when both selecting the numerical method and how we implement it. In this report we are going to explore these issues by trying to solve the one-dimensional Poisson equation with Dirichlet boundary conditions, described in equation \ref{eq:Poisson_1D} in the theory section.
+We can describe the evolution of many physical systems with the help of differential equations, but because of their complexity we  are unable to find the analytical solutions. Therefore we have to use numerical methods in order to approximate the solution. Computers are limited in both their memory and accuracy, so we have to be careful when both selecting the numerical method and how we implement it. In this report we are going to explore these issues by trying to solve the one-dimensional Poisson equation with Dirichlet boundary conditions, described in equation \ref{eq:Poisson_1D} in the theory section.
 
 The example function we are going to use in our studies is described by the equation (\ref{eq:f}) and has an analytical solution (\ref{eq:u}) we can use to compare our results.
 \begin{equation}
@@ -83,7 +83,7 @@ The example function we are going to use in our studies is described by the equa
 	u(x) = 1 - (1 - e^{-10})x - e^{-10x}
 	\label{eq:u}
 \end{equation}
-In order to solve equation (\ref{eq:f}) we end up with a set of linear equations described by a tridiagonal matrix multiplied with a vector (see the theory section for further explanation). Now there are many ways we can solve these equations, each with their own pros and cons. The methods we are going to explore is one where we solve for a general tridiagonal matrix, one where we specialize the algorithm to our tridiagonal matrix and lastly by using LU decomposition.
+In order to solve equation (\ref{eq:f}) we end up with a set of linear equations described by a tridiagonal matrix multiplied with a vector (see the theory section for further explanation). Now there are many ways we can solve this set of equations, each with their own pros and cons. The methods we are going to explore is one where we solve for a general tridiagonal matrix, one where we specialize the algorithm to our tridiagonal matrix and lastly by using LU decomposition. For each method we will study the accuracy, cpu-time used and the number of floating-point operations (FLOPS).
 
 \section{Theory}
 
@@ -261,13 +261,80 @@ Now in this report we are going to consider a matrix with elements $b_n = 2$ and
 	\label{eq:rho_spes}
 \end{equation}
 
+\subsection{Lower-upper (LU) decomposition}
+LU decomposition is a method where you factorize a matrix $A$ into two matrices $L$ and $U$, where $L$ is lower triangular and $U$ is upper triangular. We can use this decomposition to solve a matrix equation.
+\begin{equation*}
+	A\mathbf{x} = LU\mathbf{x} = \mathbf{b}
+\end{equation*}
+Where $A$ and $\mathbf{b}$ is known. First we can solve $L\mathbf{y}=\mathbf{b}$ with the algorithm given by equation (\ref{eq:lu1}) (see \citep{lu}).
+\begin{equation}
+	y_i = \frac{1}{l_{ii}}\bigg(b_i - \sum_{j=1}^{i-1}l_{ij}y_j\bigg),\ \ y_1 = \frac{b_1}{l_{11}}
+	\label{eq:lu1}
+\end{equation}
+Where $y_i$ is element $i$ in $\mathbf{y}$, $l_{ij}$ element $ij$ in matrix $L$ and $b_i$ element $i$ in $\mathbf{b}$. We can then solve $U\mathbf{x} = \mathbf{y}$ with the algorithm from equation (\ref{eq:lu2}) (see \citep{lu}).
+\begin{equation}
+	x_i = \frac{1}{u_{ii}}\bigg(y_i - \sum_{j=i+1}^{N}u_{ij}x_j\bigg),\ \ x_N=\frac{y_N}{u_{NN}}
+	\label{eq:lu2}
+\end{equation}
+Here $x_i$ is element $i$ in $\mathbf{x}$.
+
+\subsection{Floating-point operations}
+Whenever you do a mathematical operation on a computer you call it a floating-point operation. This includes division, multiplication, subtraction and addition. Floating-point operations (what we from now on will refer to as FLOPS) is a count of the total number of mathematical operations needed for an algorithm.
+
 \section{Method}
 
 First numerical test 
 
 \section{Results}
 
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=0.5]{../output/slow_4.pdf}
+	\label{fig:slow_6}
+	\caption{This figure shows the numeric solution for our general algorithm and the exact solution on top (green dashed line). The step size used is $h=10^{-4}$.
+		\label{fig:illustrasjon}} 
+\end{figure}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=0.5]{../output/fast_4.pdf}
+	\label{fig:fast_4}
+	\caption{This figure shows the numeric solution for our specific algorithm and the exact solution on top (green dashed line). The step size used is $h=10^{-4}$.
+		\label{fig:illustrasjon}} 
+\end{figure}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=0.5]{../output/lu_4.pdf}
+	\label{fig:lu_4}
+	\caption{This figure shows the numeric solution for the LU-algorithm and the exact solution on top (green dashed line). The step size used is $h=10^{-4}$.
+		\label{fig:illustrasjon}} 
+\end{figure}
 \section{Discussion}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=0.5]{../output/slow_errors.pdf}
+	\label{fig:slow_error}
+	\caption{
+		\label{fig:illustrasjon}} 
+\end{figure}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=0.5]{../output/fast_errors.pdf}
+	\label{fig:fast_error}
+	\caption{
+		\label{fig:illustrasjon}} 
+\end{figure}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=0.5]{../output/lu_errors.pdf}
+	\label{fig:fast_error}
+	\caption{
+		\label{fig:illustrasjon}} 
+\end{figure}
 
 \section{Conclution}
 
@@ -275,9 +342,8 @@ First numerical test
 \vspace{1cm} % some extra space
 \newpage
 \begin{thebibliography}{}
-\bibitem[Engeland, Hjorth-Jensen, Viefers, Raklev og Flekkøy (2020)]{Kompendium81} Engeland, Hjorth-Jensen, Viefers, Raklev og Flekkøy,  2020, \textit{Kompendium i FYS2140 Kvantefysikk, Versjon 3}, s. 81
-\bibitem[Griffiths (2018)]{Griffiths44} Griffiths, D. J, Schroeter, D. F.,  2018, \textit{Introduction to Quantum Mechanics, Third edition}, s. 44
 \bibitem {oppgavetekst} HER REFERERERERERER VI TIL OPPGAVETEKSTEN
+\bibitem {lu} HER REFERERERERERR VI TIL LU (https://mathworld.wolfram.com/LUDecomposition.html)
 \end{thebibliography}
 
 \section{Appendix}
@@ -290,21 +356,6 @@ First numerical test
 %
 % \subsection{Output fra \textit{main.py}}
 % \verbatiminput{../main_output.txt}
-%
-% \subsection{\textit{oppg1.py}} \label{kode:oppg1.py}
-% \lstinputlisting[language=Python]{../code/oppg1.py}
-%
-% \subsection{\textit{oppg2.py}} \label{kode:oppg2.py}
-% \lstinputlisting[language=Python]{../code/oppg2.py}
-%
-% \subsection{\textit{oppg3.py}} \label{kode:oppg3.py}
-% \lstinputlisting[language=Python]{../code/oppg3.py}
-%
-% \subsection{\textit{oppg4.py}} \label{kode:oppg4.py}
-% \lstinputlisting[language=Python]{../code/oppg4.py}
-%
-% \subsection{\textit{appendix.py}} \label{kode:appendix.py}
-% \lstinputlisting[language=Python]{../code/appendix.py}
 
 
 
