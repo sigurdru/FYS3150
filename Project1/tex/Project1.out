@@ -4,10 +4,12 @@
 \BOOKMARK [1][-]{section*.4}{Theory}{section*.2}% 4
 \BOOKMARK [2][-]{section*.5}{Matrix formulation of the discrete one-dimensional Poisson equation}{section*.4}% 5
 \BOOKMARK [2][-]{section*.6}{Solve tridiagonal matrix equation}{section*.4}% 6
-\BOOKMARK [1][-]{section*.7}{Method}{section*.2}% 7
-\BOOKMARK [1][-]{section*.8}{Results}{section*.2}% 8
-\BOOKMARK [1][-]{section*.9}{Discussion}{section*.2}% 9
-\BOOKMARK [1][-]{section*.10}{Conclution}{section*.2}% 10
-\BOOKMARK [1][-]{section*.11}{Referanser}{section*.2}% 11
-\BOOKMARK [1][-]{section*.12}{Appendix}{section*.2}% 12
-\BOOKMARK [1][-]{section*.13}{Kode}{section*.2}% 13
+\BOOKMARK [2][-]{section*.7}{Lower-upper \(LU\) decomposition}{section*.4}% 7
+\BOOKMARK [2][-]{section*.8}{Floating-point operations}{section*.4}% 8
+\BOOKMARK [1][-]{section*.9}{Method}{section*.2}% 9
+\BOOKMARK [1][-]{section*.10}{Results}{section*.2}% 10
+\BOOKMARK [1][-]{section*.11}{Discussion}{section*.2}% 11
+\BOOKMARK [1][-]{section*.12}{Conclution}{section*.2}% 12
+\BOOKMARK [1][-]{section*.13}{Referanser}{section*.2}% 13
+\BOOKMARK [1][-]{section*.14}{Appendix}{section*.2}% 14
+\BOOKMARK [1][-]{section*.15}{Kode}{section*.2}% 15
