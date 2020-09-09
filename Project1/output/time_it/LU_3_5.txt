@@ -1,0 +1,1 @@
+Duration of solve: 84449 microseconds

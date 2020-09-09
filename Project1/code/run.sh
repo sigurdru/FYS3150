@@ -30,7 +30,7 @@ if [ "$1" == "all" ]; then
     algo="LU"   # We want to run this algo only up to n=4
     echo
     echo $algo
-    declare -i i=2
+    declare -i i=1
     while [ $i -le 4 ]; do
         echo
         execute $algo $i

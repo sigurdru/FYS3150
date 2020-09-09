@@ -6,7 +6,7 @@ The report Project1.pdf is found in the tex directory.
 Code dependencies:
 - C++
     - armadillo
-- Python
+- Python (runs with python version 3.6.9 and 3.8.2)
     - numpy
     - matplotlib
     - pandas
@@ -24,7 +24,12 @@ make compile_test
 make compile_all
 ```
 
-Now the code can be run with step size h = 10^(-n):
+Then, to produce all the results in the report, that is run the code for all n from 2 to 6, plot the results and make plots and tables of the errors, run:
+```
+bash run.sh all
+```
+
+The code can be run with step size h = 10^(-n):
 ```
 bash run.sh slow n      # with the slow, general algorithm
 bash run.sh fast n      # with the fast, specialized algorithm
@@ -32,16 +37,17 @@ bash run.sh LU n        # with the LU decomposition algorithm
 ```
 This will write the results to file and plot them.
 
-To produce all the results in the report, that is run the code for all n from 2 to 6, plot the results and make plots and tables of the errors, run:
-```
-bash run.sh all
-```
-
 To run the test code described in the report, simply run the following command after compiling:
 ```
 bash test.sh
 ```
 If the test fails for either the fast or the slow algorithm, python error messages will be printed to the terminal.
+
+To time the code and produce a table of the results, run
+```
+bash time_it.sh
+```
+This will run the code 5 times for all values of h, and compute the mean time. A table of results is printed to the terminal and saved to file in the output folder.
 
 # Example run
 ```

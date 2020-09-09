@@ -4,7 +4,6 @@
 #include <iostream>
 
 void FastLineq::initialize(int n, double f(double x), double exact(double x)) {
-    // std::cout << "start init" << std::endl;
     m_n = n;
     m_comp = new double[m_n];
     m_x = new double[m_n];
@@ -20,7 +19,6 @@ void FastLineq::initialize(int n, double f(double x), double exact(double x)) {
 }
 
 void FastLineq::solve() {
-    // std::cout << "start solve" << std::endl;
     auto start = std::chrono::high_resolution_clock::now();
     // boundary conditions
     m_comp[0] = 0.0;

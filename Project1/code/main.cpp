@@ -36,20 +36,24 @@ int main (int argc, char* argv[]) {
         SlowLineq solver;
         solver.initialize(a, b, c, n, f, exact);
         solver.solve();
-        solver.write_to_file(fname);
+        if (fname != "no_print") {
+            solver.write_to_file(fname);
+        }
     } else if (algorithm == "fast") {
         FastLineq solver;
         solver.initialize(n, f, exact);
         solver.solve();
-        solver.write_to_file(fname);
+        if (fname != "no_print") {
+            solver.write_to_file(fname);
+        }
     } 
-    // NY
     else if (algorithm == "LU") {
         LULineq solver;
         solver.solve(n, f, exact);
-        solver.write_to_file(fname);
+        if (fname != "no_print") {
+            solver.write_to_file(fname);
+        }
     }
-    // NY
     else {
         std::cout << "Unrecognized description of algorithm: "
             << algorithm << std::endl;

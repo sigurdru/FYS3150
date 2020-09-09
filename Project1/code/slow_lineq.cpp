@@ -4,7 +4,6 @@
 #include <iostream>
 
 void SlowLineq::initialize(double *a, double *b, double *c, int n, double f(double x), double exact(double x)) {
-    // std::cout << "start slow init" << std::endl;
     m_n = n;
     m_a = a;
     m_b = b;
@@ -26,7 +25,6 @@ void SlowLineq::initialize(double *a, double *b, double *c, int n, double f(doub
 }
 
 void SlowLineq::solve() {
-    // std::cout << "start solve" << std::endl;
     auto start = std::chrono::high_resolution_clock::now();
 
     // forward substitution

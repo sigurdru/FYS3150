@@ -2,6 +2,7 @@
 #include <armadillo>
 
 void LULineq::solve(int n, double f(double x), double exact(double x)) {
+    auto start = std::chrono::high_resolution_clock::now();
     m_n = n;
     m_h = 1.0 / (m_n - 1);
     m_x = new double[m_n];
@@ -33,6 +34,9 @@ void LULineq::solve(int n, double f(double x), double exact(double x)) {
     for (int i = 1; i<m_n-1; i++){
         m_comp[i] = m_comp_mat(i-1);
     }
+    auto stop = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+    std::cout << "Duration of solve: " << duration.count() << " microseconds" << std::endl;
 }
 
 
