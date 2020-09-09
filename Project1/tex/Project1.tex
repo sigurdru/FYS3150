@@ -85,6 +85,8 @@ The example function we are going to use in our studies is described by the equa
 \end{equation}
 In order to solve equation (\ref{eq:f}) we end up with a set of linear equations described by a tridiagonal matrix multiplied with a vector (see the theory section for further explanation). Now there are many ways we can solve this set of equations, each with their own pros and cons. The methods we are going to explore is one where we solve for a general tridiagonal matrix, one where we specialize the algorithm to our tridiagonal matrix and lastly by using LU decomposition. For each method we will study the accuracy, cpu-time used and the number of floating-point operations (FLOPS).
 
+For our studies we have used c++ for heavy computation, python for visualization and bash for automation. All the code along with instructions on how to run it, can be cloned fro our GitHub repository here \citep{github}.
+
 \section{Theory}
 
 \subsection{Matrix formulation of the discrete one-dimensional Poisson equation}
@@ -158,7 +160,7 @@ With $v_0 = v_{n+1} = 0$, the right side reduces to $\tilde b_i = h^2 f_i$.
 \subsection{Solve tridiagonal matrix equation}
 
 In order to solve the tridiagonal matrix below we need to develop an algorithm. As mentioned in the exercise set \citep{oppgavetekst} we first need to do a decomposition and forward substitution.
-\begin{equation*}
+\begin{equation}
 \mathbf{A}\mathbf{v} = \begin{bmatrix}
 b_1& c_1 & 0 &\dots   & \dots &\dots \\
 a_1 & b_2 & c_2 &\dots &\dots &\dots \\
@@ -181,8 +183,9 @@ v_n\\
 \dots \\
 \dots \\
 \tilde{b}_n\\
-\end{bmatrix}.
-\end{equation*}
+\end{bmatrix}
+\label{eq:mat_gen}
+\end{equation}
 
 Looking at the first matrix multiplication we get the following expression.
 
@@ -249,6 +252,7 @@ Inserting the terms into the matrix above, we get a much simpler set of equation
 Now the last step is to do a backward substitution. Starting with $v_n = \rho_n$ we can work our way backward, with the general expression
 \begin{equation}
 	v_{i-1} = \rho_{i-1} - \alpha_{i-1}v_i \ \ \text{for} \ \ i = n, n-1, ..., 2
+	\label{eq:v}
 \end{equation}
 
 Now in this report we are going to consider a matrix with elements $b_n = 2$ and $a_n = c_n = -1$. We can insert this into equations (\ref{eq:alpha}) and (\ref{eq:rho}) to get the expressions (\ref{eq:alpha_spes}) and (\ref{eq:rho_spes}).
@@ -281,60 +285,156 @@ Here $x_i$ is element $i$ in $\mathbf{x}$.
 \subsection{Floating-point operations}
 Whenever you do a mathematical operation on a computer you call it a floating-point operation. This includes division, multiplication, subtraction and addition. Floating-point operations (what we from now on will refer to as FLOPS) is a count of the total number of mathematical operations needed for an algorithm.
 
+Many FLOPS usually leads to slower code, and if you have round off errors it can propagate and create larger errors than expected.
+
+\subsection{Relative error}
+To better interpret results it can be a good idea to calculate the relative error. The formula for calculating the relative error is given by equation (\ref{eq:rel_err}).
+\begin{equation}
+	E = \frac{x_0 - x}{x}
+	\label{eq:rel_err}
+\end{equation}
+Where $E$ is the relative error, $x_0$ the computed result and $x$ the actual result. You can also look at the logarithm of the relative error, this is given by equation (\ref{eq:log_err}).
+\begin{equation}
+	log_{10}(E) = \epsilon = log_{10}\bigg(\abs{\frac{x_0-x}{x}}\bigg)
+	\label{eq:log_err}
+\end{equation}
 \section{Method}
 
-First numerical test 
+First we implement the numerical methods discussed in the theory section. As mentioned in the introduction, all the code and how to run it can be found in our GitHub repository here \citep{github}. To implement the general algorithm, where we don't assume identical elements in the tridiagonal matrix (see equation (\ref{eq:mat_gen})), we use the algorithms described in equations (\ref{eq:alpha}), (\ref{eq:rho}) and (\ref{eq:v}). Counting the number of FLOPS in the algorithm we notice $N_1 = 3(n-2)$ from equation (\ref{eq:alpha}) (3 FLOPS per iteration, $n-2$ iterations), $N_2 = 5(n-1)$ from equation (\ref{eq:rho}) (5 FLOPS per iteration $n-1$ iterations) and $N_3 = 3(n-2)$ from equation (\ref{eq:v}) (3 FLOPS per iteration $n-1$ iterations). Now to find the total number of flops for our algorithm we can sum them up.
+\begin{equation*}
+	N_{tot} = N_1+N_2+N_3 = 5(n-1) + 6(n-2) \approx 11n
+\end{equation*}
+The approximation holds when $n$ is large. Running the algorithm for $n=10^i,\ \ i = 2, 3, ..., 6$, we can plot the result, time the code and find the relative error using equation (\ref{eq:log_err}).
+
+[METDOE FAST LINEQ]
+
+In order to implement the LU decomposition we use the armadillo library (see \citep{armadillo} for documentation). From \citep{lu_wiki} we get that the LU decomposition itself requires $N_{LU} = 2n^3/3$ FLOPS. Looking at the equations (\ref{eq:lu1}) and (\ref{eq:lu2}) we can count the rest of the FLOPS. From equation (\ref{eq:lu1}) we get $N_1 = 2$ [FIKS TELLING AV FLOPS]. Again running the algorithm for $n=10^i,\ \ i = 2, 3, 4, 5$, we can plot the result, time the code and find the relative error using equation (\ref{eq:log_err}).
 
 \section{Results}
 
 \begin{figure}[h]
 	\centering
-	\includegraphics[scale=0.5]{../output/slow_4.pdf}
-	\label{fig:slow_6}
-	\caption{This figure shows the numeric solution for our general algorithm and the exact solution on top (green dashed line). The step size used is $h=10^{-4}$.
-		\label{fig:illustrasjon}} 
+	\includegraphics[scale=0.44]{../output/slow_2.pdf}
+	\label{fig:slow_2}
+	\caption{This figure shows the numeric solution for our general algorithm and the exact solution on top (green dashed line). The step size used is $h=10^{-2}$.} 
 \end{figure}
 
 \begin{figure}[h]
 	\centering
-	\includegraphics[scale=0.5]{../output/fast_4.pdf}
-	\label{fig:fast_4}
-	\caption{This figure shows the numeric solution for our specific algorithm and the exact solution on top (green dashed line). The step size used is $h=10^{-4}$.
-		\label{fig:illustrasjon}} 
+	\includegraphics[scale=0.44]{../output/slow_6.pdf}
+	\label{fig:slow_6}
+	\caption{This figure shows the numeric solution for our general algorithm and the exact solution on top (green dashed line). The step size used is $h=10^{-6}$.} 
+\end{figure}
+
+\begin{table} [h]  %[p] % Uncomment to put table in Appendix
+	\begin{tabular}{||c | c||}
+			\hline
+			$\log_{10}(h)$ & $\epsilon$    \\ \hline
+			-6 & -6.08    \\ \hline
+			-5 & -8.84    \\ \hline
+			-4 & -7.08    \\ \hline
+			-3 & -5.08    \\ \hline
+			-2 & -3.08    \\ \hline
+	\end{tabular}
+	\caption{This table shows the relative error for our general method. The firs column is the logarithm of our step size and the second column is the relative error (see figure \ref{fig:slow_error} for table plotted).}
+	\label{tab:slow_error}
+\end{table}
+
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=0.5]{../output/fast_2.pdf}
+	\label{fig:fast_2}
+	\caption{This figure shows the numeric solution for our specific algorithm and the exact solution on top (green dashed line). The step size used is $h=10^{-2}$.} 
+\end{figure}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=0.5]{../output/fast_6.pdf}
+	\label{fig:fast_6}
+	\caption{This figure shows the numeric solution for our specific algorithm and the exact solution on top (green dashed line). The step size used is $h=10^{-6}$.} 
+\end{figure}
+
+\begin{table} [h]  %[p] % Uncomment to put table in Appendix
+	\begin{tabular}{||c | c||}
+			\hline
+			$\log_{10}(h)$ & $\epsilon$    \\ \hline
+			-7 & -9.65    \\ \hline
+			-6 & -10.18    \\ \hline
+			-5 & -9.08    \\ \hline
+			-4 & -7.08    \\ \hline
+			-3 & -5.08    \\ \hline
+			-2 & -3.08    \\ \hline
+	\end{tabular}
+	\caption{This table shows the relative error for our specialized method. The firs column is the logarithm of our step size and the second column is the relative error (see figure \ref{fig:fast_error} for table plotted).}
+	\label{tab:fast_error}
+\end{table}
+
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=0.5]{../output/lu_2.pdf}
+	\label{fig:lu_2}
+	\caption{This figure shows the numeric solution for the LU-algorithm and the exact solution on top (green dashed line). The step size used is $h=10^{-2}$.} 
 \end{figure}
 
 \begin{figure}[h]
 	\centering
 	\includegraphics[scale=0.5]{../output/lu_4.pdf}
 	\label{fig:lu_4}
-	\caption{This figure shows the numeric solution for the LU-algorithm and the exact solution on top (green dashed line). The step size used is $h=10^{-4}$.
-		\label{fig:illustrasjon}} 
+	\caption{This figure shows the numeric solution for the LU-algorithm and the exact solution on top (green dashed line). The step size used is $h=10^{-4}$.} 
 \end{figure}
 \section{Discussion}
+
+\begin{table} [h]  %[p] % Uncomment to put table in Appendix
+	\begin{tabular}{||c | c||}
+			\hline
+			$\log_{10}(h)$ & $\epsilon$    \\ \hline
+			-4 & -7.08    \\ \hline
+			-3 & -5.08    \\ \hline
+			-2 & -3.08    \\ \hline
+			-1 & -1.10    \\ \hline
+	\end{tabular}
+	\caption{This table shows the relative error for our LU decomposition method. The firs column is the logarithm of our step size and the second column is the relative error (see figure \ref{fig:lu_error} for table plotted).}
+	\label{tab:lu_error}
+\end{table}
+
 
 \begin{figure}[h]
 	\centering
 	\includegraphics[scale=0.5]{../output/slow_errors.pdf}
 	\label{fig:slow_error}
-	\caption{
-		\label{fig:illustrasjon}} 
+	\caption{Here we have the table of errors (table \ref{tab:slow_error}) from our general method plotted. Along the x-axis we have the logarithm of the step size ($log_{10}(h)$) and along the y-axis we have the relative error ($\epsilon$).} 
 \end{figure}
 
 \begin{figure}[h]
 	\centering
 	\includegraphics[scale=0.5]{../output/fast_errors.pdf}
 	\label{fig:fast_error}
-	\caption{
-		\label{fig:illustrasjon}} 
+	\caption{Here we have the table of errors (table \ref{tab:fast_error}) from our specialized method plotted. Along the x-axis we have the logarithm of the step size ($log_{10}(h)$) and along the y-axis we have the relative error ($\epsilon$).} 
 \end{figure}
 
 \begin{figure}[h]
 	\centering
 	\includegraphics[scale=0.5]{../output/lu_errors.pdf}
-	\label{fig:fast_error}
-	\caption{
-		\label{fig:illustrasjon}} 
+	\label{fig:lu_error}
+	\caption{Here we have the table of errors (table \ref{tab:lu_error}) from the LU decomposition method plotted. Along the x-axis we have the logarithm of the step size ($log_{10}(h)$) and along the y-axis we have the relative error ($\epsilon$).} 
 \end{figure}
+
+\begin{table}  %[p] % Uncomment to put table in Appendix
+		\begin{tabular}{||c | c | c | c||}
+			\hline
+			$n$ & Slow [$\mu$s] & Fast [$\mu$s] & LU [$\mu$s]    \\ \hline
+			$10^{1}$ & - & - & 140.00    \\ \hline
+			$10^{2}$ & 2.60 & 2.00 & 2608.80    \\ \hline
+			$10^{3}$ & 30.40 & 17.80 & 86337.00    \\ \hline
+			$10^{4}$ & 572.60 & 200.60 & 10058519.80    \\ \hline
+			$10^{5}$ & 7607.60 & 2741.00 & -    \\ \hline
+			$10^{6}$ & 35499.80 & 14172.00 & -    \\ \hline
+		\end{tabular}
+	\caption{This table shows the time used for the different algorithms in microseconds. The first column is the number of steps used, second the general algorithm, third the specialized one and the third correspond to the LU decomposition.}
+	\label{tab:time}
+\end{table}
 
 \section{Conclution}
 
@@ -344,6 +444,9 @@ First numerical test
 \begin{thebibliography}{}
 \bibitem {oppgavetekst} HER REFERERERERERER VI TIL OPPGAVETEKSTEN
 \bibitem {lu} HER REFERERERERERR VI TIL LU (https://mathworld.wolfram.com/LUDecomposition.html)
+\bibitem {lu_wiki} https://en.wikipedia.org/wiki/LU\_decomposition
+\bibitem {github} https://github.com/sigurdru/FYS3150/tree/sigurd/Project1
+\bibitem {armadillo} http://arma.sourceforge.net/
 \end{thebibliography}
 
 \section{Appendix}
