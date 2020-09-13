@@ -3,8 +3,8 @@
 
 % allows special characters (including æøå)
 \usepackage[utf8]{inputenc}
-\usepackage [norsk]{babel} %if you write norwegian
-%\usepackage[english]{babel}  %if you write english
+% \usepackage [norsk]{babel} %if you write norwegian
+\usepackage[english]{babel}  %if you write english
 
 
 %% note that you may need to download some of these packages manually, it depends on your setup.
@@ -66,13 +66,18 @@
 \newpage
 
 \begin{abstract}
-Abstract om du vil
+We have explored three different numerical implementations of a finite difference method for solving the one-dimensional Poisson equation. This is a second order partial differential equation. The main goal of the project was to observe how the relative error relates to the step size of discretization. As expected, we saw a higher degree of precision with smaller step sizes, until loss of numerical precision started to affect the results causing the relative error to increase. We also derived how the number of FLOPs, and thus the time needed for computation, depend on the number of steps for the different algorithms. We were then able to briefly discuss the tradeoff between high precision, low computational time and memory usage.
+
+By discretizing the equation, one can rewrite it to a system of linear equations, in truth a quite simple linear algebra problem. The three different methods we have implemented for solving this set of linear equations is the general LU decomposition of a matrix, a general method for solving linear equations with tridiagonal matrices and finally a highly specialized algorithm for the specific matrix that arises from discretizing the second derivative of a function.
+
+We obtained the best results with the specialized algorithm. With step size $h = 10^{-6}$ we got results with a maximum relative error of as little as $10^{-10}$. Beyond that, loss of numerical precision gave reduced precision. For the general tridiagonal algorithm, we observed a serious loss of precision at $h = 10^{-6}$. Both $h = 10^{-5}$ and $h = 10^{-4}$ gave better presicion than $h = 10^{-6}$. The LU decomposition is unable to handle step sizes smaller than $10^{-4}$ due to memory comsumption.
 \end{abstract}
 \maketitle                                % creates the title, author, date & abstract
 
-\section{introduction}
 
-We can describe the evolution of many physical systems with the help of differential equations, but because of their complexity we  are unable to find the analytical solutions. Therefore we have to use numerical methods in order to approximate the solution. Computers are limited in both their memory and accuracy, so we have to be careful when both selecting the numerical method and how we implement it. In this report we are going to explore these issues by trying to solve the one-dimensional Poisson equation with Dirichlet boundary conditions, described in equation \ref{eq:Poisson_1D} in the theory section.
+\section{Introduction}
+
+We can describe the evolution of many physical systems with the help of differential equations, but because of their complexity we are often unable to find analytical solutions. Therefore we have to use numerical methods in order to approximate the solution. Computers are limited in both their memory and accuracy, so we have to be careful when both selecting the numerical method and how we implement it. In this report we are going to explore these issues by trying to solve the one-dimensional Poisson equation with Dirichlet boundary conditions, described in equation \ref{eq:Poisson_1D} in the theory section.
 
 The example function we are going to use in our studies is described by the equation (\ref{eq:f}) and has an analytical solution (\ref{eq:u}) we can use to compare our results.
 \begin{equation}
@@ -95,7 +100,7 @@ The one-dimensional Poisson equation with Dirichlet boundary conditions is given
   \label{eq:Poisson_1D}
   - \frac{\mathrm d^2 u(x)}{\mathrm d x^2} = f(x), \quad x \in (0, 1), \quad u(0) = u(1) = 0
 \end{equation}
-We defnine the discretized approximation to $u$ to be $v_i$ at points $x_i = i h$ evenly spaced between $x_0 = 0$ and $x_{n+1} = 1$. The step length between the points is $h = 1/(n + 1)$. The boundary conditions from equation \ref{eq:Poisson_1D} then give $v_0 = v_{n+1} = 0$. An approximation to the second derivative of $u$, derived from the Taylor expansion, is
+We define the discretized approximation to $u$ to be $v_i$ at points $x_i = i h$ evenly spaced between $x_0 = 0$ and $x_n = 1$. The step length between the points is $h = 1/(n - 1)$. The boundary conditions from equation \ref{eq:Poisson_1D} then give $v_0 = v_n = 0$. An approximation to the second derivative of $u$, derived from the Taylor expansion, is
 \begin{equation}
   \label{eq:discrete_2nd_deriavative}
   \frac{-v_{i-1} + 2 v_i - v_{i+1}}{h^2} = f_i \quad for i = 1, 2, ..., n
@@ -190,7 +195,7 @@ v_n\\
 Looking at the first matrix multiplication we get the following expression.
 
 \begin{equation}
-	b_1 v_1 + c_1 v_2 = \tilde{b} \implies v_1 + \alpha_1 v_2 = \rho _1, \ \ \alpha_1 = \frac{c_1}{b_1} \wedge \rho_1 = \frac{\tilde{b}_1}{b_1} 
+	b_1 v_1 + c_1 v_2 = \tilde{b} \implies v_1 + \alpha_1 v_2 = \rho _1, \ \ \alpha_1 = \frac{c_1}{b_1} \wedge \rho_1 = \frac{\tilde{b}_1}{b_1}
 	\label{eq:mat1}
 \end{equation}
 
@@ -316,14 +321,14 @@ In order to implement the LU decomposition we use the armadillo library (see \ci
 	\centering
 	\includegraphics[scale=0.44]{../output/slow_2.pdf}
 	\label{fig:slow_2}
-	\caption{This figure shows the numeric solution for our general algorithm and the exact solution on top (green dashed line). The step size used is $h=10^{-2}$.} 
+	\caption{This figure shows the numeric solution for our general algorithm and the exact solution on top (green dashed line). The step size used is $h=10^{-2}$.}
 \end{figure}
 
 \begin{figure}[h]
 	\centering
 	\includegraphics[scale=0.44]{../output/slow_6.pdf}
 	\label{fig:slow_6}
-	\caption{This figure shows the numeric solution for our general algorithm and the exact solution on top (green dashed line). The step size used is $h=10^{-6}$.} 
+	\caption{This figure shows the numeric solution for our general algorithm and the exact solution on top (green dashed line). The step size used is $h=10^{-6}$.}
 \end{figure}
 
 \begin{table} [h]  %[p] % Uncomment to put table in Appendix
@@ -345,14 +350,14 @@ In order to implement the LU decomposition we use the armadillo library (see \ci
 	\centering
 	\includegraphics[scale=0.5]{../output/fast_2.pdf}
 	\label{fig:fast_2}
-	\caption{This figure shows the numeric solution for our specific algorithm and the exact solution on top (green dashed line). The step size used is $h=10^{-2}$.} 
+	\caption{This figure shows the numeric solution for our specific algorithm and the exact solution on top (green dashed line). The step size used is $h=10^{-2}$.}
 \end{figure}
 
 \begin{figure}[h]
 	\centering
 	\includegraphics[scale=0.5]{../output/fast_6.pdf}
 	\label{fig:fast_6}
-	\caption{This figure shows the numeric solution for our specific algorithm and the exact solution on top (green dashed line). The step size used is $h=10^{-6}$.} 
+	\caption{This figure shows the numeric solution for our specific algorithm and the exact solution on top (green dashed line). The step size used is $h=10^{-6}$.}
 \end{figure}
 
 \begin{table} [h]  %[p] % Uncomment to put table in Appendix
@@ -373,16 +378,16 @@ In order to implement the LU decomposition we use the armadillo library (see \ci
 
 \begin{figure}[h]
 	\centering
-	\includegraphics[scale=0.5]{../output/lu_2.pdf}
+	\includegraphics[scale=0.5]{../output/LU_2.pdf}
 	\label{fig:lu_2}
-	\caption{This figure shows the numeric solution for the LU-algorithm and the exact solution on top (green dashed line). The step size used is $h=10^{-2}$.} 
+	\caption{This figure shows the numeric solution for the LU-algorithm and the exact solution on top (green dashed line). The step size used is $h=10^{-2}$.}
 \end{figure}
 
 \begin{figure}[h]
 	\centering
-	\includegraphics[scale=0.5]{../output/lu_4.pdf}
+	\includegraphics[scale=0.5]{../output/LU_4.pdf}
 	\label{fig:lu_4}
-	\caption{This figure shows the numeric solution for the LU-algorithm and the exact solution on top (green dashed line). The step size used is $h=10^{-4}$.} 
+	\caption{This figure shows the numeric solution for the LU-algorithm and the exact solution on top (green dashed line). The step size used is $h=10^{-4}$.}
 \end{figure}
 \section{Discussion}
 
@@ -404,21 +409,21 @@ In order to implement the LU decomposition we use the armadillo library (see \ci
 	\centering
 	\includegraphics[scale=0.5]{../output/slow_errors.pdf}
 	\label{fig:slow_error}
-	\caption{Here we have the table of errors (table \ref{tab:slow_error}) from our general method plotted. Along the x-axis we have the logarithm of the step size ($log_{10}(h)$) and along the y-axis we have the relative error ($\epsilon$).} 
+	\caption{Here we have the table of errors (table \ref{tab:slow_error}) from our general method plotted. Along the x-axis we have the logarithm of the step size ($log_{10}(h)$) and along the y-axis we have the relative error ($\epsilon$).}
 \end{figure}
 
 \begin{figure}[h]
 	\centering
 	\includegraphics[scale=0.5]{../output/fast_errors.pdf}
 	\label{fig:fast_error}
-	\caption{Here we have the table of errors (table \ref{tab:fast_error}) from our specialized method plotted. Along the x-axis we have the logarithm of the step size ($log_{10}(h)$) and along the y-axis we have the relative error ($\epsilon$).} 
+	\caption{Here we have the table of errors (table \ref{tab:fast_error}) from our specialized method plotted. Along the x-axis we have the logarithm of the step size ($log_{10}(h)$) and along the y-axis we have the relative error ($\epsilon$).}
 \end{figure}
 
 \begin{figure}[h]
 	\centering
-	\includegraphics[scale=0.5]{../output/lu_errors.pdf}
+	\includegraphics[scale=0.5]{../output/LU_errors.pdf}
 	\label{fig:lu_error}
-	\caption{Here we have the table of errors (table \ref{tab:lu_error}) from the LU decomposition method plotted. Along the x-axis we have the logarithm of the step size ($log_{10}(h)$) and along the y-axis we have the relative error ($\epsilon$).} 
+	\caption{Here we have the table of errors (table \ref{tab:lu_error}) from the LU decomposition method plotted. Along the x-axis we have the logarithm of the step size ($log_{10}(h)$) and along the y-axis we have the relative error ($\epsilon$).}
 \end{figure}
 
 \begin{table}  %[p] % Uncomment to put table in Appendix
@@ -436,29 +441,32 @@ In order to implement the LU decomposition we use the armadillo library (see \ci
 	\label{tab:time}
 \end{table}
 
-\section{Conclution}
+\begin{table}  %[p] % Uncomment to put table in Appendix
+\begin{adjustbox}{width=\linewidth}
+\input{../output/test_time_it_tex.txt}
+\end{adjustbox}
+\caption{}
+\label{}
+\end{table}
+
+\section{Conclusion}
 
 \onecolumngrid
 \vspace{1cm} % some extra space
 \newpage
+
 \begin{thebibliography}{}
-\bibitem {oppgavetekst} HER REFERERERERERER VI TIL OPPGAVETEKSTEN
-\bibitem {lu} HER REFERERERERERR VI TIL LU (https://mathworld.wolfram.com/LUDecomposition.html)
-\bibitem {lu_wiki} https://en.wikipedia.org/wiki/LU\_decomposition
-\bibitem {github} https://github.com/sigurdru/FYS3150/tree/sigurd/Project1
-\bibitem {armadillo} http://arma.sourceforge.net/
+  \bibitem {armadillo} Armadillo, http://arma.sourceforge.net/
+  \bibitem {oppgavetekst} Dept. of Physics, UiO,  2020, \textit{Project 1, deadline September 9}
+  \bibitem {github} Rustad, S. and Falmår, V.,  2020, \textit{FYS3150 Project 1}, https://github.com/sigurdru/FYS3150/tree/master/Project1
+  \bibitem {lu} Weisstein, Eric, W. on Mathworld--A Wolfram Web Resource, \textit{LU Decomposition}, read 13.09.20, https://mathworld.wolfram.com/LUDecomposition.html
+  \bibitem {lu_wiki} Wikipedia.  2020, \textit{LU decomposition}, read 13.09.20, https://en.wikipedia.org/wiki/LU\_decomposition
 \end{thebibliography}
+
+
 
 \section{Appendix}
 
-
-\section{Kode}
-
-% \subsection{\textit{main.py}}
-% \lstinputlisting[language=Python]{../main.py}
-%
-% \subsection{Output fra \textit{main.py}}
-% \verbatiminput{../main_output.txt}
 
 
 
