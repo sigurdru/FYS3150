@@ -11,8 +11,8 @@ Reallocated singl_function (elt_size=4) to 100 items from 50.
 Reallocated wiz_functions (elt_size=4) to 6000 items from 3000.
 Database file #1: Project1Notes.bib
 Warning--I didn't find a database entry for "github"
-Warning--I didn't find a database entry for "oppgavetekst"
 Warning--I didn't find a database entry for "lu"
+Warning--I didn't find a database entry for "oppgavetekst"
 Warning--I didn't find a database entry for "armadillo"
 Warning--I didn't find a database entry for "lu_wiki"
 control{REVTEX41Control}, control.key{N/A}, control.author{N/A}, control.editor{N/A}, control.title{N/A}, control.pages{N/A}, control.year{N/A}, control.eprint{N/A}, 

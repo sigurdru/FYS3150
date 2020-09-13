@@ -1,15 +1,9 @@
-\begin{table}  %[p] % Uncomment to put table in Appendix
-\begin{adjustbox}{width=1\textwidth}
 \begin{tabular}{||c | c||}
 \hline
-$\log_{10}(h)$ & $\eps$    \\ \hline
+$\log_{10}(h)$ & $\epsilon$    \\ \hline
 -6 & -6.08    \\ \hline
 -5 & -8.84    \\ \hline
 -4 & -7.08    \\ \hline
 -3 & -5.08    \\ \hline
 -2 & -3.08    \\ \hline
 \end{tabular}
-\end{adjustbox}
-\caption{}
-\label{}
-\end{table}

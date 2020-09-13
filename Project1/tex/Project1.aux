@@ -26,36 +26,44 @@
 \@writefile{toc}{\contentsline {section}{\numberline {II}Theory}{1}{section*.4}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {A}Matrix formulation of the discrete one-dimensional Poisson equation}{1}{section*.5}}
 \newlabel{eq:Poisson_1D}{{3}{1}{}{equation.2.3}{}}
-\newlabel{eq:discrete_2nd_deriavative}{{4}{1}{}{equation.2.4}{}}
+\newlabel{eq:discrete_2nd_derivative}{{4}{1}{}{equation.2.4}{}}
+\citation{lu}
+\citation{lu}
 \citation{oppgavetekst}
-\citation{lu}
-\citation{lu}
 \newlabel{eq:Poisson_1D_matrix}{{5}{2}{}{equation.2.5}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {B}Solve tridiagonal matrix equation}{2}{section*.6}}
-\newlabel{eq:mat_gen}{{6}{2}{}{equation.2.6}{}}
-\newlabel{eq:mat1}{{7}{2}{}{equation.2.7}{}}
-\newlabel{eq:mat2}{{8}{2}{}{equation.2.8}{}}
-\newlabel{eq:alpha}{{9}{2}{}{equation.2.9}{}}
-\newlabel{eq:rho}{{10}{2}{}{equation.2.10}{}}
-\newlabel{eq:v}{{11}{2}{}{equation.2.11}{}}
-\newlabel{eq:alpha_spes}{{12}{2}{}{equation.2.12}{}}
-\newlabel{eq:rho_spes}{{13}{2}{}{equation.2.13}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {C}Lower-upper (LU) decomposition}{2}{section*.7}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {B}Lower-upper (LU) decomposition}{2}{section*.6}}
+\newlabel{eq:lu1}{{6}{2}{}{equation.2.6}{}}
+\newlabel{eq:lu2}{{7}{2}{}{equation.2.7}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {C}Floating-point operations}{2}{section*.7}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {D}Relative error}{2}{section*.8}}
+\newlabel{eq:rel_err}{{8}{2}{}{equation.2.8}{}}
+\newlabel{eq:log_err}{{9}{2}{}{equation.2.9}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {III}Method}{2}{section*.9}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {A}Solve tridiagonal matrix equation}{2}{section*.10}}
+\newlabel{eq:mat_gen}{{10}{2}{}{equation.3.10}{}}
+\newlabel{eq:mat1}{{11}{2}{}{equation.3.11}{}}
+\newlabel{eq:mat2}{{12}{2}{}{equation.3.12}{}}
+\newlabel{eq:alpha}{{13}{3}{}{equation.3.13}{}}
+\newlabel{eq:rho}{{14}{3}{}{equation.3.14}{}}
+\newlabel{eq:v}{{15}{3}{}{equation.3.15}{}}
+\newlabel{eq:alpha_spes}{{16}{3}{}{equation.3.16}{}}
+\newlabel{eq:rho_spes}{{17}{3}{}{equation.3.17}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {B}Specialized algorithm for our spesific problem}{3}{section*.11}}
+\newlabel{eq:right_of_diag_specialized_algo}{{18}{3}{}{equation.3.18}{}}
+\newlabel{eq:diagonal_element_specialized_algo}{{19}{3}{}{equation.3.19}{}}
 \citation{github}
 \citation{armadillo}
 \citation{lu_wiki}
-\newlabel{eq:lu1}{{14}{3}{}{equation.2.14}{}}
-\newlabel{eq:lu2}{{15}{3}{}{equation.2.15}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {D}Floating-point operations}{3}{section*.8}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {E}Relative error}{3}{section*.9}}
-\newlabel{eq:rel_err}{{16}{3}{}{equation.2.16}{}}
-\newlabel{eq:log_err}{{17}{3}{}{equation.2.17}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {III}Method}{3}{section*.10}}
-\@writefile{toc}{\contentsline {section}{\numberline {IV}Results}{3}{section*.11}}
-\newlabel{fig:slow_2}{{IV}{3}{}{section*.11}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces This figure shows the numeric solution for our general algorithm and the exact solution on top (green dashed line). The step size used is $h=10^{-2}$.}}{3}{figure.1}}
-\@writefile{toc}{\contentsline {section}{\numberline {V}Discussion}{3}{section*.12}}
-\@writefile{toc}{\contentsline {section}{\numberline {VI}Conclusion}{3}{section*.13}}
+\citation{github}
+\newlabel{eq:flops_specialized}{{20}{4}{}{equation.3.20}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {C}Code tests}{4}{section*.12}}
+\@writefile{toc}{\contentsline {section}{\numberline {IV}Results}{4}{section*.13}}
+\@writefile{toc}{\contentsline {section}{\numberline {V}Discussion}{4}{section*.14}}
+\newlabel{fig:slow_2}{{IV}{5}{}{section*.13}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces This figure shows the numeric solution for our general algorithm and the exact solution on top (green dashed line). The step size used is $h=10^{-2}$.}}{5}{figure.1}}
+\@writefile{lot}{\contentsline {table}{\numberline {I}{\ignorespaces This table shows the relative error for our general method. The firs column is the logarithm of our step size and the second column is the relative error (see figure \ref  {fig:slow_error} for table plotted).}}{5}{table.1}}
+\newlabel{tab:slow_error}{{I}{5}{This table shows the relative error for our general method. The firs column is the logarithm of our step size and the second column is the relative error (see figure \ref {fig:slow_error} for table plotted)}{table.1}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {VI}Conclusion}{5}{section*.15}}
 \bibcite{armadillo}{{1}{}{{}}{{}}}
 \bibcite{oppgavetekst}{{2}{}{{}}{{}}}
 \bibcite{github}{{3}{}{{}}{{}}}
@@ -66,33 +74,18 @@
 \citation{REVTEX41Control}
 \citation{apsrev41Control}
 \providecommand\NAT@force@numbers{}\NAT@force@numbers
-\newlabel{fig:slow_6}{{IV}{4}{}{figure.1}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces This figure shows the numeric solution for our general algorithm and the exact solution on top (green dashed line). The step size used is $h=10^{-6}$.}}{4}{figure.2}}
-\@writefile{lot}{\contentsline {table}{\numberline {I}{\ignorespaces This table shows the relative error for our general method. The firs column is the logarithm of our step size and the second column is the relative error (see figure \ref  {fig:slow_error} for table plotted).}}{4}{table.1}}
-\newlabel{tab:slow_error}{{I}{4}{This table shows the relative error for our general method. The firs column is the logarithm of our step size and the second column is the relative error (see figure \ref {fig:slow_error} for table plotted)}{table.1}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {}References}{4}{section*.14}}
-\newlabel{LastBibItem}{{5}{4}{}{section*.14}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {VII}Appendix}{4}{section*.15}}
-\newlabel{fig:fast_2}{{IV}{5}{}{table.1}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces This figure shows the numeric solution for our specific algorithm and the exact solution on top (green dashed line). The step size used is $h=10^{-2}$.}}{5}{figure.3}}
-\newlabel{fig:fast_6}{{IV}{5}{}{figure.3}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces This figure shows the numeric solution for our specific algorithm and the exact solution on top (green dashed line). The step size used is $h=10^{-6}$.}}{5}{figure.4}}
 \@writefile{lot}{\contentsline {table}{\numberline {II}{\ignorespaces This table shows the relative error for our specialized method. The firs column is the logarithm of our step size and the second column is the relative error (see figure \ref  {fig:fast_error} for table plotted).}}{6}{table.2}}
 \newlabel{tab:fast_error}{{II}{6}{This table shows the relative error for our specialized method. The firs column is the logarithm of our step size and the second column is the relative error (see figure \ref {fig:fast_error} for table plotted)}{table.2}{}}
-\newlabel{fig:lu_2}{{IV}{6}{}{table.2}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces This figure shows the numeric solution for the LU-algorithm and the exact solution on top (green dashed line). The step size used is $h=10^{-2}$.}}{6}{figure.5}}
-\newlabel{fig:lu_4}{{IV}{6}{}{figure.5}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces This figure shows the numeric solution for the LU-algorithm and the exact solution on top (green dashed line). The step size used is $h=10^{-4}$.}}{6}{figure.6}}
-\@writefile{lot}{\contentsline {table}{\numberline {III}{\ignorespaces This table shows the relative error for our LU decomposition method. The firs column is the logarithm of our step size and the second column is the relative error (see figure \ref  {fig:lu_error} for table plotted).}}{7}{table.3}}
-\newlabel{tab:lu_error}{{III}{7}{This table shows the relative error for our LU decomposition method. The firs column is the logarithm of our step size and the second column is the relative error (see figure \ref {fig:lu_error} for table plotted)}{table.3}{}}
-\newlabel{fig:slow_error}{{V}{7}{}{table.3}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces Here we have the table of errors (table \ref  {tab:slow_error}) from our general method plotted. Along the x-axis we have the logarithm of the step size ($log_{10}(h)$) and along the y-axis we have the relative error ($\epsilon $).}}{7}{figure.7}}
-\newlabel{fig:fast_error}{{V}{7}{}{figure.7}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces Here we have the table of errors (table \ref  {tab:fast_error}) from our specialized method plotted. Along the x-axis we have the logarithm of the step size ($log_{10}(h)$) and along the y-axis we have the relative error ($\epsilon $).}}{7}{figure.8}}
-\newlabel{fig:lu_error}{{V}{8}{}{figure.8}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {9}{\ignorespaces Here we have the table of errors (table \ref  {tab:lu_error}) from the LU decomposition method plotted. Along the x-axis we have the logarithm of the step size ($log_{10}(h)$) and along the y-axis we have the relative error ($\epsilon $).}}{8}{figure.9}}
-\@writefile{lot}{\contentsline {table}{\numberline {IV}{\ignorespaces This table shows the time used for the different algorithms in microseconds. The first column is the number of steps used, second the general algorithm, third the specialized one and the third correspond to the LU decomposition.}}{8}{table.4}}
-\newlabel{tab:time}{{IV}{8}{This table shows the time used for the different algorithms in microseconds. The first column is the number of steps used, second the general algorithm, third the specialized one and the third correspond to the LU decomposition}{table.4}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {V}{\ignorespaces }}{8}{table.5}}
-\newlabel{}{{V}{8}{}{table.5}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {III}{\ignorespaces This table shows the relative error for our LU decomposition method. The first column is the logarithm of our step size and the second column is the relative error (see figure \ref  {fig:lu_error} for table plotted).}}{6}{table.3}}
+\newlabel{tab:lu_error}{{III}{6}{This table shows the relative error for our LU decomposition method. The first column is the logarithm of our step size and the second column is the relative error (see figure \ref {fig:lu_error} for table plotted)}{table.3}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {}References}{6}{section*.16}}
+\newlabel{LastBibItem}{{5}{6}{}{section*.16}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {IV}{\ignorespaces This table shows the time used for the different algorithms in microseconds. The first column is the number of steps used, second the general algorithm, third the specialized one and the third correspond to the LU decomposition.}}{6}{table.4}}
+\newlabel{tab:time}{{IV}{6}{This table shows the time used for the different algorithms in microseconds. The first column is the number of steps used, second the general algorithm, third the specialized one and the third correspond to the LU decomposition}{table.4}{}}
+\newlabel{fig:slow_error}{{IV}{7}{}{table.3}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Here we have the table of errors (table \ref  {tab:slow_error}) from our general method plotted. Along the x-axis we have the logarithm of the step size ($log_{10}(h)$) and along the y-axis we have the relative error ($\epsilon $).}}{7}{figure.2}}
+\newlabel{fig:fast_error}{{IV}{7}{}{figure.2}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Here we have the table of errors (table \ref  {tab:fast_error}) from our specialized method plotted. Along the x-axis we have the logarithm of the step size ($log_{10}(h)$) and along the y-axis we have the relative error ($\epsilon $).}}{7}{figure.3}}
+\newlabel{fig:lu_error}{{IV}{8}{}{figure.3}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Here we have the table of errors (table \ref  {tab:lu_error}) from the LU decomposition method plotted. Along the x-axis we have the logarithm of the step size ($log_{10}(h)$) and along the y-axis we have the relative error ($\epsilon $).}}{8}{figure.4}}
 \newlabel{LastPage}{{}{8}{}{}{}}

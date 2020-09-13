@@ -30,9 +30,10 @@ for i, algo in enumerate(algos):
         mean = sum/I
         means[n-1, i] = mean
 
-
-tab = [['$n$', 'Slow', 'Fast', 'LU']] + [[f'$10^{{{i+1}}}$'] + ['-' if mean == 0 else f'{mean:.2f}' for mean in means[i]] for i in range(N)]
+unit = ', [$\mu$s]'
+tab = [['$n$', 'Slow' + unit, 'Fast' + unit, 'LU' + unit]] 
+tab += [[f'$10^{{{i+1}}}$'] + ['-' if mean == 0 else f'{mean:.2f}' for mean in means[i]] for i in range(N)]
 
 tab = Table(tab)
 tab.write()
-tab.latex(filename='../output/time_it_tex.txt')
+tab.latex(filename='../output/time_it_tex.txt', complete=False)

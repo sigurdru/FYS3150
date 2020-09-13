@@ -30,7 +30,7 @@ void FastLineq::solve() {
         m_comp[i] *= d[i];
     }
     // backward substitution
-    for (int i=m_n-2; i>0; i--) {
+    for (int i=m_n-3; i>0; i--) {
         m_comp[i] += d[i]*m_comp[i+1];
     }
     auto stop = std::chrono::high_resolution_clock::now();

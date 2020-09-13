@@ -53,7 +53,8 @@ This will run the code 5 times for all values of h, and compute the mean time. A
 ```
 cd code
 make compile_all
-bash run.sh fast 7      # runs the fast algorithm with h = 10^(-7)
 bash test.sh            # runs the test code
+bash time_it.sh         # times the code, average over 5 runs
+bash run.sh fast 7      # runs the fast algorithm with h = 10^(-7)
 bash run.sh all         # produces all the results
 ```

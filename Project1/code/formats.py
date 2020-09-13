@@ -1,88 +1,94 @@
 class Table:
-  def __init__(self, data):
-    self.data = data
-    self.endline = r'    \\ \hline'
+    def __init__(self, data):
+        self.data = data
+        self.endline = r'    \\ \hline'
 
-  def latex(self, filename='print'):
-    """Print or save to file a latex formatted table."""
-    try:
-      data = self.data
-    except (TypeError, AttributeError):
-      print('No table was written or printed')
-      print('Initialize Table instance with table data first.')
-      return
-    width = len(data[0])
-    out = self.texHeader(width)
-    for line in data:
-      out.append(' & '.join(line) + self.endline)
-    out += self.texFooter()
-    if filename == 'print':
-      for line in out:
-        print(line)
-    else:
-      with open(filename, 'w') as outfile:
-        for line in out:
-          outfile.write(line + '\n')
+    def latex(self, filename='print', complete=False):
+        """Print or save to file a latex formatted table."""
+        try:
+            data = self.data
+        except (TypeError, AttributeError):
+            print('No table was written or printed')
+            print('Initialize Table instance with table data first.')
+            return
+        width = len(data[0])
+        out = self.texHeader(width, complete=complete)
+        for line in data:
+            out.append(' & '.join(line) + self.endline)
+        out += self.texFooter(complete=complete)
+        if filename == 'print':
+            for line in out:
+                print(line)
+        else:
+            with open(filename, 'w') as outfile:
+                for line in out:
+                    outfile.write(line + '\n')
 
-  def texHeader(self, width): 
-    out = ['\\begin{table}  %[p] % Uncomment to put table in Appendix',
-           '\\begin{adjustbox}{width=1\\textwidth}',
-           '\\begin{{{:s}}}{{||c | {:s}c||}}'.format('tabular', 'c | '*(width-2)),
-           '\\hline']
-    return out
+    def texHeader(self, width, complete=False): 
+        if complete:
+            out = [r'\begin{table}  %[p] % Uncomment to put table in Appendix',
+                    r'\begin{adjustbox}{width=\linewidth}']
+        else:
+            out = []
 
-  def texFooter(self):
-    out = ['\\end{tabular}',
-           '\\end{adjustbox}',
-           '\\caption{}',
-           '\\label{}',
-           '\\end{table}']
-    return out
+        out += [r'\begin{tabular}{||c | ' + '{:s}'.format('c | '*(width-2)) + r'c||}',
+                r'\hline']
+        return out
 
-  def write(self, filename='print'):
-    """Print or save to file a good old-fashioned table."""
-    try:
-      data = self.data
-    except (TypeError, AttributeError):
-      print('No table was written or printed.')
-      print('Initialize Table instance with table data first.')
-      return
-    import numpy as np
-    bins = np.zeros(len(data[0]))
-    for i in range(len(bins)):
-      column = [data[j][i] for j in range(len(data))]
-      bins[i] = len(max(column, key=len))+4
-    out = []
-    for i in range(len(data)):
-      line = ''
-      for j in range(len(data[i])):
-        line += '|{:{align}{width}}'.format(data[i][j], align='^', width=str(int(bins[j])))
-      line += '|'
-      out.append(line)
-    out.insert(0, '-'*len(line))
-    out.insert(2, '|' + '-'*(len(line)-2) + '|')
-    out.append('-'*len(line))
-    if filename == 'print':
-      for line in out:
-        print(line)
-    else:
-      with open(filename, 'w') as outfile:
-        for line in out:
-          outfile.write(line + '\n')
+    def texFooter(self, complete=False):
+        out = [r'\end{tabular}']
+        if complete:
+            out += [r'\end{adjustbox}',
+                r'\caption{}',
+                r'\label{}',
+                r'\end{table}']
+        return out
+
+    def write(self, filename='print'):
+        """Print or save to file a good old-fashioned table."""
+        try:
+            data = self.data
+        except (TypeError, AttributeError):
+            print('No table was written or printed.')
+            print('Initialize Table instance with table data first.')
+            return
+        import numpy as np
+        bins = np.zeros(len(data[0]))
+        for i in range(len(bins)):
+            column = [data[j][i] for j in range(len(data))]
+            bins[i] = len(max(column, key=len))+4
+        out = []
+        for i in range(len(data)):
+            line = ''
+            for j in range(len(data[i])):
+                line += '|{:{align}{width}}'.format(data[i][j], align='^', width=str(int(bins[j])))
+            line += '|'
+            out.append(line)
+        out.insert(0, '-'*len(line))
+        out.insert(2, '|' + '-'*(len(line)-2) + '|')
+        out.append('-'*len(line))
+        if filename == 'print':
+            for line in out:
+                print(line)
+        else:
+            with open(filename, 'w') as outfile:
+                for line in out:
+                    outfile.write(line + '\n')
 
 class Matrix(Table):
-  def __init__(self, data):
-    self.data = data
-    self.endline = r'  \\'
-  def texHeader(self, width):
-    out = [r'\begin{equation}{}',
-           r'\bm NAME = \begin{bmatrix}']
-    return out
+    def __init__(self, data):
+        self.data = data
+        self.endline = r'  \\'
 
-  def texFooter(self):
-    out = [r'\end{bmatrix}',
-           r'\end{equation}']
-    return out
+    def texHeader(self, width, complete=False):
+        out = [r'\begin{equation}{}',
+                r'\bm NAME = \begin{bmatrix}']
+        return out
+
+    def texFooter(self, complete=False):
+        out = [r'\end{bmatrix}',
+                r'\end{equation}']
+        return out
 
 if __name__ == '__main__':
     import numpy as np
@@ -96,10 +102,10 @@ if __name__ == '__main__':
     data.insert(0, ['Vec {}'.format(i+1) for i in range(4)])
     mat = Matrix(data)
     mat.write(filename='print')
-    
+       
     print()
     data[0] = ['Col {}'.format(i+1) for i in range(4)]
     tab = Table(data)
-    tab.latex(filename='print')
+    tab.latex(filename='print', complete=True)
     print()
     tab.write(filename='print')
