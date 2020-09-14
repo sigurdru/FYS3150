@@ -1,1 +1,1 @@
-Duration of solve: 16773 microseconds
+Duration of solve: 14262 microseconds

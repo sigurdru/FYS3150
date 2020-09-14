@@ -606,7 +606,13 @@ blabla
 
 \section{Conclusion}
 
-blabla
+Overall, we saw the expected behaviour of our algorithms. It was a little surprising that the loss of numerical precision started to affect the results at different values of $h$ for the different algorithms. This can probably be explained by the different numbers of FLOPS. For the specialized algorithm, there are fewer numbers stored in the computer and fewer operations on them. The loss of numerical precision therefore comes later here than for the general tridiagonal matrix approach where we store more values and perform more numerical operations. For the LU decomposition algorithm, we run out of memory before we reach values of $h$ that are small enough to cause loss of numerical precision.
+
+Before loss of numerical precision starts to affect the results, we see the exact same errors for the different algorithms. This is an ''analytic'' error that comes from the approximation we make when we discretize the PDE.
+
+The best results were obtained with the specialized algorithm. With a step size $h = 10^{-6}$ we got a maximum relative error of less than $10^{-10}$. For the general algorithm for tridiagonal matrices, the best result was obtained with step size $h = 10^{-5}$ giving a maximum relative error of $10^{-8.8}$. For smaller step sizes, loss of numerical precision caused the relative error to grow. The LU decomposition matched the other algorithms in accuracy for step sizes as small as $h = 10^{-4}$. Beyond that point, the matrices become too large to be represented in the computer's memory.
+
+The specialized algorithm also proved superior in terms of computing time. It used a little under half the time of the general algorithm for tridiagonal matrices. The LU decomposition code took up to about 200 000 as long time to complete as the specialized code.
 
 
 

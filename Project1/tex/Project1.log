@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2020.3.16)  13 SEP 2020 19:23
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2019.8.30)  14 SEP 2020 11:22
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -2149,38 +2149,38 @@ LaTeX Warning: `h' float specifier changed to `ht'.
 
 (/home/vegard/Documents/FYS3150/Project1/tex/../output/time_it_tex.txt) [4]
 
-LaTeX Warning: A float is stuck (cannot be placed); try class option [floatfix] on input line 615.
+LaTeX Warning: A float is stuck (cannot be placed); try class option [floatfix] on input line 610.
 
 [5 <../output/slow_2.pdf>]
-Underfull \hbox (badness 10000) in paragraph at lines 621--622
+Underfull \hbox (badness 10000) in paragraph at lines 627--628
  []\OT1/cmr/m/n/9 Weisstein, Eric, W. on Mathworld--A Wol-fram Web Re-source, \OT1/cmr/m/it/9 LU De-com-po-si-tion\OT1/cmr/m/n/9 , read 13.09.20,
  []
 
-(/home/vegard/Documents/FYS3150/Project1/tex/Project1.bbl) [6] [7 <../output/slow_errors.pdf> <../output/fast_errors.pdf
+(/home/vegard/Documents/FYS3150/Project1/tex/Project1.bbl) [6 <../output/slow_errors.pdf> <../output/fast_errors.pdf
 
 pdfTeX warning: pdflatex (file ../output/fast_errors.pdf): PDF inclusion: multiple pdfs with page group included in a single page
->] [8 <../output/LU_errors.pdf>]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 627.
+>] [7 <../output/LU_errors.pdf>]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 633.
  (/home/vegard/Documents/FYS3150/Project1/tex/Project1.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 627.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 627.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 633.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 633.
 Package rerunfilecheck Info: File `Project1.out' has not changed.
 (rerunfilecheck)             Checksum: 45E23BD629951FE8EAFD608B388B3DCF;1055.
  ) 
 Here is how much of TeX's memory you used:
  29638 strings out of 494267
- 543210 string characters out of 6162828
- 652088 words of memory out of 5000000
- 32521 multiletter control sequences out of 15000+600000
+ 543214 string characters out of 6162828
+ 658084 words of memory out of 5000000
+ 32522 multiletter control sequences out of 15000+600000
  539568 words of font info for 57 fonts, out of 8000000 for 9000
  395 hyphenation exceptions out of 8191
  55i,10n,72p,10446b,409s stack positions out of 5000i,500n,10000p,200000b,80000s
 </usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx9.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi9.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmib10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfon
 ts/cm/cmr7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti9.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb>
-Output written on /home/vegard/Documents/FYS3150/Project1/tex/Project1.pdf (8 pages, 349659 bytes).
+Output written on /home/vegard/Documents/FYS3150/Project1/tex/Project1.pdf (7 pages, 351390 bytes).
 PDF statistics:
- 359 PDF objects out of 1000 (max. 8388607)
- 311 compressed objects within 4 object streams
- 57 named destinations out of 1000 (max. 500000)
+ 355 PDF objects out of 1000 (max. 8388607)
+ 308 compressed objects within 4 object streams
+ 56 named destinations out of 1000 (max. 500000)
  161 words of extra memory for PDF output out of 10000 (max. 10000000)
 

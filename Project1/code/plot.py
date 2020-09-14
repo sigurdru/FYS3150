@@ -3,8 +3,8 @@ import sys
 import pandas as pd
 
 plt.style.use('seaborn')
-plt.rc('text', usetex=True)
-plt.rc('font', family='Computer Modern')
+# plt.rc('text', usetex=True)
+# plt.rc('font', family='Computer Modern')
 
 exp, fname = sys.argv[1:]
 exp = int(exp)

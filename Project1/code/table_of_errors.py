@@ -4,8 +4,8 @@ from formats import Table
 import sys
 
 plt.style.use('seaborn')
-plt.rc('text', usetex=True)
-plt.rc('font', family='Computer Modern')
+# plt.rc('text', usetex=True)
+# plt.rc('font', family='Computer Modern')
 
 algo = sys.argv[1]
 msg = 'Algoritm must be "fast", "slow" og "LU"'
