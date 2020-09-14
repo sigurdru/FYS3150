@@ -98,7 +98,7 @@ For our studies we have used c++ for heavy computation, python for visualization
 
 
 \subsection{Matrix formulation of the discrete one-dimensional Poisson equation}
-The one-dimensional Poisson equation with Dirichlet boundary conditions can be written as equation \ref{eq:Poisson_1D}.
+The one-dimensional Poisson equation with Dirichlet boundary conditions that we are going to study can be written as equation \ref{eq:Poisson_1D}.
 \begin{equation}
   \label{eq:Poisson_1D}
   - \frac{\mathrm d^2 u(x)}{\mathrm d x^2} = f(x), \quad x \in (0, 1), \quad u(0) = u(1) = 0
@@ -317,6 +317,12 @@ Now in this report we are going to consider a matrix with elements $b_n = 2$ and
 	\label{eq:rho_spes}
 \end{equation}
 
+Counting the number of FLOPS in the algorithm we notice $N_1 = 3(n-2)$ from equation (\ref{eq:alpha}) (3 FLOPS per iteration, $n-2$ iterations), $N_2 = 5(n-1)$ from equation (\ref{eq:rho}) (5 FLOPS per iteration $n-1$ iterations) and $N_3 = 3(n-2)$ from equation (\ref{eq:v}) (3 FLOPS per iteration $n-1$ iterations). Now to find the total number of flops for our algorithm we can sum them up.
+\begin{equation*}
+	N_{tot} = N_1+N_2+N_3 = 5(n-1) + 6(n-2) \approx 11n
+\end{equation*}
+The approximation holds when $n$ is large. Running the algorithm for $n=10^i,\ \ i = 2, 3, ..., 6$, we can plot the result, time the code and find the relative error using equation (\ref{eq:log_err}).
+
 
 \subsection{Specialized algorithm for our spesific problem}
 
@@ -405,13 +411,10 @@ By storing the values $i/(i+1)$ in an array, we can replace these two FLOPS with
   N_{\text{fast}} \approx 4n
 \end{equation}
 
-First we implement the numerical methods discussed in the theory section. As mentioned in the introduction, all the code and how to run it can be found in our GitHub repository here \citep{github}. To implement the general algorithm, where we don't assume identical elements in the tridiagonal matrix (see equation (\ref{eq:mat_gen})), we use the algorithms described in equations (\ref{eq:alpha}), (\ref{eq:rho}) and (\ref{eq:v}). Counting the number of FLOPS in the algorithm we notice $N_1 = 3(n-2)$ from equation (\ref{eq:alpha}) (3 FLOPS per iteration, $n-2$ iterations), $N_2 = 5(n-1)$ from equation (\ref{eq:rho}) (5 FLOPS per iteration $n-1$ iterations) and $N_3 = 3(n-2)$ from equation (\ref{eq:v}) (3 FLOPS per iteration $n-1$ iterations). Now to find the total number of flops for our algorithm we can sum them up.
-\begin{equation*}
-	N_{tot} = N_1+N_2+N_3 = 5(n-1) + 6(n-2) \approx 11n
-\end{equation*}
-The approximation holds when $n$ is large. Running the algorithm for $n=10^i,\ \ i = 2, 3, ..., 6$, we can plot the result, time the code and find the relative error using equation (\ref{eq:log_err}).
 
-In order to implement the LU decomposition we use the armadillo library (see \citep{armadillo} for documentation). From \citep{lu_wiki} we get that the LU decomposition itself requires $N_{LU} = 2n^3/3$ FLOPS. Looking at the equations (\ref{eq:lu1}) and (\ref{eq:lu2}) we can count the rest of the FLOPS. From equation (\ref{eq:lu1}) we get $N_1 = 2$ [FIKS TELLING AV FLOPS]. Again running the algorithm for $n=10^i,\ \ i = 2, 3, 4, 5$, we can plot the result, time the code and find the relative error using equation (\ref{eq:log_err}).
+\subsection{LU decomposition}
+
+In order to implement the LU decomposition we use the armadillo library (see \citep{armadillo} for documentation). From \citep{lu_wiki} we get that the LU decomposition itself requires $N_{LU} = 2n^3/3$ FLOPS. Looking at the equations (\ref{eq:lu1}) and (\ref{eq:lu2}) we can count the rest of the FLOPS. From equation (\ref{eq:lu1}) we get approximately $N \approx 4n$, giving us a total of $N_{tot} = 2n^3/3 + 4n$ FLOPS. Again running the algorithm for $n=10^i,\ \ i = 2, 3, 4, 5$, we can plot the result, time the code and find the relative error using equation (\ref{eq:log_err}).
 
 
 \subsection{Code tests}
@@ -505,17 +508,10 @@ Figure \ref{fig:slow_2} show the results obtained with step size $h = 10^{-2}$. 
 
 \begin{figure}[h]
 	\centering
-	\includegraphics[scale=0.44]{../output/slow_2.pdf}
+  \includegraphics[width=\linewidth]{../output/slow_2.pdf}
 	\label{fig:slow_2}
 	\caption{This figure shows the numeric solution for our general algorithm and the exact solution on top (green dashed line). The step size used is $h=10^{-2}$.}
 \end{figure}
-
-% \begin{figure}[h]
-% 	\centering
-% 	\includegraphics[scale=0.44]{../output/slow_6.pdf}
-% 	\label{fig:slow_6}
-% 	\caption{This figure shows the numeric solution for our general algorithm and the exact solution on top (green dashed line). The step size used is $h=10^{-6}$.}
-% \end{figure}
 
 Tables \ref{tab:slow_error}, \ref{tab:fast_error} and \ref{tab:lu_error} and figures \ref{fig:slow_error}, \ref{fig:fast_error} and \ref{fig:lu_error} show the values of $\epsilon$ (errors) for the different algorithms for all steps sizes.
 
@@ -525,41 +521,11 @@ Tables \ref{tab:slow_error}, \ref{tab:fast_error} and \ref{tab:lu_error} and fig
 	\label{tab:slow_error}
 \end{table}
 
-
-% \begin{figure}[h]
-% 	\centering
-% 	\includegraphics[scale=0.5]{../output/fast_2.pdf}
-% 	\label{fig:fast_2}
-% 	\caption{This figure shows the numeric solution for our specific algorithm and the exact solution on top (green dashed line). The step size used is $h=10^{-2}$.}
-% \end{figure}
-
-% \begin{figure}[h]
-% 	\centering
-% 	\includegraphics[scale=0.5]{../output/fast_6.pdf}
-% 	\label{fig:fast_6}
-% 	\caption{This figure shows the numeric solution for our specific algorithm and the exact solution on top (green dashed line). The step size used is $h=10^{-6}$.}
-% \end{figure}
-
 \begin{table} [h]  %[p] % Uncomment to put table in Appendix
   \input{../output/fast_errors_tex.txt}
 	\caption{This table shows the relative error for our specialized method. The firs column is the logarithm of our step size and the second column is the relative error (see figure \ref{fig:fast_error} for table plotted).}
 	\label{tab:fast_error}
 \end{table}
-
-
-% \begin{figure}[h]
-% 	\centering
-% 	\includegraphics[scale=0.5]{../output/LU_2.pdf}
-% 	\label{fig:lu_2}
-% 	\caption{This figure shows the numeric solution for the LU-algorithm and the exact solution on top (green dashed line). The step size used is $h=10^{-2}$.}
-% \end{figure}
-
-% \begin{figure}[h]
-% 	\centering
-% 	\includegraphics[scale=0.5]{../output/LU_4.pdf}
-% 	\label{fig:lu_4}
-% 	\caption{This figure shows the numeric solution for the LU-algorithm and the exact solution on top (green dashed line). The step size used is $h=10^{-4}$.}
-% \end{figure}
 
 \begin{table}  %[p] % Uncomment to put table in Appendix
   \input{../output/LU_errors_tex.txt}
@@ -569,21 +535,21 @@ Tables \ref{tab:slow_error}, \ref{tab:fast_error} and \ref{tab:lu_error} and fig
 
 \begin{figure}[h]
 	\centering
-	\includegraphics[scale=0.5]{../output/slow_errors.pdf}
+  \includegraphics[width=\linewidth]{../output/slow_errors.pdf}
 	\label{fig:slow_error}
 	\caption{Here we have the table of errors (table \ref{tab:slow_error}) from our general method plotted. Along the x-axis we have the logarithm of the step size ($log_{10}(h)$) and along the y-axis we have the relative error ($\epsilon$).}
 \end{figure}
 
 \begin{figure}[h]
 	\centering
-	\includegraphics[scale=0.5]{../output/fast_errors.pdf}
+  \includegraphics[width=\linewidth]{../output/fast_errors.pdf}
 	\label{fig:fast_error}
 	\caption{Here we have the table of errors (table \ref{tab:fast_error}) from our specialized method plotted. Along the x-axis we have the logarithm of the step size ($log_{10}(h)$) and along the y-axis we have the relative error ($\epsilon$).}
 \end{figure}
 
 \begin{figure}[h]
 	\centering
-	\includegraphics[scale=0.5]{../output/LU_errors.pdf}
+  \includegraphics[width=\linewidth]{../output/LU_errors.pdf}
 	\label{fig:lu_error}
 	\caption{Here we have the table of errors (table \ref{tab:lu_error}) from the LU decomposition method plotted. Along the x-axis we have the logarithm of the step size ($log_{10}(h)$) and along the y-axis we have the relative error ($\epsilon$).}
 \end{figure}
@@ -600,9 +566,11 @@ Table \ref{tab:time} shows the computational time for each of the algorithm for 
 
 \section{Discussion}
 
-blabla
+Visually the plots does not change for different step sizes used, however looking at the relative error we can notice a change. For the first three step sizes $h = 10^{-2}, 10^{-3}, 10^{-4}$ the relative error is the same for all methods, however for smaller step sizes it differs quite a lot.
 
+The LU decomposition fails for $n=10^{-5}$. This is not surprising when we look at how the method works. For $n=10^{-5}$ we need to store $10^10$ numbers where each number uses eights bytes. This means we have to store 80GB of data, where normal laptops usually have 8-24GB of RAM (random access memory). Therefore our computers runs out of storage space. There are methods to counteract this problem. You can store the data to a bigger memory source like a hard drive, however this can be a lot slower than using RAM. We also notice that LU decomposition is slow compared to the two other methods. This is expected however, if we look at the number of FLOPS it's a lot more than the other two algorithms.
 
+The most interesting comparison is the general and specialized algorithm. Time used is as expected, average speed is higher lower for the specialized algorithm across the board. More interesting however is how the errors differ for low $h$. The specialized algorithm manages a relative error of $\epsilon = -10.18$ at $h=10^{-6}$ and the general methods caps at $\epsilon = -8.84$ where $h = 10^{-5}$. This is surprising because both methods use the same numerical method, where the only difference is implementation. Although the relative error is lower for the specialized method, the downwards linear trend ends for both methods at around $h=10^{-5}$. This gives us an indication that numerical errors occur for both methods already at $h=10^{-6}$. Now with this in mind, the reason for difference in numerical precision might be because of FLOPS. It is logical to conclude, that with a higher number of FLOPS, error propagate further than with fewer FLOPS. This is because we have more operations where error can occur
 
 \section{Conclusion}
 
@@ -612,7 +580,7 @@ Before loss of numerical precision starts to affect the results, we see the exac
 
 The best results were obtained with the specialized algorithm. With a step size $h = 10^{-6}$ we got a maximum relative error of less than $10^{-10}$. For the general algorithm for tridiagonal matrices, the best result was obtained with step size $h = 10^{-5}$ giving a maximum relative error of $10^{-8.8}$. For smaller step sizes, loss of numerical precision caused the relative error to grow. The LU decomposition matched the other algorithms in accuracy for step sizes as small as $h = 10^{-4}$. Beyond that point, the matrices become too large to be represented in the computer's memory.
 
-The specialized algorithm also proved superior in terms of computing time. It used a little under half the time of the general algorithm for tridiagonal matrices. The LU decomposition code took up to about 200 000 as long time to complete as the specialized code.
+The specialized algorithm also proved superior in terms of computing time. It used a little under half the time of the general algorithm for tridiagonal matrices. The LU decomposition code took up to about 25 000 times as long time to complete as the specialized code.
 
 
 
