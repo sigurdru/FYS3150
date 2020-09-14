@@ -600,13 +600,11 @@ Table \ref{tab:time} shows the computational time for each of the algorithm for 
 
 \section{Discussion}
 
-Visually the plots does not change for different step sizes used, however looking at the relative error we can notice a change. For the first three step sizes $h = 10^{-2}, 10^{-3}, 10^{-4}$ we notice no difference between the methods and they decrease as expected. We notice a difference however for smaller step sizes.
+Visually the plots does not change for different step sizes used, however looking at the relative error we can notice a change. For the first three step sizes $h = 10^{-2}, 10^{-3}, 10^{-4}$ the relative error is the same for all methods, however for smaller step sizes it differs quite a lot.
 
-The LU decomposition fails for $n=10^{-5}$. This is not surprising when we look at how the method works. For $n=10^{-5}$ we need to store $10^10$ numbers and each number uses eights bytes. This means we have to store 80Gb of data, where normal laptops usually have 8-24
+The LU decomposition fails for $n=10^{-5}$. This is not surprising when we look at how the method works. For $n=10^{-5}$ we need to store $10^10$ numbers where each number uses eights bytes. This means we have to store 80GB of data, where normal laptops usually have 8-24GB of RAM (random access memory). Therefore our computers runs out of storage space. There are methods to counteract this problem. You can store the data to a bigger memory source like a hard drive, however this can be a lot slower than using RAM. We also notice that LU decomposition is slow compared to the two other methods. This is expected however, if we look at the number of FLOPS it's a lot more than the other two algorithms.
 
--lu funker ikke for n=-5 tall tar opp en 8byte ikke nok ram
--
-
+The most interesting comparison is the general and specialized algorithm. Time used is as expected, average speed is higher lower for the specialized algorithm across the board. More interesting however is how the errors differ for low $h$. The specialized algorithm manages a relative error of $\epsilon = -10.18$ at $h=10^{-6}$ and the general methods caps at $\epsilon = -8.84$ where $h = 10^{-5}$. This is surprising because both methods use the same numerical method, where the only difference is implementation. Although the relative error is lower for the specialized method, the downwards linear trend ends for both methods at around $h=10^{-5}$. This gives us an indication that numerical errors occur for both methods already at $h=10^{-6}$. Now with this in mind, the reason for difference in numerical precision might be because of FLOPS. It is logical to conclude, that with a higher number of FLOPS, error propagate further than with fewer FLOPS. This is because we have more operations where error can occur 
 
 \section{Conclusion}
 

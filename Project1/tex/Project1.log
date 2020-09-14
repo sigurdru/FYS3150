@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Debian) (preloaded format=pdflatex 2020.9.5)  14 SEP 2020 10:26
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Debian) (preloaded format=pdflatex 2020.9.5)  14 SEP 2020 11:22
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -930,34 +930,34 @@ LaTeX Warning: `h' float specifier changed to `ht'.
 (../output/time_it_tex.txt) [4]
 
 LaTeX Warning: A float is stuck (cannot be placed); try class option [floatfix]
- on input line 615.
+ on input line 605.
 
 [5 <../output/slow_2.pdf>]
-Underfull \hbox (badness 10000) in paragraph at lines 621--622
+Underfull \hbox (badness 10000) in paragraph at lines 623--624
  []\OT1/cmr/m/n/9 Weisstein, Eric, W. on Mathworld--A Wol-fram Web Re-source, \
 OT1/cmr/m/it/9 LU De-com-po-si-tion\OT1/cmr/m/n/9 , read 13.09.20,
  []
 
-(./Project1.bbl) [6] [7 <../output/slow_errors.pdf> <../output/fast_errors.pdf
+(./Project1.bbl) [6 <../output/slow_errors.pdf> <../output/fast_errors.pdf
 
 pdfTeX warning: /usr/bin/pdflatex (file ../output/fast_errors.pdf): PDF inclusi
 on: multiple pdfs with page group included in a single page
->] [8 <../output/LU_errors.pdf>]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 627.
+>] [7 <../output/LU_errors.pdf>]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 629.
  (./Project1.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 627.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 627.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 629.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 629.
 Package rerunfilecheck Info: File `Project1.out' has not changed.
 (rerunfilecheck)             Checksum: 45E23BD629951FE8EAFD608B388B3DCF;1055.
  ) 
 Here is how much of TeX's memory you used:
  22643 strings out of 482480
- 401220 string characters out of 5946191
- 886934 words of memory out of 5000000
- 37198 multiletter control sequences out of 15000+600000
+ 401224 string characters out of 5946191
+ 889934 words of memory out of 5000000
+ 37199 multiletter control sequences out of 15000+600000
  541634 words of font info for 59 fonts, out of 8000000 for 9000
  395 hyphenation exceptions out of 8191
- 60i,10n,72p,861b,411s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 60i,10n,72p,1038b,411s stack positions out of 5000i,500n,10000p,200000b,80000s
 </usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></us
 r/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/shar
 e/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx9.pfb></usr/share/texli
@@ -977,10 +977,10 @@ dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb></usr/share/texlive/texmf-dist/fo
 nts/type1/public/amsfonts/cm/cmsy7.pfb></usr/share/texlive/texmf-dist/fonts/typ
 e1/public/amsfonts/cm/cmti9.pfb></usr/share/texlive/texmf-dist/fonts/type1/publ
 ic/amsfonts/cm/cmtt10.pfb>
-Output written on Project1.pdf (8 pages, 349565 bytes).
+Output written on Project1.pdf (7 pages, 351364 bytes).
 PDF statistics:
- 359 PDF objects out of 1000 (max. 8388607)
- 311 compressed objects within 4 object streams
- 57 named destinations out of 1000 (max. 500000)
+ 355 PDF objects out of 1000 (max. 8388607)
+ 308 compressed objects within 4 object streams
+ 56 named destinations out of 1000 (max. 500000)
  161 words of extra memory for PDF output out of 10000 (max. 10000000)
 
