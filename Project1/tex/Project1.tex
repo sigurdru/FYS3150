@@ -411,7 +411,7 @@ First we implement the numerical methods discussed in the theory section. As men
 \end{equation*}
 The approximation holds when $n$ is large. Running the algorithm for $n=10^i,\ \ i = 2, 3, ..., 6$, we can plot the result, time the code and find the relative error using equation (\ref{eq:log_err}).
 
-In order to implement the LU decomposition we use the armadillo library (see \citep{armadillo} for documentation). From \citep{lu_wiki} we get that the LU decomposition itself requires $N_{LU} = 2n^3/3$ FLOPS. Looking at the equations (\ref{eq:lu1}) and (\ref{eq:lu2}) we can count the rest of the FLOPS. From equation (\ref{eq:lu1}) we get $N_1 = 2$ [FIKS TELLING AV FLOPS]. Again running the algorithm for $n=10^i,\ \ i = 2, 3, 4, 5$, we can plot the result, time the code and find the relative error using equation (\ref{eq:log_err}).
+In order to implement the LU decomposition we use the armadillo library (see \citep{armadillo} for documentation). From \citep{lu_wiki} we get that the LU decomposition itself requires $N_{LU} = 2n^3/3$ FLOPS. Looking at the equations (\ref{eq:lu1}) and (\ref{eq:lu2}) we can count the rest of the FLOPS. From equation (\ref{eq:lu1}) we get approximately $N \approx 4n$, giving us a total of $N_{tot} = 2n^3/3 + 4n$ FLOPS. Again running the algorithm for $n=10^i,\ \ i = 2, 3, 4, 5$, we can plot the result, time the code and find the relative error using equation (\ref{eq:log_err}).
 
 
 \subsection{Code tests}
@@ -600,8 +600,12 @@ Table \ref{tab:time} shows the computational time for each of the algorithm for 
 
 \section{Discussion}
 
-blabla
+Visually the plots does not change for different step sizes used, however looking at the relative error we can notice a change. For the first three step sizes $h = 10^{-2}, 10^{-3}, 10^{-4}$ we notice no difference between the methods and they decrease as expected. We notice a difference however for smaller step sizes.
 
+The LU decomposition fails for $n=10^{-5}$. This is not surprising when we look at how the method works. For $n=10^{-5}$ we need to store $10^10$ numbers and each number uses eights bytes. This means we have to store 80Gb of data, where normal laptops usually have 8-24
+
+-lu funker ikke for n=-5 tall tar opp en 8byte ikke nok ram
+-
 
 
 \section{Conclusion}
