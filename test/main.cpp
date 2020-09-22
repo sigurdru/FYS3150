@@ -8,5 +8,5 @@ int main() {
     TestCalc my_product;
     my_product.initialize(x, y, n);
     my_product.calculations1();
-    my_product.calculations2();
+    // my_product.calculations2();
 }

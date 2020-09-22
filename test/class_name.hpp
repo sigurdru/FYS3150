@@ -9,7 +9,7 @@ private:
 public:
     void initialize(double x, double y, int n);
     void calculations1();
-    void calculations2();
+    // void calculations2();
 };
 
 #endif

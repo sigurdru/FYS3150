@@ -127,6 +127,19 @@ void JacobiRot::largest () {
     // Find largest element
     double val = 0;
     for (int i=0; i<m_N-2; i++){
+        for (int j=i+1; j<m_N-2; j++){
+            if (std::abs( m_A(i,j) ) > val){
+                m_k = i;
+                m_l = j;
+                val = std::abs( m_A(i,j) );
+            }
+        for (int j=0; j<i; j++){
+            if (std::abs( m_A(i,j) ) > val){
+                m_k = i;
+                m_l = j;
+                val = std::abs( m_A(i,j) );
+            }
+        }
         // if (std::abs(m_offdiag(0,i)) > val){
             // val = std::abs(m_offdiag(0,i));
             // m_k = 0;
@@ -136,30 +149,38 @@ void JacobiRot::largest () {
             // m_k = 1;
             // m_l = i;
         // }
-        if (std::abs(m_A(i+1, i)) > val) {
-            val = std::abs(m_A(i+1, i));
-            m_k = i+1;
-            m_l = i;
-        }
-        if (std::abs(m_A(i, i+1)) > val) {
-            val = std::abs(m_A(i, i+1));
-            m_k = i;
-            m_l = i+1;
-        }
+        // if (std::abs(m_A(i+1, i)) > val) {
+        //     val = std::abs(m_A(i+1, i));
+        //     m_k = i+1;
+        //     m_l = i;
+        // }
+        // if (std::abs(m_A(i, i+1)) > val) {
+        //     val = std::abs(m_A(i, i+1));
+        //     m_k = i;
+        //     m_l = i+1;
+        // }
     }
 }
 
 void JacobiRot::off () {
-    // Update m_off
-    m_offnorm = 0.;
+    // Update m_offnorm
+    double m_offnorm = 0.;
     for (int i=0; i<m_N-2; i++){
-        // m_offnorm += std::pow(m_offdiag(0,i), 2) + 
-            // std::pow(m_offdiag(1, i), 2);
-        m_offnorm += std::pow(m_A(i+1, i), 2)
-            + std::pow(m_A(i, i+1), 2);
+        for (int j=i+1; j<m_N-2; j++){
+            m_offnorm += std::pow(m_A(i,j),2);
+        }
+        for (int j=0; j<i; j++){
+            m_offnorm += std::pow(m_A(i,j),2);
+        }
     }
-}
 
+    // m_offnorm = 0.;
+    // for (int i=0; i<m_N-2; i++){
+    //     // m_offnorm += std::pow(m_offdiag(0,i), 2) + 
+    //         // std::pow(m_offdiag(1, i), 2);
+    //     m_offnorm += std::pow(m_A(i+1, i), 2)
+    //         + std::pow(m_A(i, i+1), 2);
+    // }
 JacobiRot::~JacobiRot () {
     delete [] m_diag;
     delete [] m_bdiag;
