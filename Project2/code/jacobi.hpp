@@ -33,4 +33,16 @@ public:
     ~JacobiRot();
 };
 
+class QM : public JacobiRot {
+private:
+    double *m_d;
+    double *m_e;
+    double m_h;
+    double *m_V;
+
+public:
+    void initialize(int N, double rho0, double rhoN);
+    ~QM();
+};
+
 #endif
