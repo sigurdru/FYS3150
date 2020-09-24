@@ -2,30 +2,29 @@
 #define JACOBI_HPP
 #include <armadillo>
 
-class Common {
+class Common
+{
 protected:
     int m_N;
     double m_offnorm;
-public:
 
+public:
 };
 
-class JacobiRot : public Common {
-private:
+class JacobiRot : public Common
+{
+protected:
     double m_eps;
-    arma::dmat m_offdiag;
-    arma::dmat m_boffdiag;
     arma::dmat m_A;
-    arma::dmat m_B;
     double *m_diag, *m_bdiag;
-    int m_k, m_l;
 
     void common_initialize(int N);
     void largest();
     void off();
-    void update();
 
 public:
+    int m_k, m_l;
+    double *m_lambda;
     void initialize(double a, double b, int N);
     void initialize(double *a, double *b, int N);
     void print_mat();
@@ -41,8 +40,22 @@ private:
     double *m_V;
 
 public:
-    void initialize(int N, double rho0, double rhoN);
-    ~QM();
+    void qm_initialize(int N, double rho0, double rhoN);
+    void qm_solve(double eps);
+    // ~QM();
 };
 
-#endif
+class UnitTests: public JacobiRot {
+//Here we test eigenvalues and that we find the biggest matrix element.
+private:
+    double *testm_a;
+    double *testm_d;
+    int testm_k, testm_l; 
+    // float m_tol;
+public:
+    void test_initialize();
+    void test_largest();
+    // void test_solver(float tol);
+};
+
+#endif //JACOBI_HPP

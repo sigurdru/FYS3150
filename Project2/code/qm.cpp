@@ -2,7 +2,7 @@
 #include <armadillo>
 #include <cmath>
 
-void QM::initialize(int N, double rho0, double rhoN) {
+void QM::qm_initialize(int N, double rho0, double rhoN) {
     m_N = N;
     m_d = new double[m_N-2];
     m_e = new double[m_N-3];
@@ -20,13 +20,13 @@ void QM::initialize(int N, double rho0, double rhoN) {
     m_d[m_N-3] = 2/hsq + m_V[m_M-3];
 }
 
-void QM::solve(){
+void QM::qm_solve(double eps){
     JacobiRot::initialize(m_e, m_d, m_N);
-    JacobiRot::solve();
+    JacobiRot::solve(eps);
 }
 
-~QM::QM(){
-    delete [] m_d;
-    delete [] m_e;
-    delete [] m_V;
-}
+// ~QM::QM(){
+//     delete [] m_d;
+//     delete [] m_e;
+//     delete [] m_V;
+// }
