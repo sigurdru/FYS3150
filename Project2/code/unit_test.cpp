@@ -25,12 +25,17 @@ TEST_CASE("Testing index of max offdiagonal value and right eigenvalues") {
         REQUIRE(scenario.m_l == testm_l);
     }
     scenario.solve(1e-40);
+    arma::vec eigv = arma::vec(n-1);
     SECTION( "Testing eigenvalues" ) {
-        double tol = 1;
-        double eigv;
+        double tol = 0.5;
         for (int i=0; i<n-1; i++){
-            eigv = b + 2*a*std::cos((i+1)*3.1415/n);
-            REQUIRE(scenario.m_lambda[i] == Approx(eigv).epsilon(tol));
-        }        
+            eigv(i) = b + 2*a*std::cos((i+1)*3.1415/(n));
+        }
+        eigv = arma::sort(eigv, "ascend");
+        
+        for (int i=0; i<n-1; i++){
+            REQUIRE(scenario.m_lambda[i] == Approx(eigv[i]).epsilon(tol));
+        }
+
     }
 }
