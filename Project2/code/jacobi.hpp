@@ -33,26 +33,13 @@ class QM : public JacobiRot {
 private:
     double *m_d;
     double *m_e;
-    double m_h;
     double *m_V;
+    double m_h;
 
 public:
     void qm_initialize(int N, double rho0, double rhoN);
     void qm_solve(double eps);
-    // ~QM();
-};
-
-class UnitTests: public JacobiRot {
-//Here we test eigenvalues and that we find the biggest matrix element.
-private:
-    double *testm_a;
-    double *testm_d;
-    int testm_k, testm_l; 
-    // float m_tol;
-public:
-    void test_initialize();
-    void test_largest();
-    // void test_solver(float tol);
+    ~QM();
 };
 
 #endif //JACOBI_HPP

@@ -17,19 +17,11 @@ int main(int argc, char* argv[]) {
         method = argv[3];
     }
 
-    UnitTests tester;
-    tester.test_initialize();
-    tester.test_largest();
-
-
-    // else if (method == "QM") {
-    //     QM solver;
-    //     float rho0 = 0;
-    //     float rhoN = 10000;
-    //     float eps = 1e-3;
-    //     solver.qm_initialize(n, rho0, rhoN);
-    //     solver.qm_solve(eps);
-    // }
-
+    QM solver;
+    float rho0 = 0;
+    float rhoN = 10;
+    float eps = 1e-3;
+    solver.qm_initialize(n, rho0, rhoN);
+    solver.qm_solve(eps);
     return 0;
 }
