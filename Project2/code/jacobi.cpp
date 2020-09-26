@@ -30,7 +30,6 @@ void JacobiRot::initialize(double *a, double*d, int N) {
         m_A(i, i) = d[i];
     }
     largest();
-    off();
 }
 
 
@@ -39,7 +38,7 @@ void JacobiRot::solve (double eps) {
     m_eps = eps;
     double tau, t, c, s;
     double Aik, Ail, Akk, All, Akl;
-    while (m_offnorm > eps) {
+    while (m_largest_val > eps) {
         tau = (m_A(m_l, m_l) - m_A(m_k, m_k))/(2*m_A(m_k,m_l));
         if (tau > 0)
             t = 1 / (tau + std::sqrt(1 + tau * tau));
@@ -53,12 +52,12 @@ void JacobiRot::solve (double eps) {
         All = m_A(m_l, m_l);
         for (int i=0; i<m_N-1; i++) {
             if ((i!=m_k) && (i!=m_l) ) {
-            Aik = m_A(i,m_k);
-            Ail = m_A(i,m_l);
-            m_A(i, m_k) = Aik*c - Ail*s;
-            m_A(m_k, i) = m_A(i, m_k);
-            m_A(i, m_l) = Ail*c - Aik*s;
-            m_A(m_l, i) = m_A(i, m_l);
+                Aik = m_A(i,m_k);
+                Ail = m_A(i,m_l);
+                m_A(i, m_k) = Aik*c - Ail*s;
+                m_A(m_k, i) = m_A(i, m_k);
+                m_A(i, m_l) = Ail*c - Aik*s;
+                m_A(m_l, i) = m_A(i, m_l);
             }
         }
         m_A(m_k, m_k) = Akk*c*c - 2*Akl*c*s + All*s*s;
@@ -66,36 +65,21 @@ void JacobiRot::solve (double eps) {
         m_A(m_k, m_l) = 0.;
         m_A(m_l, m_k) = 0.;
         largest();
-        off();
     }
     m_lambda = arma::sort(arma::diagvec(m_A), "ascend");
+    m_lambda.print("Eigenvals = ");
 }
 
 void JacobiRot::largest () {
     // Find largest element
-    double val = 0;
+    m_largest_val = 0;
     for (int i=0; i<m_N-1; i++){
         for (int j=i+1; j<m_N-1; j++){
-            if (std::abs( m_A(i,j) ) > val){
+            if (std::abs( m_A(i,j) ) > m_largest_val){
                 m_k = i;
                 m_l = j;
-                val = std::abs( m_A(i,j) );
+                m_largest_val = std::abs( m_A(i,j) );
             }
         }
     }
-}
-
-void JacobiRot::off () {
-    // Update m_offnorm
-    m_offnorm = 0.;
-    for (int i=0; i<m_N-1; i++){
-        for (int j=i+1; j<m_N-1; j++){
-            m_offnorm += std::pow(m_A(i,j),2);
-        }
-    }
-    m_offnorm *= 2;
-}
-JacobiRot::~JacobiRot () {
-    delete [] m_diag;
-    delete [] m_bdiag;
 }

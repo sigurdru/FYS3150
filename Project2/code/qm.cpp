@@ -3,30 +3,22 @@
 #include <cmath>
 
 void QM::qm_initialize(int N, double rho0, double rhoN) {
-    m_N = N;
-    m_d = new double[m_N-2];
-    m_e = new double[m_N-3];
-    m_V = new double[m_N-2];
-    m_h = (rhoN - rho0)/m_N;
+    m_d = new double[N-1];
+    m_e = new double[N-2];
+    double m_V;
+    m_h = (rhoN - rho0)/N;
     double hsq = std::pow(m_h, 2);
 
-
-    for (int i = 0; i<m_N-3; i++){
-        m_V[i] = std::pow(rho0 + (i+1)*m_h, 2);
-        m_d[i] = 2/hsq + m_V[i];
-        m_e[i] = -hsq;
+    for (int i = 0; i<N-2; i++){
+        m_V = std::pow(rho0 + (i+1)*m_h, 2);
+        m_d[i] = 2/hsq + m_V;
+        m_e[i] = -1.0/hsq;
     }
-    m_V[m_N-3] = std::pow(rho0 + (m_N-2)*m_h, 2);
-    m_d[m_N-3] = 2/hsq + m_V[m_N-3];
-}
+    m_V = std::pow(rho0 + (N-1)*m_h, 2);
+    m_d[N-2] = 2/hsq + m_V;
 
-void QM::qm_solve(double eps){
-    JacobiRot::initialize(m_e, m_d, m_N);
-    JacobiRot::solve(eps);
-}
+    JacobiRot::initialize(m_e, m_d, N);
 
-QM::~QM(){
     delete [] m_d;
     delete [] m_e;
-    delete [] m_V;
 }

@@ -18,10 +18,11 @@ int main(int argc, char* argv[]) {
     }
 
     QM solver;
-    float rho0 = 0;
-    float rhoN = 10;
+    float rho0 = 0.;
+    float rhoN = 5.;
     float eps = 1e-3;
+    eps = 1e-6;
     solver.qm_initialize(n, rho0, rhoN);
-    solver.qm_solve(eps);
+    solver.solve(eps);
     return 0;
 }

@@ -14,10 +14,10 @@ class JacobiRot : public Common{
 protected:
     double m_eps;
     double *m_diag, *m_bdiag;
+    double m_largest_val;
 
     void common_initialize(int N);
     void largest();
-    void off();
 
 public:
     int m_k, m_l;
@@ -26,7 +26,6 @@ public:
     void initialize(double a, double b, int N);
     void initialize(double *a, double *b, int N);
     void solve(double eps);
-    ~JacobiRot();
 };
 
 class QM : public JacobiRot {
@@ -38,8 +37,6 @@ private:
 
 public:
     void qm_initialize(int N, double rho0, double rhoN);
-    void qm_solve(double eps);
-    ~QM();
 };
 
 #endif //JACOBI_HPP
