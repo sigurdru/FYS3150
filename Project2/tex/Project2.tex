@@ -3,7 +3,9 @@
 
 % allows special characters (including æøå)
 \usepackage[utf8]{inputenc}
-\usepackage [norsk]{babel} %if you write norwegian
+% \usepackage [norsk]{babel} %if you write norwegian
+\usepackage[english]{babel}  %if you write english
+
 
 \usepackage{makecell}       %denne gjør at man kan ha nye linjer
 
@@ -45,12 +47,12 @@
 
 
 \title{FYS3150 - Project 2}
-\date{\today}               
+\date{\today}
 \author{Vegard Falmår and Sigurd Sørlie Rustad}
 \affiliation{Universitetet i Oslo}
 
 \email{sigurdsr@gmail.com}
-\email{vegard@mail.no}
+\email{vegardfa@uio.no}
 \newpage
 
 \begin{abstract}
@@ -64,7 +66,7 @@
 \section{Theory}
 
 \subsection{Unitary transformation}
-The transformed of a unitary matrix ($U$) is its inverse.
+The transposed of a unitary matrix ($U$) is its inverse.
 \begin{equation*}
 	U^T = U^{-1}
 \end{equation*}
@@ -95,7 +97,7 @@ and can also obtain $c$ and $s$
 \end{equation*}
 The actual transformation is defined by the equations
 \begin{align*}
-	b_{ik} &= a_{ik}c - a_{il}s, i \neq k, i \neq l \\ 
+	b_{ik} &= a_{ik}c - a_{il}s, i \neq k, i \neq l \\
 	b_{il} &= a_{il}c + a_{ik}s, i \neq k, i \neq l \\
 	b_{kk} &= a_{kk}c^2 - 2a_{kl}cs + a_{ll}s^2 \\
 	b_{ll} &= a_{ll}c^2 + 2a_{kl}cs + a_{kk}s^2 \\

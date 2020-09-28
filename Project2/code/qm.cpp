@@ -2,23 +2,26 @@
 #include <armadillo>
 #include <cmath>
 
-void QM::qm_initialize(int N, double rho0, double rhoN) {
-    m_d = new double[N-1];
-    m_e = new double[N-2];
-    double m_V;
+void QM::initialize(int N, double rho0, double rhoN, 
+        double potential(double rho, double omega_r), double omega_r) {
+    double *d = new double[N-1];
+    double *e = new double[N-2];
+    double *rho = new double[N-1];
+    double V;
     m_h = (rhoN - rho0)/N;
     double hsq = std::pow(m_h, 2);
 
+    rho[0] = rho0 + m_h;
     for (int i = 0; i<N-2; i++){
-        m_V = std::pow(rho0 + (i+1)*m_h, 2);
-        m_d[i] = 2/hsq + m_V;
-        m_e[i] = -1.0/hsq;
+        rho[i+1] = rho[i] + m_h;
+        V = potential(rho[i], omega_r);
+        d[i] = 2/hsq + V;
+        e[i] = -1.0/hsq;
     }
-    m_V = std::pow(rho0 + (N-1)*m_h, 2);
-    m_d[N-2] = 2/hsq + m_V;
+    V = potential(rho[N-2], omega_r);
+    d[N-2] = 2/hsq + V;
 
-    JacobiRot::initialize(m_e, m_d, N);
-
-    delete [] m_d;
-    delete [] m_e;
+    JacobiRot::initialize(e, d, rho, N);
+    delete [] d;
+    delete [] e;
 }

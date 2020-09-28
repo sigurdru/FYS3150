@@ -3,16 +3,26 @@
 #include <cmath>
 #include <iostream>
 
-void JacobiRot::common_initialize(int N) {
+void JacobiRot::common_initialize(int N, double *rho) {
     m_N = N;
     m_A = arma::dmat(m_N-1, m_N-1).fill(0.);
+    m_R = arma::dmat(m_N-1, m_N-1).fill(0.);
+    for (int i=0; i<N-1; i++) m_R(i, i) = 1.0;
+    m_rho = rho;
 }
 
-void JacobiRot::initialize (double a, double d, int N) {
-    common_initialize(N);
-    m_k = 2;
-    m_l = 1;
-    m_offnorm = 2*(m_N - 2)*(std::pow(a,2));
+void JacobiRot::initialize (double a, double d, double *rho, int N) {
+    common_initialize(N, rho);
+    m_a = a; m_d = d;
+    if (a > d) {
+        m_k = 1;
+        m_l = 0;
+        m_largest_val = a;
+    } else {
+        m_k = 0;
+        m_l = 0;
+        m_largest_val = d;
+    }
     m_A(m_N-2, m_N-2) = d;
     for (int i=0; i<m_N-2; i++){
         m_A(i+1, i) = a;
@@ -21,8 +31,8 @@ void JacobiRot::initialize (double a, double d, int N) {
     }
 }
 
-void JacobiRot::initialize(double *a, double*d, int N) {
-    common_initialize(N);
+void JacobiRot::initialize(double *a, double*d, double *rho, int N) {
+    common_initialize(N, rho);
     m_A(m_N-2, m_N-2) = d[m_N-2];
     for (int i=0; i<m_N-2; i++){
         m_A(i+1, i) = a[i];
@@ -33,41 +43,61 @@ void JacobiRot::initialize(double *a, double*d, int N) {
 }
 
 
-void JacobiRot::solve (double eps) {
+void JacobiRot::solve (double eps, int max_iter) {
     // Solve equations
+    auto start = std::chrono::high_resolution_clock::now();
     m_eps = eps;
     double tau, t, c, s;
-    double Aik, Ail, Akk, All, Akl;
-    while (m_largest_val > eps) {
-        tau = (m_A(m_l, m_l) - m_A(m_k, m_k))/(2*m_A(m_k,m_l));
-        if (tau > 0)
-            t = 1 / (tau + std::sqrt(1 + tau * tau));
+    double Aik, Ail, Akk, All, Akl, R_ik, R_il;
+    int k;
+    int l;
+    int iterations = 0;
+    while (m_largest_val > eps && iterations <= max_iter) {
+        k = m_k; l = m_l;
+        tau = (m_A(l, l) - m_A(k, k))/(2*m_A(k, l));
+        if (tau >= 0)
+            t = 1.0 / (tau + std::sqrt(1.0 + tau * tau));
         else
-            t = 1 / (tau - std::sqrt(1 + tau * tau));
+            t = 1.0 / (tau - std::sqrt(1.0 + tau * tau));
 
-        c = 1/std::sqrt(1+t*t);
+        c = 1.0/std::sqrt(1 + t*t);
         s = t*c;
-        Akk = m_A(m_k, m_k);
-        Akl = m_A(m_k, m_l);
-        All = m_A(m_l, m_l);
+        Akk = m_A(k, k);
+        All = m_A(l, l);
+        Akl = m_A(k, l);
         for (int i=0; i<m_N-1; i++) {
-            if ((i!=m_k) && (i!=m_l) ) {
-                Aik = m_A(i,m_k);
-                Ail = m_A(i,m_l);
-                m_A(i, m_k) = Aik*c - Ail*s;
-                m_A(m_k, i) = m_A(i, m_k);
-                m_A(i, m_l) = Ail*c - Aik*s;
-                m_A(m_l, i) = m_A(i, m_l);
+            if ((i!=k) && (i!=l) ) {
+                Aik = m_A(i, k);
+                Ail = m_A(i, l);
+                m_A(i, k) = Aik*c - Ail*s;
+                m_A(k, i) = m_A(i, k);
+                m_A(i, l) = Ail*c + Aik*s;
+                m_A(l, i) = m_A(i, l);
             }
+            R_ik = m_R(i,k);
+            R_il = m_R(i,l);
+            m_R(i,k) = c*R_ik - s*R_il;
+            m_R(i,l) = c*R_il + s*R_ik;
         }
-        m_A(m_k, m_k) = Akk*c*c - 2*Akl*c*s + All*s*s;
-        m_A(m_l, m_l) = All*c*c + 2*Akl*c*s + Akk*s*s;
-        m_A(m_k, m_l) = 0.;
-        m_A(m_l, m_k) = 0.;
+        m_A(k, k) = Akk*c*c - 2.0*Akl*c*s + All*s*s;
+        m_A(l, l) = All*c*c + 2.0*Akl*c*s + Akk*s*s;
+        m_A(k, l) = 0.;
+        m_A(l, k) = 0.;
+
         largest();
+        iterations++;
     }
-    m_lambda = arma::sort(arma::diagvec(m_A), "ascend");
-    m_lambda.print("Eigenvals = ");
+    m_lambda = arma::diagvec(m_A);
+    m_eigenvec = new double[m_N - 1];
+    int min_idx = m_lambda.index_min();
+    for (int i=0; i<m_N-1; i++) m_eigenvec[i] = m_R(min_idx, i);
+    m_lambda = arma::sort(m_lambda, "ascend");
+
+    auto stop = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+    std::cout << "Duration of solve: " << duration.count() 
+        << " microseconds" << std::endl;
+    std::cout << "Iterations: " << iterations << std::endl;
 }
 
 void JacobiRot::largest () {
@@ -82,4 +112,52 @@ void JacobiRot::largest () {
             }
         }
     }
+}
+
+void JacobiRot::write_to_file (std::string fname, 
+        double analytic_eigvals(double a, double d, int j, int N), 
+        double analytic_eigvec(int j, int N)) {
+    std::ofstream myfile;
+    myfile.open (fname);
+    myfile << "rho,eigenvals,analytic_eigenvals,eigenvec,analytic_eigenvec" 
+        << std::endl;
+    for (int i=0; i<m_N-1; i++) {
+        myfile << m_rho[i] << ","
+               << m_lambda(i) << ","
+               << analytic_eigvals(m_a, m_d, i+1, m_N) << ","
+               << m_eigenvec[i] << ","
+               << analytic_eigvec(i+1, m_N) << std::endl;
+    }
+    myfile.close();
+}
+
+void JacobiRot::write_to_file (std::string fname, 
+        double analytic_eigvals(int j)) {
+    std::ofstream myfile;
+    myfile.open (fname);
+    myfile << "rho,eigenvals,analytic_eigenvals,eigenvec" << std::endl;
+    for (int i=0; i<m_N-1; i++) {
+        myfile << m_rho[i] << ","
+               << m_lambda(i) << ","
+               << analytic_eigvals(i+1) << ","
+               << m_eigenvec[i] << std::endl;
+    }
+    myfile.close();
+}
+
+void JacobiRot::write_to_file (std::string fname) {
+    std::ofstream myfile;
+    myfile.open (fname);
+    myfile << "rho,eigenvals,eigenvec" << std::endl;
+    for (int i=0; i<m_N-1; i++) {
+        myfile << m_rho[i] << ","
+               << m_lambda(i) << ","
+               << m_eigenvec[i] << std::endl;
+    }
+    myfile.close();
+}
+
+JacobiRot::~JacobiRot () {
+    delete [] m_rho;
+    delete [] m_eigenvec;
 }

@@ -12,20 +12,27 @@ public:
 
 class JacobiRot : public Common{
 protected:
-    double m_eps;
-    double *m_diag, *m_bdiag;
-    double m_largest_val;
+    double m_a, m_d, m_eps, m_largest_val;
+    double *m_diag, *m_bdiag, *m_rho;
 
-    void common_initialize(int N);
+    void common_initialize(int N, double *rho);
     void largest();
 
 public:
     int m_k, m_l;
-    arma::dmat m_A;
+    double *m_eigenvec;
+    arma::dmat m_A, m_R;
     arma::vec m_lambda;
-    void initialize(double a, double b, int N);
-    void initialize(double *a, double *b, int N);
-    void solve(double eps);
+    void initialize(double a, double d, double *rho, int N);
+    void initialize(double *a, double *d, double *rho, int N);
+    void solve(double eps, int max_iter);
+    void write_to_file(std::string fname,
+        double analytic_eigvals(double a, double d, int j, int N), 
+        double analytic_eigvec(int j, int N));
+    void write_to_file(std::string fname,
+        double analytic_eigvals(int j));
+    void write_to_file(std::string fname);
+    ~JacobiRot();
 };
 
 class QM : public JacobiRot {
@@ -36,7 +43,8 @@ private:
     double m_h;
 
 public:
-    void qm_initialize(int N, double rho0, double rhoN);
+    void initialize(int N, double rho0, double rhoN, 
+        double potential(double rho, double omega_r), double omega_r);
 };
 
 #endif //JACOBI_HPP

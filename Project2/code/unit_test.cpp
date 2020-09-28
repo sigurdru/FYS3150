@@ -6,7 +6,7 @@
 #include <armadillo>
 
 TEST_CASE("Testing index of max offdiagonal value and right eigenvalues") {
-    int n = 5;
+    int n = 10;
     double a = 5.;
     double b = 10.; 
     double *testm_a = new double[n-2];
@@ -16,26 +16,32 @@ TEST_CASE("Testing index of max offdiagonal value and right eigenvalues") {
         testm_d[i] = b;
     }
     testm_d[n-2] = b;
+    double *x = nullptr;
 
     JacobiRot scenario;
-    scenario.initialize(testm_a, testm_d, n);
+    scenario.initialize(testm_a, testm_d, x, n);
     SECTION( "testing right index" ) {
         int testm_k = 0;
         int testm_l = 1;
         REQUIRE(scenario.m_k == testm_k);
         REQUIRE(scenario.m_l == testm_l);
     }
-    scenario.solve(1e-40);
-    arma::vec eigv = arma::vec(n-1);
+    scenario.solve(1e-40, 10000);
+    arma::vec eigval = arma::vec(n-1);
+    arma::vec eigvec = arma::vec(n-1);
     SECTION( "Testing eigenvalues" ) {
-        double tol = 0.5;
-        for (int i=0; i<n-1; i++){
-            eigv(i) = b + 2*a*std::cos((i+1)*3.1415/(n));
+        double tol = 1E-3;
+        double frac;
+        for (int i=0; i<n-1; i++) {
+            frac = (i+1.0)*3.1415/n;
+            eigval(i) = b + 2*a*std::cos(frac);
+            eigvec(i) = std::sin(frac);
         }
-        eigv = arma::sort(eigv, "ascend");
+        eigval = arma::sort(eigval, "ascend");
         
         for (int i=0; i<n-1; i++){
-            REQUIRE(scenario.m_lambda[i] == Approx(eigv[i]).epsilon(tol));
+            REQUIRE(scenario.m_lambda[i] == Approx(eigval(i)).epsilon(tol));
+            REQUIRE(scenario.m_eigenvec[i] == Approx(eigvec(i)).epsilon(0.3));
         }
 
     }
