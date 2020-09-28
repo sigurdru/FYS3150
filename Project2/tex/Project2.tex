@@ -63,6 +63,10 @@
 
 \section{Introduction}
 
+The harmonic oscillator (HO) potential appears in many areas within quantum physics. This is because many potentials can be approximated, at least in some intervals, with a HO potential. The most famous example of this might be the model for a hydrogen atom, where the electron is bound to the proton by a HO potential. That is why, in this report, we are going to study both one and multiple electrons in a HO potential. We are also going to account for electrical forces between the particles.
+
+ 
+
 \section{Theory}
 
 \subsection{Unitary transformation}
@@ -79,15 +83,27 @@ From this we can prove that a unitary transformation preserves the orthonormalit
 We notice that orthonormality is perserved.
 
 \subsection{Jacobi's rotation algorithm}
-Jacobi's rotation algorithm uses unitary transforms to diagonalize a matrix and preserves eigenvalues. A detailed description of the algorithm can be found here \citep{lecnotes}, however we will describe it briefly here. In order to diagonalize a given matrix $A$, as mentioned over, we perform a series of unitary transformations.
+Jacobi's rotation algorithm uses unitary transformations to diagonalize a matrix. A detailed description of the algorithm can be found here \citep{lecnotes}, however we will describe it briefly. In order to diagonalize a given matrix $A$, as mentioned over, we perform a series of unitary transformations.
 \begin{equation*}
 	B = U_n^T U_{n-1}^T ... U_0^T A U_0 ... U_{n-1}U_n
 \end{equation*}
-Here $U_i$ are the unitary matrices and $B$ the resulting diagonal matrix. The geometric interpretation is that $U_i$ performs a rotation on $T$ in order to zero out elements. It turns out that the fastest way to do this, is to zero out the largest non-diagonal matrix-element. First We define:
+Here $U_i$ are the unitary matrices and $B$ the resulting diagonal matrix. An example of how $U_i$ can look is given under.
 \begin{equation*}
-	\cot(\theta) = \tau = \frac{a_{ll} - a_{kk}}{2a_{kl}}.
+	  \begin{bmatrix}
+	1  & 0 & ...  & 0 & 0 & ... & 0 & 0 \\
+	0 & 1  & ... & 0 & 0 & ... & 0 & 0 \\
+	...  & ... & ... & ... & ... & ... & 0 & ... \\
+	0  & 0 & ... & \cos \theta & 0 & ... & 0 & \sin \theta \\
+	0  & 0 & ... & 0 & 1 & ... & 0 & 0 \\
+	...  & ...& ...  &... & ...   & ... &1 &...  \\
+	0  & 0& ...  & -\sin \theta &0 & ... &0 &\cos \theta  \\
+	\end{bmatrix}
 \end{equation*}
-Now to shorten notation we use $\tan(\theta) = t = s/c$, where $s = \sin(\theta) \wedge c = \cos(\theta)$. By defining $\theta$ such that $a_{kl}$ becomes zero we get the quadratic equation
+The geometric interpretation is that $U_i$ performs a rotation on $T$ in order to zero out non-diagonal elements. It turns out that the fastest way to do this, is to zero out the largest non-diagonal matrix-element. First We define:
+\begin{equation*}
+	\cot(\theta) = \tau = \frac{a_{ll} - a_{kk}}{2a_{kl}},
+\end{equation*}
+Where $a_{kl}$ is the largest non-diagonal element in $A$. Now to shorten notation we use $\tan(\theta) = t = s/c$, where $s = \sin(\theta) \wedge c = \cos(\theta)$. By defining $\theta$ such that $a_{kl}$ becomes zero we get the quadratic equation
 \begin{equation*}
 	t^2 + 2\tau t -1 = 0 \implies t = -\tau \pm \sqrt{1+\tau^2},
 \end{equation*}
@@ -103,7 +119,57 @@ The actual transformation is defined by the equations
 	b_{ll} &= a_{ll}c^2 + 2a_{kl}cs + a_{kk}s^2 \\
 	b_{kl} &= (a_{kk} - a_{ll} )cs + a_{kl}(c^2 - s^2)
 \end{align*}
-Again see \citep{lecnotes} for a more detail description of the algorithm.
+Where $b_{ij}$ are elements in $B$, again see \citep{lecnotes} for a more detailed description of the algorithm.
+
+\subsection{Electrons in a harmonic oscillator potential}
+
+It turns out that if you try to solve Schrodinger's equation you end up with a eigenvalue problem. We will derive the math here, but everything is taken from here \citep{oppgavetekst}. First we consider the Schrodinger's equation for one electron, we then, because of spherical symmetry, only need to look at the radial part.
+\begin{equation}
+	-\frac{\hbar^2}{2m}\bigg(\frac{1}{r^2}\frac{d}{dr}r^2\frac{d}{dr}-\frac{l(l+1)}{r^2}\bigg)R(r) + V(r) R(r) = ER(r)
+	\label{eq:SE}
+\end{equation}
+Where $R(r)$ is the radial wave equation, $V(r)$ the potential, $l$ orbital momentum and $r$ distance from the origin. Now because we only have one electron we end up with the HO potential $V(r) = (1/2)kr^2$. Substituting $R(r) = (1/r)u(r)$ and $\rho = (1/\alpha)r$ (where $\alpha$ is a constant with dimension length) we obtain
+\begin{equation*}
+	-\frac{\hbar^2}{2m\alpha^2}\frac{d^2}{d\rho^2}u(\rho) + \left(V(\rho) + \frac{l(l+1)}{\rho^2}\frac{\hbar^2}{2m\alpha^2}\right)u(\rho) = Eu(\rho).
+\end{equation*}
+Setting the orbital momentum $l=0$, inserting $V(\rho) = (1/2)k\alpha^2\rho^2$ and defining
+\begin{equation*}
+	\alpha \equiv \left(\frac{\hbar^2}{mk}\right)^{1/4} \wedge \lambda \equiv \frac{2m\alpha^2}{\hbar}E
+\end{equation*}
+Schrodinger's equation can then be described by the simple equation (\ref{eq:SE1}).
+\begin{equation}
+	-\frac{d^2}{d\rho^2}u(\rho)+\rho^2u(\rho) = \lambda u(\rho)
+	\label{eq:SE1}
+\end{equation}
+Now we can expand our model to two particles with Coulomb potential between them. First introducing the relative position $\mathbf{r}$ and center-of-mass coordinate $\mathbf{R}$
+\begin{equation*}
+	\mathbf{r} = \mathbf{r_1} - \mathbf{r_2} \wedge \mathbf{R} = \frac{1}{2(\mathbf{r_1}+\mathbf{r_2})}.
+\end{equation*}
+Where $\mathbf{r_1}$ and $\mathbf{r_2}$ are the particles positions.Then the radial Schrodinger's becomes
+\begin{equation*}
+	\left(  -\frac{\hbar^2}{m} \frac{d^2}{dr^2} -\frac{\hbar^2}{4 m} \frac{d^2}{dR^2}+ \frac{1}{4} k r^2+  kR^2\right)u(r,R)  = E^{(2)} u(r,R).
+\end{equation*}
+$E^{(2)}$ denotes the fact that we are looking at the total energy of two particles. From an ansatz for the wave equation, we can perform separation of variable on $r$ and $R$.
+\begin{equation*}
+	u(r, R) = \psi(r)\phi(R) \wedge E^{(2)} = E_r + E_R
+\end{equation*}
+Adding the Coulomb potential
+\begin{equation*}
+	\frac{\beta e^2}{r}
+\end{equation*}
+between the two electrons we get
+\begin{equation*}
+	\left(  -\frac{\hbar^2}{m} \frac{d^2}{dr^2}+ \frac{1}{4}k r^2+\frac{\beta e^2}{r}\right)\psi(r)  = E_r \psi(r).
+\end{equation*}
+Again introducing $\rho = r/\alpha$ and defining a few variables
+\begin{equation*}
+	\omega_r^2\equiv \frac{1}{4}\frac{mk}{\hbar^2} \alpha^4 \wedge \alpha \equiv \frac{\hbar^2}{m\beta e^2} \wedge \lambda \equiv \frac{m\alpha^2}{\hbar^2}E
+\end{equation*}
+We arrive at the Schrodinger's equation (\ref{eq:SE2})
+\begin{equation}
+	-\frac{d^2}{d\rho^2}\psi(\rho) + \omega_r^2\rho^2\psi(\rho) + \frac{1}{\rho} = \lambda\psi(\rho)
+	\label{eq:SE2}
+\end{equation}
 
 \section{Method}
 
@@ -117,5 +183,6 @@ Again see \citep{lecnotes} for a more detail description of the algorithm.
 \begin{thebibliography}{}
 \bibitem{lecnotes} http://compphysics.github.io/
 ComputationalPhysics/doc/pub/eigvalues/html/.\_eigvalues-bs011.html
+\bibitem{oppgavetekst} OPPGAVETEKST REF
 \end{thebibliography}
 \end{document}
