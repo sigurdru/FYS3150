@@ -1,0 +1,93 @@
+\documentclass[reprint,english,notitlepage]{revtex4-1}  % defines the basic parameters of the document
+% if you want a single-column, remove reprint
+
+% allows special characters (including æøå)
+\usepackage[utf8]{inputenc}
+\usepackage [norsk]{babel} %if you write norwegian
+
+\usepackage{makecell}       %denne gjør at man kan ha nye linjer
+
+\usepackage{physics,amssymb}  % mathematical symbols (physics imports amsmath)
+\usepackage{graphicx}         % include graphics such as plots
+\usepackage{xcolor}           % set colors
+\usepackage{hyperref}         % automagic cross-referencing (this is GODLIKE)
+\usepackage{tikz}             % draw figures manually
+\usepackage{listings}         % display code
+\usepackage{subfigure}        % imports a lot of cool and useful figure commands
+
+% defines the color of hyperref objects
+% Blending two colors:  blue!80!black  =  80% blue and 20% black
+\hypersetup{ % this is just my personal choice, feel free to change things
+    colorlinks,
+    linkcolor={red!50!black},
+    citecolor={blue!50!black},
+    urlcolor={blue!80!black}}
+
+%% Defines the style of the programming listing
+%% This is actually my personal template, go ahead and change stuff if you want
+\lstset{ %
+	inputpath=,
+	backgroundcolor=\color{white!88!black},
+	basicstyle={\ttfamily\scriptsize},
+	commentstyle=\color{magenta},
+	language=Python,
+	morekeywords={True,False},
+	tabsize=4,
+	stringstyle=\color{green!55!black},
+	frame=single,
+	keywordstyle=\color{blue},
+	showstringspaces=false,
+	columns=fullflexible,
+	keepspaces=true}
+
+
+\begin{document}
+
+
+\title{FYS3150 - Project 2}
+\date{\today}               
+\author{Vegard Falmår and Sigurd Sørlie Rustad}
+\affiliation{Universitetet i Oslo}
+
+\email{sigurdsr@gmail.com}
+\email{vegard@mail.no}
+\newpage
+
+\begin{abstract}
+
+\end{abstract}
+\maketitle
+
+
+\section{Introduction}
+
+\section{Theory}
+
+\subsection{Unitary transformation}
+
+The transformed of a unitary matrix ($U$) is its inverse.
+\begin{equation*}
+	U^T = U^{-1}
+\end{equation*}
+From this we can prove that a unitary transformation preserves the orthonormality of vectors. Consider the set of orthonormal vectors $\{ \mathbf{v}_i \}_i$ and the unitary transformation $\{ U\mathbf{v}_i \}_i = \{ \mathbf{w}_i \}_i$.
+\begin{align*}
+	\mathbf{w}_i^T\mathbf{w}_j &= (U\mathbf{v}_i)^TU\mathbf{v}_j \\
+	&= \mathbf{v}_i^TU^TU\mathbf{v}_j = \mathbf{v}_i^T\mathbf{v}_j \\
+	&= \delta_{i,j}
+\end{align*}
+
+\section{Method}
+
+\section{Results}
+
+\section{Discussion}
+
+\section{Conclusion}
+
+\begin{acknowledgements}
+\end{acknowledgements}
+
+\begin{thebibliography}{}
+\bibitem{kompendium} N. J. Edin, K. E. Pitman, 2020, KOMPENDIUM FYS2150
+\end{thebibliography}
+\end{document}

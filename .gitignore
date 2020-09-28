@@ -54,6 +54,7 @@ Project1/output/fast_7.txt
 *.cb
 *.cb2
 .*.lb
+*.synctex.gz
 
 ## Intermediate documents:
 *.dvi
