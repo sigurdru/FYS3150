@@ -64,7 +64,6 @@
 \section{Theory}
 
 \subsection{Unitary transformation}
-
 The transformed of a unitary matrix ($U$) is its inverse.
 \begin{equation*}
 	U^T = U^{-1}
@@ -75,6 +74,34 @@ From this we can prove that a unitary transformation preserves the orthonormalit
 	&= \mathbf{v}_i^TU^TU\mathbf{v}_j = \mathbf{v}_i^T\mathbf{v}_j \\
 	&= \delta_{i,j}
 \end{align*}
+We notice that orthonormality is perserved.
+
+\subsection{Jacobi's rotation algorithm}
+Jacobi's rotation algorithm uses unitary transforms to diagonalize a matrix and preserves eigenvalues. A detailed description of the algorithm can be found here \citep{lecnotes}, however we will describe it briefly here. In order to diagonalize a given matrix $A$, as mentioned over, we perform a series of unitary transformations.
+\begin{equation*}
+	B = U_n^T U_{n-1}^T ... U_0^T A U_0 ... U_{n-1}U_n
+\end{equation*}
+Here $U_i$ are the unitary matrices and $B$ the resulting diagonal matrix. The geometric interpretation is that $U_i$ performs a rotation on $T$ in order to zero out elements. It turns out that the fastest way to do this, is to zero out the largest non-diagonal matrix-element. First We define:
+\begin{equation*}
+	\cot(\theta) = \tau = \frac{a_{ll} - a_{kk}}{2a_{kl}}.
+\end{equation*}
+Now to shorten notation we use $\tan(\theta) = t = s/c$, where $s = \sin(\theta) \wedge c = \cos(\theta)$. By defining $\theta$ such that $a_{kl}$ becomes zero we get the quadratic equation
+\begin{equation*}
+	t^2 + 2\tau t -1 = 0 \implies t = -\tau \pm \sqrt{1+\tau^2},
+\end{equation*}
+and can also obtain $c$ and $s$
+\begin{equation*}
+	c = \frac{1}{1+t^2} \wedge s = tc.
+\end{equation*}
+The actual transformation is defined by the equations
+\begin{align*}
+	b_{ik} &= a_{ik}c - a_{il}s, i \neq k, i \neq l \\ 
+	b_{il} &= a_{il}c + a_{ik}s, i \neq k, i \neq l \\
+	b_{kk} &= a_{kk}c^2 - 2a_{kl}cs + a_{ll}s^2 \\
+	b_{ll} &= a_{ll}c^2 + 2a_{kl}cs + a_{kk}s^2 \\
+	b_{kl} &= (a_{kk} - a_{ll} )cs + a_{kl}(c^2 - s^2)
+\end{align*}
+Again see \citep{lecnotes} for a more detail description of the algorithm.
 
 \section{Method}
 
@@ -84,10 +111,9 @@ From this we can prove that a unitary transformation preserves the orthonormalit
 
 \section{Conclusion}
 
-\begin{acknowledgements}
-\end{acknowledgements}
-
+\onecolumngrid
 \begin{thebibliography}{}
-\bibitem{kompendium} N. J. Edin, K. E. Pitman, 2020, KOMPENDIUM FYS2150
+\bibitem{lecnotes} http://compphysics.github.io/
+ComputationalPhysics/doc/pub/eigvalues/html/.\_eigvalues-bs011.html
 \end{thebibliography}
 \end{document}
