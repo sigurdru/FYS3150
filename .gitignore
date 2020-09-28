@@ -7,6 +7,10 @@ Project1/output/fast_7.txt
 # Created by https://www.toptal.com/developers/gitignore/api/linux,python,tex,latex,c++
 # Edit at https://www.toptal.com/developers/gitignore?templates=linux,python,tex,latex,c++
 
+### Visual Studio Code ###
+.vscode
+settings.json
+
 ### C++ ###
 # Prerequisites
 *.d
@@ -55,6 +59,7 @@ Project1/output/fast_7.txt
 *.cb2
 .*.lb
 *.synctex.gz
+*Notes.bib
 
 ## Intermediate documents:
 *.dvi
