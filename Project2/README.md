@@ -28,7 +28,7 @@ Then, to produce all the results in the report, that is run the code and plot fo
 bash run.sh all
 ```
 
-The code can be run with 10^(n) + 1 grid points with:
+The code can be run with n+1 grid points with:
 ```
 bash run.sh n BB            # buckling beam
 bash run.sh n QM1           # quantum mechanics with one electron
@@ -38,15 +38,15 @@ This will write the results to file and plot them.
 
 To time the code and produce a table of the results, run
 ```
-bash time_it.sh
+bash run.sh time
 ```
-This will run the code 5 times for all values of h, and compute the mean time. A table of results is printed to the terminal and saved to file in the output folder.
+This will run the code 3-5 times for all equations and values of n, and compute the mean time. A table of results is printed to the terminal and saved to file in the output folder.
 
 # Example run
 ```
 cd code
 make test           # runs the test code
-make compile
-bash time_it.sh     # times the code, average over 5 runs
+make compile        # compile
+bash run.sh time    # times the code, average over 5 runs
 bash run.sh all     # produces all the results
 ```

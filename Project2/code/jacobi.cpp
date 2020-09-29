@@ -87,9 +87,9 @@ void JacobiRot::solve (double eps, int max_iter) {
     m_lambda = arma::sort(m_lambda, "ascend");
 
     auto stop = std::chrono::high_resolution_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
     std::cout << "    Duration of solve: " << duration.count() 
-        << " microseconds" << std::endl;
+        << " milliseconds" << std::endl;
     std::cout << "    Iterations: " << iterations << std::endl;
 }
 
