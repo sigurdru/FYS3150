@@ -51,8 +51,8 @@
 \author{Vegard Falmår and Sigurd Sørlie Rustad}
 \affiliation{Universitetet i Oslo}
 
-\email{sigurdsr@gmail.com}
 \email{vegardfa@uio.no}
+\email{sigurdsr@gmail.com}
 \newpage
 
 \begin{abstract}
@@ -65,6 +65,11 @@
 
 The harmonic oscillator (HO) potential appears in many areas within quantum physics. This is because many potentials can be approximated, at least in some intervals, with a HO potential. The most famous example of this might be the model for a hydrogen atom, where the electron is bound to the proton by a HO potential. That is why, in this report, we are going to study both one and multiple electrons in a HO potential. We are also going to account for electrical forces between the particles.
 
+When we try to solve Schrodinger's equation for both one and two particles, we end up with a eigenvalue problem (see theory section). This can be represented with a linear set of equations written on matrix-form (from project 1 \citep{project1}). Using Jacobi's rotation algorithm, also described in the theory section, we can diagonalize the matrix to find these eigenvalues and eigenvectors. Then plot the results, comparing them to experimental values.
+
+When implementing algorithms it is important to test your code and make sure it performs as expected. Therefore we perform unit-tests to make sure sections of our program works as expected. We also test the code with a test scenario (buckling beam), which have analytical eigenvalues and eigenvectors. The testing is described in the appendix (\ref{appendix}).
+
+For our studies we have used c++ for heavy computation, python for visualization and bash for automation. All the code along with instructions on how to run it, can be cloned from our GitHub repository here \citep{github}.
  
 
 \section{Theory}
@@ -111,19 +116,42 @@ and can also obtain $c$ and $s$
 \begin{equation*}
 	c = \frac{1}{1+t^2} \wedge s = tc.
 \end{equation*}
-The actual transformation is defined by the equations
-\begin{align*}
+The actual transformation is defined by the set of equations
+\begin{align}
+\begin{split}
 	b_{ik} &= a_{ik}c - a_{il}s, i \neq k, i \neq l \\
 	b_{il} &= a_{il}c + a_{ik}s, i \neq k, i \neq l \\
 	b_{kk} &= a_{kk}c^2 - 2a_{kl}cs + a_{ll}s^2 \\
 	b_{ll} &= a_{ll}c^2 + 2a_{kl}cs + a_{kk}s^2 \\
 	b_{kl} &= (a_{kk} - a_{ll} )cs + a_{kl}(c^2 - s^2)
-\end{align*}
+	\label{eq:jacobi}
+\end{split}
+\end{align}
 Where $b_{ij}$ are elements in $B$, again see \citep{lecnotes} for a more detailed description of the algorithm.
+
+An interesting question is; what happens to the eigenvectors and eigenvalues? Because $B$ is diagonal the eigenvectors are just vectors with a $1$ in one element and $0$ everywhere else. We consider an arbitrary eigenvector $\mathbf{v}$ and eigenvalue $\lambda$ that satisfy
+\begin{equation*}
+	B\mathbf{v} = \lambda \mathbf{v} .
+\end{equation*}
+Applying the unitary transforms we get
+\begin{align*}
+	B\mathbf{v} &= U_n^T U_{n-1}^T ... U_0^T A U_0 ... U_{n-1}U_n \mathbf{v} \\
+	&= \lambda \mathbf{v} \\
+ \end{align*}
+We notice that this is true if
+\begin{equation}
+	\mathbf{v'} = U_0 ... U_{n-1}U_n \mathbf{v}
+	\label{eq:vmark}
+\end{equation}
+is an eigenvector with eigenvalue $\lambda$ that satisfy
+\begin{equation*}
+	A \mathbf{v}' = \lambda \mathbf{v}'
+\end{equation*}
+Therefore, if you have the eigenvector $\mathbf{v}$ and matrices $U_i$ you can find $\mathbf{v}'$ with equation (\ref{eq:vmark}).
 
 \subsection{Electrons in a harmonic oscillator potential}
 
-It turns out that if you try to solve Schrodinger's equation you end up with a eigenvalue problem. We will derive the math here, but everything is taken from here \citep{oppgavetekst}. First we consider the Schrodinger's equation for one electron, we then, because of spherical symmetry, only need to look at the radial part.
+It turns out that if you try to solve Schrodinger's equation you end up with a eigenvalue problem. We will derive the math here, but everything is taken from here \citep{oppgavetekst}. First we consider the Schrodinger's equation for one electron. Because of spherical symmetry we only need to look at the radial part.
 \begin{equation}
 	-\frac{\hbar^2}{2m}\bigg(\frac{1}{r^2}\frac{d}{dr}r^2\frac{d}{dr}-\frac{l(l+1)}{r^2}\bigg)R(r) + V(r) R(r) = ER(r)
 	\label{eq:SE}
@@ -167,22 +195,76 @@ Again introducing $\rho = r/\alpha$ and defining a few variables
 \end{equation*}
 We arrive at the Schrodinger's equation (\ref{eq:SE2})
 \begin{equation}
-	-\frac{d^2}{d\rho^2}\psi(\rho) + \omega_r^2\rho^2\psi(\rho) + \frac{1}{\rho} = \lambda\psi(\rho)
+	-\frac{d^2}{d\rho^2}\psi(\rho) + \omega_r^2\rho^2\psi(\rho) + \frac{1}{\rho}\psi(\rho) = \lambda\psi(\rho)
 	\label{eq:SE2}
 \end{equation}
 
 \section{Method}
 
+As mentioned in the theory section, when you study one or more particles in a HO potential, you get a eigenvalue problem. For one particle this is given by equation (\ref{eq:SE1}). From Project 1 (see the theory section in \citep{project1}) we know this type of differential equation creates a set of equations, that can be represented as follows.
+\begin{equation*}
+	\scriptsize{\begin{bmatrix}d_1 & e_1 & 0   & 0    & \dots  &0     & 0 \\
+		e_1 & d_2 & e_2 & 0    & \dots  &0     &0 \\
+		0   & e_2 & d_3 & e_3  &0       &\dots & 0\\
+		\dots  & \dots & \dots & \dots  &\dots      &\dots & \dots\\
+		0   & \dots & \dots & \dots  &\dots  e_{N-3}     &d_{N-2} & e_{N-2}\\
+		0   & \dots & \dots & \dots  &\dots       &e_{N-2} & d_{N-1}
+	\end{bmatrix}  \begin{bmatrix} u_{1} \\
+		u_{2} \\
+		\dots\\ \dots\\ \dots\\
+		u_{N-1}
+	\end{bmatrix}=\lambda \begin{bmatrix} u_{1} \\
+		u_{2} \\
+		\dots\\ \dots\\ \dots\\
+		u_{N-1}
+	\end{bmatrix}}
+\end{equation*}
+Where $e_i = -1/h^2$, $d_i = 2/h^2 + V_i$ and $h = (\rho_N - \rho_0)/N$. Now we can solve this with Jacobi's rotation algorithm described in the theory section. We do this with the sets of equations (\ref{eq:jacobi}). To make sure algorithm was implemented properly we performed several tests. First unit-tests to make sure small chunks run as expected, then with a buckling beam problem that has analytical eigenvalues and eigenvectors. Further information on the tests can be found in the appendix (\ref{appendix}).
+
 \section{Results}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=\linewidth]{../output/QM1_200_0.pdf}
+	\label{fig:QM200}
+	\caption{}
+\end{figure}
+
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=\linewidth]{../output/QM2_200.pdf}
+	\label{fig:QM2002}
+	\caption{}
+\end{figure}
 
 \section{Discussion}
 
 \section{Conclusion}
+
+\section{Appendix}
+\label{appendix}
+
+\subsection{Unit-tests}
+
+
+
+\subsection{Buckling beam}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=\linewidth]{../output/BB_200_0.pdf}
+	\label{fig:BB200}
+	\caption{}
+\end{figure}
 
 \onecolumngrid
 \begin{thebibliography}{}
 \bibitem{lecnotes} http://compphysics.github.io/
 ComputationalPhysics/doc/pub/eigvalues/html/.\_eigvalues-bs011.html
 \bibitem{oppgavetekst} OPPGAVETEKST REF
+\bibitem{project1} REF PROJECT 1
+\bibitem{github} REF GITHUB
+ 
 \end{thebibliography}
 \end{document}
