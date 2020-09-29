@@ -3,7 +3,7 @@
 #include <cmath>
 #include <iostream>
 
-void JacobiRot::common_initialize(int N, double *rho) {
+void JacobiRot::common_initialize(double *rho, int N) {
     m_N = N;
     m_A = arma::dmat(m_N-1, m_N-1).fill(0.);
     m_R = arma::dmat(m_N-1, m_N-1).fill(0.);
@@ -12,17 +12,11 @@ void JacobiRot::common_initialize(int N, double *rho) {
 }
 
 void JacobiRot::initialize (double a, double d, double *rho, int N) {
-    common_initialize(N, rho);
+    common_initialize(rho, N);
     m_a = a; m_d = d;
-    if (a > d) {
-        m_k = 1;
-        m_l = 0;
-        m_largest_val = a;
-    } else {
-        m_k = 0;
-        m_l = 0;
-        m_largest_val = d;
-    }
+    m_k = 0;
+    m_l = 1;
+    m_largest_val = std::abs(a);
     m_A(m_N-2, m_N-2) = d;
     for (int i=0; i<m_N-2; i++){
         m_A(i+1, i) = a;
@@ -32,7 +26,7 @@ void JacobiRot::initialize (double a, double d, double *rho, int N) {
 }
 
 void JacobiRot::initialize(double *a, double*d, double *rho, int N) {
-    common_initialize(N, rho);
+    common_initialize(rho, N);
     m_A(m_N-2, m_N-2) = d[m_N-2];
     for (int i=0; i<m_N-2; i++){
         m_A(i+1, i) = a[i];
@@ -46,7 +40,6 @@ void JacobiRot::initialize(double *a, double*d, double *rho, int N) {
 void JacobiRot::solve (double eps, int max_iter) {
     // Solve equations
     auto start = std::chrono::high_resolution_clock::now();
-    m_eps = eps;
     double tau, t, c, s;
     double Aik, Ail, Akk, All, Akl, R_ik, R_il;
     int k;
@@ -90,14 +83,14 @@ void JacobiRot::solve (double eps, int max_iter) {
     m_lambda = arma::diagvec(m_A);
     m_eigenvec = new double[m_N - 1];
     int min_idx = m_lambda.index_min();
-    for (int i=0; i<m_N-1; i++) m_eigenvec[i] = m_R(min_idx, i);
+    for (int i=0; i<m_N-1; i++) m_eigenvec[i] = m_R(i, min_idx);
     m_lambda = arma::sort(m_lambda, "ascend");
 
     auto stop = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
-    std::cout << "Duration of solve: " << duration.count() 
+    std::cout << "    Duration of solve: " << duration.count() 
         << " microseconds" << std::endl;
-    std::cout << "Iterations: " << iterations << std::endl;
+    std::cout << "    Iterations: " << iterations << std::endl;
 }
 
 void JacobiRot::largest () {
@@ -117,6 +110,22 @@ void JacobiRot::largest () {
 void JacobiRot::write_to_file (std::string fname, 
         double analytic_eigvals(double a, double d, int j, int N), 
         double analytic_eigvec(int j, int N)) {
+    double *ana_eigvec = new double[m_N-1];
+    arma::dvec ana_eigvals = arma::vec(m_N-1);
+    for (int i=0; i<m_N-1; i++) {
+        ana_eigvals(i) = analytic_eigvals(m_a, m_d, i+1, m_N);
+    }
+    int min_idx = ana_eigvals.index_min();
+    ana_eigvals = arma::sort(ana_eigvals, "ascend");
+    double norm = 0.0;
+    for (int i=0; i<m_N-1; i++) {
+        ana_eigvec[i] = analytic_eigvec((i+1)*(min_idx+1), m_N);
+        norm += std::pow(ana_eigvec[i], 2);
+    }
+    norm = std::sqrt(norm);
+    for (int i=0; i<m_N-1; i++) {
+        ana_eigvec[i] /= norm;
+    }
     std::ofstream myfile;
     myfile.open (fname);
     myfile << "rho,eigenvals,analytic_eigenvals,eigenvec,analytic_eigenvec" 
@@ -124,22 +133,28 @@ void JacobiRot::write_to_file (std::string fname,
     for (int i=0; i<m_N-1; i++) {
         myfile << m_rho[i] << ","
                << m_lambda(i) << ","
-               << analytic_eigvals(m_a, m_d, i+1, m_N) << ","
+               << ana_eigvals(i) << ","
                << m_eigenvec[i] << ","
-               << analytic_eigvec(i+1, m_N) << std::endl;
+               << ana_eigvec[i] << std::endl;
     }
     myfile.close();
+    delete [] ana_eigvec;
 }
 
 void JacobiRot::write_to_file (std::string fname, 
         double analytic_eigvals(int j)) {
+    arma::dvec ana_eigvals = arma::vec(m_N-1);
+    for (int i=0; i<m_N-1; i++) {
+        ana_eigvals(i) = analytic_eigvals(i+1);
+    }
+    ana_eigvals = arma::sort(ana_eigvals, "ascend");
     std::ofstream myfile;
     myfile.open (fname);
     myfile << "rho,eigenvals,analytic_eigenvals,eigenvec" << std::endl;
     for (int i=0; i<m_N-1; i++) {
         myfile << m_rho[i] << ","
                << m_lambda(i) << ","
-               << analytic_eigvals(i+1) << ","
+               << ana_eigvals(i) << ","
                << m_eigenvec[i] << std::endl;
     }
     myfile.close();

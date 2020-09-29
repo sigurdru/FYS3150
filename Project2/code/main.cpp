@@ -21,7 +21,6 @@ int main(int argc, char* argv[]) {
         n = std::atoi(argv[1]);
         method = argv[2];
         omega_r = std::atof(argv[3]);
-        n = std::pow(10, n);
         fname = "../output/";
         fname.append(method).append("_").
             append(argv[1]).append("_").
@@ -39,7 +38,9 @@ int main(int argc, char* argv[]) {
         double *x = new double[n-1];
         x[0] = h;
         for (int i=0; i<n-2; i++) x[i+1] = x[i] + h;
-        solver.initialize(-1.0/(h*h), 2.0/(h*h), x, n);
+        double a = -1.0/(h*h);
+        double d = 2.0/(h*h);
+        solver.initialize(a, d, x, n);
         solver.solve(eps, max_iter);
         solver.write_to_file(fname, BB_eigvals, BB_eigvec);
     } else if (method == "QM1") {
@@ -52,6 +53,9 @@ int main(int argc, char* argv[]) {
         qm_solver.initialize(n, rho0, rhoN, V_2, omega_r);
         qm_solver.solve(eps, max_iter);
         qm_solver.write_to_file(fname);
+    } else {
+        std::cout << "Bad task argument: " << method << std::endl;
+        return 1;
     }
     return 0;
 }

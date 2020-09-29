@@ -2,27 +2,21 @@
 #define JACOBI_HPP
 #include <armadillo>
 
-class Common{
+class JacobiRot {
 protected:
     int m_N;
-    double m_offnorm;
+    double m_a, m_d, m_largest_val;
+    double *m_rho;
+    arma::dmat m_A, m_R;
 
-public:
-};
-
-class JacobiRot : public Common{
-protected:
-    double m_a, m_d, m_eps, m_largest_val;
-    double *m_diag, *m_bdiag, *m_rho;
-
-    void common_initialize(int N, double *rho);
+    void common_initialize(double *rho, int N);
     void largest();
 
 public:
     int m_k, m_l;
     double *m_eigenvec;
-    arma::dmat m_A, m_R;
     arma::vec m_lambda;
+
     void initialize(double a, double d, double *rho, int N);
     void initialize(double *a, double *d, double *rho, int N);
     void solve(double eps, int max_iter);
