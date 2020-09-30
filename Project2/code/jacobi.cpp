@@ -74,8 +74,8 @@ void JacobiRot::solve (double eps, int max_iter) {
         }
         m_A(k, k) = Akk*c*c - 2.0*Akl*c*s + All*s*s;
         m_A(l, l) = All*c*c + 2.0*Akl*c*s + Akk*s*s;
-        m_A(k, l) = 0.;
-        m_A(l, k) = 0.;
+        m_A(k, l) = 0.;     // manually set to 0
+        m_A(l, k) = 0.;     // manually set to 0
 
         largest();
         iterations++;
