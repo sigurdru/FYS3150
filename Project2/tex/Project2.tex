@@ -149,6 +149,8 @@ is an eigenvector with eigenvalue $\lambda$ that satisfy
 \end{equation*}
 Therefore, if you have the eigenvector $\mathbf{v}$ and matrices $U_i$ you can find $\mathbf{v}'$ with equation (\ref{eq:vmark}).
 
+FLOPS
+
 \subsection{Electrons in a harmonic oscillator potential}
 
 It turns out that if you try to solve Schrodinger's equation you end up with a eigenvalue problem. We will derive the math here, but everything is taken from here \citep{oppgavetekst}. First we consider the Schrodinger's equation for one electron. Because of spherical symmetry we only need to look at the radial part.
@@ -201,36 +203,45 @@ We arrive at the Schrodinger's equation (\ref{eq:SE2})
 
 \section{Method}
 
-As mentioned in the theory section, when you study one or more particles in a HO potential, you get a eigenvalue problem. For one particle this is given by equation (\ref{eq:SE1}). From Project 1 (see the theory section from Project 1\footnote{github.com/sigurdru/FYS3150/blob/master/Project1/tex/Project1.pdf}) we know this type of differential equation creates a set of equations, that can be represented as follows.
+As mentioned in the theory section, when you study one or more particles in a HO potential, you get a eigenvalue problem. For one particle this is given by equation (\ref{eq:SE1}). From Project 1 (see the theory section in \citep{project1}) we know this type of differential equation creates a set of equations, that can be represented as follows.
 \begin{equation}
-  \label{eq:discrete_2nd_deriv_mat}
+	\label{eq:discrete_2nd_deriv_mat}
 	\scriptsize{\begin{bmatrix}d_1 & e_1 & 0   & 0    & \dots  &0     & 0 \\
-		e_1 & d_2 & e_2 & 0    & \dots  &0     &0 \\
-		0   & e_2 & d_3 & e_3  &0       &\dots & 0\\
-		\dots  & \dots & \dots & \dots  &\dots      &\dots & \dots\\
-		0   & \dots & \dots & \dots  &  e_{N-3}     &d_{N-2} & e_{N-2}\\
-		0   & \dots & \dots & \dots  &\dots       &e_{N-2} & d_{N-1}
-	\end{bmatrix}  \begin{bmatrix} u_{1} \\
-		u_{2} \\
-		\dots\\ \dots\\ \dots\\
-		u_{N-1}
-	\end{bmatrix}=\lambda \begin{bmatrix} u_{1} \\
-		u_{2} \\
-		\dots\\ \dots\\ \dots\\
-		u_{N-1}
-  \end{bmatrix}}
+			e_1 & d_2 & e_2 & 0    & \dots  &0     &0 \\
+			0   & e_2 & d_3 & e_3  &0       &\dots & 0\\
+			\dots  & \dots & \dots & \dots  &\dots      &\dots & \dots\\
+			0   & \dots & \dots & \dots  &\dots  e_{N-3}     &d_{N-2} & e_{N-2}\\
+			0   & \dots & \dots & \dots  &\dots       &e_{N-2} & d_{N-1}
+		\end{bmatrix}  \begin{bmatrix} u_{1} \\
+			u_{2} \\
+			\dots\\ \dots\\ \dots\\
+			u_{N-1}
+		\end{bmatrix}=\lambda \begin{bmatrix} u_{1} \\
+			u_{2} \\
+			\dots\\ \dots\\ \dots\\
+			u_{N-1}
+	\end{bmatrix}}
 \end{equation}
-Where $e_i = -1/h^2$, $d_i = 2/h^2 + V_i$ and $h = (\rho_N - \rho_0)/N$. $\rho_0$ and $\rho_N$ are the endpoints that in reality goes from $\rho_0 = 0$ to $\rho_N=\infty$. Of course we cannot do this for $\rho_N = \infty$, so we have to decide on a maximum we want to evaluate. We do this with trial end error. Our other problem is to decide the number of integration points $N$. As with the endpoint $\rho_N$ we try for different values and interpret the solutions.
+Where $e_i = -1/h^2$, $d_i = 2/h^2 + \rho_i^2$ and $h = (\rho_N - \rho_0)/N$. $\rho_0$ and $\rho_N$ are the endpoints that in reality goes from $\rho_0 = 0$ to $\rho_N=\infty$. Of course we cannot do this for $\rho_N = \infty$, so we have to decide on a maximum we want to evaluate. We do this with trial end error. Our other problem is to decide the number of integration points $N$. As with the endpoint $\rho_N$ we try for different values and interpret the solutions.
 
 We can solve this with Jacobi's rotation algorithm described in the theory section. In order to do this we use the sets of equations (\ref{eq:jacobi}). To make sure algorithm was implemented properly we performed several tests. First unit-tests to make sure small chunks run as expected, then with a buckling beam problem that has analytical eigenvalues and eigenvectors. Further information on the tests can be found in the appendix (section \ref{appendix}).
 
+When we introduce another particle we end up with equation (\ref{eq:SE2}). This will also have the same shape as equation (\ref{eq:discrete_2nd_deriv_mat}), the only difference being the value of diagonal elements
+\begin{equation*}
+	d_i = \frac{2}{h^2} + \omega_r^2\rho_i^2 + \frac{1}{\rho_i}.
+\end{equation*}
+We can then implement Jacobi's rotation algorithm the same way we did for one particle.
 
 \section{Results}
+
+To test our algorithm we used two unit tests, one to test that we find expected indexes and one to test right eigenvalues and eigenvectors. All the tests passed and the results can be found in the appendix \ref{appendix}.
+
+Confident in our algorithm we went fourth with the quantum mechanical systems. For one particle the resulting eigenvector can be seen in figure \ref{fig:QM200}. We notice that the eigenstate has a maximum at around $\rho = 1$ and goes towards zero at the ends. In order to produce this plot we tested for different integration points $n$ and endpoints $\rho_N$. We found $\rho_N= 5$ and $n=200$ to be reasonable, however all the plots, except those with very low $\rho_N$ and $n$, are almost indistinguishable.
 
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=\linewidth]{../output/QM1_200_0.pdf}
-	\caption{The eigenfunction $u(\rho)$ for an electron in a harmonic oscillator well corresponding to the smallest eigenvalue $\lambda_1$, i.e the lowest energy value. The number of integration points is $n = 200$. The eigenvector is normalized to length 1.}
+	\caption{In this figure you see the eigenvector/eigenstate for one particle in a HO potential corresponding to the smallest eigenvalue $\lambda_1$, i.e the lowest energy value. Along the x-axis we have dimensionless length $\rho$ and along the y-axis we have the elements of the eigenvector scaled to unit length. In the label we have the corresponding eigenvalue $\lambda_1 = 3.000$. The number of integration points is $n = 200$.}
   \label{fig:QM200}
 \end{figure}
 
@@ -241,7 +252,11 @@ We can solve this with Jacobi's rotation algorithm described in the theory secti
   \label{fig:QM2002}
 \end{figure}
 
-
+\begin{table}
+	\input{../output/table_iters.txt}
+	\label{}
+	\caption{}
+\end{table}
 
 \section{Discussion}
 
