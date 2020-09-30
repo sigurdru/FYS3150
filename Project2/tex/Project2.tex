@@ -127,7 +127,7 @@ The actual transformation is defined by the set of equations
 	\label{eq:jacobi}
 \end{split}
 \end{align}
-Where $b_{ij}$ are elements in $B$, again see \citep{lecnotes} for a more detailed description of the algorithm.
+Where $b_{ij}$ are elements in $B$, again see \citep{lecnotes} for a more detailed description of the algorithm. The last line in \ref{eq:jacobi} effectively sets the element to zero. By doing this manually, we can safely cut the number of FLOPS.
 
 An interesting question is; what happens to the eigenvectors and eigenvalues? Because $B$ is diagonal the eigenvectors are just vectors with a $1$ in one element and $0$ everywhere else. We consider an arbitrary eigenvector $\mathbf{v}$ and eigenvalue $\lambda$ that satisfy
 \begin{equation*}
@@ -149,7 +149,15 @@ is an eigenvector with eigenvalue $\lambda$ that satisfy
 \end{equation*}
 Therefore, if you have the eigenvector $\mathbf{v}$ and matrices $U_i$ you can find $\mathbf{v}'$ with equation (\ref{eq:vmark}).
 
-FLOPS
+It is clear that the rotation of the matrix will give non-zero values to elements off the three diagonals that were zero to begin with. In order to estimate the number of floating point operations needed for the entire diagonalization process, we need to calculate the number of FLOPS in each iteration, as well as estimate the total number of iterations needed to make the off-diagonal elements as small as we require.
+
+It is rather straightforward to calculate the approximate number of FLOPS for each iteration from equations \ref{eq:jacobi}. The two first expressions are evaluated for all $i$ from 0 to $n-1$ where $n$ denotes the size of the matrix. (We actually skip the two values $i = k$ and $i = l$, but for large $n$ this is negligible.) In each of these lines there are 3 FLOPS, bringing the total number of FLOPS for these two lines to approximately $6 n$ per iteration. The expressions on the next two lines sum up to around 18 FLOPS. (We skip the last line by manually setting the value to zero). In addition to this, we have around 13 FLOPS for calculating the values $c$ and $s$ as well as $6 n$ FLOPS related to the eigenvectors. In total, we have roughly $12 n + 31$ FLOPS per iteration.
+
+In each iteration, a new element above and below the diagonal is set to zero. In future iterations these values may change to be non-zero again, but for simplicity let us say that it suffices to visit each non-diagonal element once. This would require roughly $n^2/2$ iterations as this is the approximate number of elements above or below the diagonal and we in each iteration set to zero an element below and above the diagonal. The total amount of FLOPS for the diagonalization would then be
+\begin{equation*}
+  N_{\text{FLOPS}} = \frac{n^2}{2} (12 n + 31) \approx 6 n^3 + 15 n^2
+\end{equation*}
+
 
 \subsection{Electrons in a harmonic oscillator potential}
 
