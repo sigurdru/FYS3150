@@ -1,4 +1,4 @@
-\documentclass[reprint,english,notitlepage,nofootinbib]{revtex4-1}  % defines the basic parameters of the document
+	\documentclass[reprint,english,notitlepage,nofootinbib]{revtex4-1}  % defines the basic parameters of the document
 % if you want a single-column, remove reprint
 
 % allows special characters (including æøå)
@@ -57,6 +57,8 @@
 
 \begin{abstract}
 
+	
+Many potentials can be approximated, at least in some intervals, with a HO (harmonic oscillator) potential. In this report we study one and two particles bounded in a such potential, while they interact with a electric force. When you try to solve Schrodinger's equation for both situations you end up with a eigenvalue/-vector problem. We solved this using Jacobi's rotation algorithm. To make sure the algorithm worked properly we tested it using unit-tests and applying it to problems with analytical solutions. For one particle we found the lowest eigenvalue $\lambda = 3.000$. This is close to the analytical term of $\lambda_{ana} = 3$. For two particles we got the eigenvalues (for lowest energy state) $\lambda = 0.841, 2.231, 4.058, 17.444$ with the corresponding frequencies $\omega_r = 0.01, 0.5, 1, 5$. Because eigenvalue correspond to energy, this means that the energy gets higher with larger frequency $\omega_r$. After plotting the eigenvectors we deduced that for higher frequencies orbits become smaller and relative position sharper.
 \end{abstract}
 \maketitle
 
@@ -292,13 +294,15 @@ It is clear from tables \ref{tab:iter} and \ref{tab:time} that the number of FLO
 \end{equation*}
 for $n$ integration points. The number of FLOPS per iterations was clearly missing some elements. We did not include the cost of iterating through all the elements above or below the diagonal to find the indices and value of the largest element. For all elements in the upper or lower half of the matrix, this involves at least a function call or FLOP to determine the absolute value of the element and a comparison to determine if it is greater than the largest number found so far. Though this is not an expensive operation for each element, the total number of FLOPS for all the elements combined would probably grow as $n^2$ as the number of elements grows as $n^2$. With a number of iterations that grows as $n^2$ this would result in a term in the total number of FLOPS that grows like $n^4$ which could have a substantial effect on computing time for large $n$.
 
+\subsection{Interpretation of the results}
 
+The tests and eigenvalue for one particle worked as expected, making us more confident that the algorithm is producing trustworthy results. For two particles we got that, for higher frequencies, we got larger eigenvalues. Since the eigenvalue corresponds to energy, that should mean we have more of it. Now the eigenvectors plotted in figure \ref{fig:QM2002} are harder to interpret. Higher frequencies leads to a more narrow peak located more to the left (lower $\rho$). In quantum mechanics a narrow graph often means that a value is more sharp, in this case $\rho$. Now $\rho$ is a representation of the relative position $r = |\mathbf{r}_1 - \mathbf{r}_2|$, where $\mathbf{r}_1$ and $\mathbf{r}_2$ are the positions specific particles. If we had a many, this could represent some sort of charge density, meaning that for lower $\omega_r$ it is less grouped. In other words the charge could is more diffuse and further away from the core. 
 
 \section{Conclusion}
 
-We used Jacobi's rotation algorithm to solve a quantum mechanical eigenvalue/vector problem. Before we applied the algorithm we did tests on an analytical system (buckling beam). We also tested the algorithm using unit-tests to test specific chunks of the program. The tests passed and are described with solutions in the appendix \ref{appendix}.
+We used Jacobi's rotation algorithm to solve a quantum mechanical eigenvalue/vector problem. Before we applied the algorithm we did tests on an analytical system (buckling beam). We also tested the algorithm using unit-tests to test specific chunks of the program. Although we predicted a lot fewer FLOPS, the tests passed and are described with solutions in the appendix \ref{appendix}.
 
-For one particle Jacobi's rotation algorithm produces the eigenvalue $\lambda = 3.000$ for the lowest state. This is close to the analytical term of $\lambda_{ana} = 3$. For two particles we get the eigenvalues (for the lowest energy state) $\lambda = 0.841, 2.231, 4.058, 17.444$ withe the corresponding frequencies $\omega_r = 0.01, 0.5, 1, 5$. We also notice that the eigenvector plotted, is wider, lower and more to the right (higher $\rho$) for lower frequencies. This means that the energy gets higher with larger frequency $\omega_r$. Because the graph is wider for lower frequencies, that means $\rho$ is less precise. Our physical interpretation of this is that higher frequencies $\omega_r$ corresponds to a orbit closer to the core. Relative position (represented by $\rho$) also becomes more precise, telling us that maybe the charge density is more precise. If $\omega_r$ also represents the speed of which the particles orbit, it also makes sense that the orbit becomes smaller.
+For one particle Jacobi's rotation algorithm produces the eigenvalue $\lambda = 3.000$ for the lowest state. This is close to the analytical term of $\lambda_{ana} = 3$. For two particles we get the eigenvalues (lowest energy state) $\lambda = 0.841, 2.231, 4.058, 17.444$ with the corresponding frequencies $\omega_r = 0.01, 0.5, 1, 5$. This means that the energy gets higher with larger frequency $\omega_r$. We also notice that the eigenvector plotted, is wider, lower and more to the right (higher $\rho$) for lower frequencies. The fact that the graph is wider might mean $\rho$ is less sharp, telling us that maybe the charge density is less grouped together for lower frequencies. Our physical interpretation of the maximum being more to the right $\omega_r$ corresponds to a orbit further away from the core. If $\omega_r$ also represents the speed of which the particles orbit, it also makes sense that the orbit becomes smaller.
 
 \section{Appendix}
 \label{appendix}
@@ -332,9 +336,9 @@ There are several sections in this code that can be tested independently. We hav
 
 \onecolumngrid
 \begin{thebibliography}{}
-\bibitem{lecnotes} http://compphysics.github.io/
+\bibitem{lecnotes} Computational Physics I FYS3150/FYS4150, Department of Physics, Univeristy of Oslo, Sep 30, 2020, http://compphysics.github.io/
 ComputationalPhysics/doc/pub/eigvalues/html/.\_eigvalues-bs011.html
-\bibitem{oppgavetekst} OPPGAVETEKST REF
+\bibitem{oppgavetekst} Project 2, Computational Physics I FYS3150/FYS4150, Department of Physics, Univeristy of Oslo, Sep 11, 2020.
 
 \end{thebibliography}
 \end{document}
