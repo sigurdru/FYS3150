@@ -1,0 +1,8 @@
+\begin{tabular}{||c | c | c | c||}
+\hline
+N & BB & QM1 & QM2    \\ \hline
+10 & 558 ms & 317 ms & 311 ms    \\ \hline
+50 & 130413 ms & 126425 ms & 126605 ms    \\ \hline
+100 & 1881814 ms & 1843776 ms & 1863955 ms    \\ \hline
+200 & 29238405 ms & 28648153 ms & 29195494 ms    \\ \hline
+\end{tabular}

@@ -1,0 +1,8 @@
+\begin{tabular}{||c | c | c | c||}
+\hline
+N & BB & QM1 & QM2    \\ \hline
+10 & 173 & 161 & 178    \\ \hline
+50 & 6241 & 6059 & 6137    \\ \hline
+100 & 25789 & 25285 & 25344    \\ \hline
+200 & 104882 & 102937 & 103182    \\ \hline
+\end{tabular}

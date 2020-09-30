@@ -9,22 +9,23 @@ double BB_eigvec(int j, int N);
 double QM_eigval(int j);
 
 int main(int argc, char* argv[]) {
-    int n;
+    int n, print;
     double omega_r;
     std::string fname;
     std::string method;
-    if (argc < 4) {
+    if (argc < 5) {
         std::cout << "Give me args" << std::endl;
         exit(1);
     }
     else {
-        n = std::atoi(argv[1]);
-        method = argv[2];
-        omega_r = std::atof(argv[3]);
+        print = std::atoi(argv[1]);
+        n = std::atoi(argv[2]);
+        method = argv[3];
+        omega_r = std::atof(argv[4]);
         fname = "../output/";
         fname.append(method).append("_").
-            append(argv[1]).append("_").
-            append(argv[3]).append(".csv");
+            append(argv[2]).append("_").
+            append(argv[4]).append(".csv");
     }
 
     float eps = 1e-40;
@@ -42,17 +43,23 @@ int main(int argc, char* argv[]) {
         double d = 2.0/(h*h);
         solver.initialize(a, d, x, n);
         solver.solve(eps, max_iter);
-        solver.write_to_file(fname, BB_eigvals, BB_eigvec);
+        if (print) {
+            solver.write_to_file(fname, BB_eigvals, BB_eigvec);
+        }
     } else if (method == "QM1") {
         QM qm_solver;
         qm_solver.initialize(n, rho0, rhoN, V, omega_r);
         qm_solver.solve(eps, max_iter);
-        qm_solver.write_to_file(fname, QM_eigval);
+        if (print) {
+            qm_solver.write_to_file(fname, QM_eigval);
+        }
     } else if (method == "QM2") {
         QM qm_solver;
         qm_solver.initialize(n, rho0, rhoN, V_2, omega_r);
         qm_solver.solve(eps, max_iter);
-        qm_solver.write_to_file(fname);
+        if (print) {
+            qm_solver.write_to_file(fname);
+        }
     } else {
         std::cout << "Bad task argument: " << method << std::endl;
         return 1;
