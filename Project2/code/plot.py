@@ -4,14 +4,14 @@ import sys
 
 plt.style.use('seaborn')
 plt.rc('text', usetex=True)
-plt.rc('font', family='Computer Modern')
+plt.rc('font', family='DejaVu Sans')
 
 method, n, omega = sys.argv[1:]
 omegas = [0.01, 0.5, 1, 5]
 titles = {
     'BB': 'Buckling beam',
     'QM1': 'Quantum mechanics, one electron',
-    'QM2': 'Quantum mechanics, two electron',
+    'QM2': 'Quantum mechanics, two electrons',
 }
 
 fig, ax = plt.subplots()
