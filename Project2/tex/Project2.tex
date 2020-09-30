@@ -236,7 +236,7 @@ We can then implement Jacobi's rotation algorithm the same way we did for one pa
 
 To test our algorithm we used two unit tests, one to test that we find expected indexes and one to test right eigenvalues and eigenvectors. All the tests passed and the results can be found in the appendix \ref{appendix}.
 
-Confident in our algorithm we went fourth with the quantum mechanical systems. For one particle the resulting eigenvector can be seen in figure \ref{fig:QM200}. We notice that the eigenstate has a maximum at around $\rho = 1$ and goes towards zero at the ends. In order to produce this plot we tested for different integration points $n$ and endpoints $\rho_N$. We found $\rho_N= 5$ and $n=200$ to be reasonable, however all the plots, except those with very low $\rho_N$ and $n$, are almost indistinguishable.
+Confident in our algorithm we went fourth with the quantum mechanical systems. For one particle the resulting eigenvector can be seen in figure \ref{fig:QM200}. We notice that the eigenstate has a maximum at around $\rho = 1$ and goes towards zero at the ends. In order to produce this plot we tested for different integration points $n$ and endpoints $\rho_N$. We found $\rho_N= 5$ and $n=200$ to be reasonable, however all the plots, except those with very low $\rho_N$ and $n$, are almost indistinguishable. We found the eigenvalue to be $\lambda = 3.000$, where the analytical solution is $\lambda_{ana} = 3$. Note that the graph is normalized such that the vector has unit length, this means that the graph will be scaled differently based on how many integration points you have.
 
 \begin{figure}[h]
 	\centering
@@ -245,6 +245,8 @@ Confident in our algorithm we went fourth with the quantum mechanical systems. F
   \label{fig:QM200}
 \end{figure}
 
+The result for two particles can be seen in figure \ref{fig:QM2002}. Again we tested for different endpoints and integration points, and found that $n=200$ and $\lambda_N = 5$ worked well. The reason we have not included the other plots is because they are indistinguishable to the human eye. We tested for different frequencies $\omega_r = 0.01, 0.5, 1, 5$ and got corresponding eigenvalues $\lambda = 0.841, 2.231, 4.058, 17.444$. Higher frequency seems to create larger eigenvalues, broader and lower peaks more to the right.
+
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=\linewidth]{../output/QM2_200.pdf}
@@ -252,19 +254,26 @@ Confident in our algorithm we went fourth with the quantum mechanical systems. F
   \label{fig:QM2002}
 \end{figure}
 
-\begin{table}
+For those interested have we listed the numbers of iterations (see table \ref{tab:iter}) and time needed (see table \ref{tab:time}) in order to complete the algorithm, for different integration points.
+
+\begin{table}[h]
 	\input{../output/table_iters.txt}
-	\label{}
-	\caption{}
+	\label{tab:iter}
+	\caption{This table shows the total number of iterations needed for different integration points N. BB corresponds to buckling beam, QM1 one particle in HO potential and QM2 two particles.}
 \end{table}
+
+\begin{table}[h]
+	\input{../output/table_time.txt}
+	\label{tab:time}
+	\caption{This table show the total time (in milliseconds) needed to perform the computations for different integration points N. BB corresponds to buckling beam, QM1 one particle in HO potential and QM2 two particles.}
+\end{table}
+
 
 \section{Discussion}
 
-
-
-
-
 \section{Conclusion}
+
+For one electron Jacobi's rotation algorithm produces exact eigenvalues within $\pm 0.0009$. 
 
 \section{Appendix}
 \label{appendix}
