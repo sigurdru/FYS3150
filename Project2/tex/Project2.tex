@@ -292,11 +292,12 @@ It is clear from tables REF-ITERS-TABLE and REF-TIME-TABLE that the number of FL
 \end{equation*}
 for $n$ integration points. The number of FLOPS per iterations was clearly missing some elements. We did not include the cost of iterating through all the elements above or below the diagonal to find the indices and value of the largest element.
 
-\section{Discussion}
 
 \section{Conclusion}
 
-For one electron Jacobi's rotation algorithm produces exact eigenvalues within $\pm 0.0009$.
+We used Jacobi's rotation algorithm to solve a quantum mechanical eigenvalue/vector problem. Before we applied the algorithm we did tests on an analytical system (buckling beam). We also tested the algorithm using unit-tests to test specific chunks of the program. The tests passed and are described with solutions in the appendix \ref{appendix}.
+
+For one particle Jacobi's rotation algorithm produces the eigenvalue $\lambda = 3.000$ for the lowest state. This is close to the analytical term of $\lambda_{ana} = 3$. For two particles we get the eigenvalues (for the lowest energy state) $\lambda = 0.841, 2.231, 4.058, 17.444$ withe the corresponding frequencies $\omega_r = 0.01, 0.5, 1, 5$. We also notice that the eigenvector plotted, is wider, lower and more to the right (higher $\rho$) for lower frequencies. This means that the energy gets higher with larger frequency $\omega_r$. Because the graph is wider for lower frequencies, that means $\rho$ is less precise. Our physical interpretation of this is that higher frequencies $\omega_r$ corresponds to a orbit closer to the core. Relative position (represented by $\rho$) also becomes more precise, telling us that maybe the charge density is more precise. If $\omega_r$ also represents the speed of which the particles orbit, it also makes sense that the orbit becomes smaller.
 
 \section{Appendix}
 \label{appendix}
