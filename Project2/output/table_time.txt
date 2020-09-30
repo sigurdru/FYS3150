@@ -2,7 +2,7 @@
 \hline
 N & BB & QM1 & QM2    \\ \hline
 10 & 0 ms & 0 ms & 0 ms    \\ \hline
-50 & 82 ms & 78 ms & 71 ms    \\ \hline
-100 & 1054 ms & 1070 ms & 1031 ms    \\ \hline
-200 & 16932 ms & 16164 ms & 16138 ms    \\ \hline
+50 & 76 ms & 70 ms & 70 ms    \\ \hline
+100 & 1045 ms & 1023 ms & 1050 ms    \\ \hline
+200 & 16179 ms & 15940 ms & 16422 ms    \\ \hline
 \end{tabular}

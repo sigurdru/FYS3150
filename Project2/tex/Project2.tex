@@ -67,7 +67,7 @@ The harmonic oscillator (HO) potential appears in many areas within quantum phys
 
 When we try to solve Schrodinger's equation for both one and two particles, we end up with a eigenvalue problem (see theory section). This can be represented with a linear set of equations written on matrix-form (a derivation can be found in our project 1\footnote{github.com/sigurdru/FYS3150/blob/master/Project1/tex/Project1.pdf}). Using Jacobi's rotation algorithm, also described in the theory section, we can diagonalize the matrix to find these eigenvalues and eigenvectors. Then plot the results, comparing them to experimental values.
 
-When implementing algorithms it is important to test your code and make sure it performs as expected. Therefore we perform unit-tests to make sure sections of our program works as expected. We also test the code with a test scenario (buckling beam), which have analytical eigenvalues and eigenvectors. The testing is described in the appendix (\ref{appendix}).
+When implementing algorithms it is important to test your code and make sure it performs as expected. Therefore we perform unit-tests to make sure sections of our program works as expected. We also test the code with a test scenario (buckling beam), which have analytical eigenvalues and eigenvectors. The testing is described in the appendix (section \ref{appendix}).
 
 For our studies we have used c++ for heavy computation, python for visualization and bash for automation. All the code along with instructions on how to run it, can be cloned from our GitHub repository here\footnote{github.com/sigurdru/FYS3150/tree/master/Project2}.
 
@@ -222,7 +222,7 @@ As mentioned in the theory section, when you study one or more particles in a HO
 \end{equation}
 Where $e_i = -1/h^2$, $d_i = 2/h^2 + V_i$ and $h = (\rho_N - \rho_0)/N$. $\rho_0$ and $\rho_N$ are the endpoints that in reality goes from $\rho_0 = 0$ to $\rho_N=\infty$. Of course we cannot do this for $\rho_N = \infty$, so we have to decide on a maximum we want to evaluate. We do this with trial end error. Our other problem is to decide the number of integration points $N$. As with the endpoint $\rho_N$ we try for different values and interpret the solutions.
 
-We can solve this with Jacobi's rotation algorithm described in the theory section. In order to do this we use the sets of equations (\ref{eq:jacobi}). To make sure algorithm was implemented properly we performed several tests. First unit-tests to make sure small chunks run as expected, then with a buckling beam problem that has analytical eigenvalues and eigenvectors. Further information on the tests can be found in the appendix (\ref{appendix}).
+We can solve this with Jacobi's rotation algorithm described in the theory section. In order to do this we use the sets of equations (\ref{eq:jacobi}). To make sure algorithm was implemented properly we performed several tests. First unit-tests to make sure small chunks run as expected, then with a buckling beam problem that has analytical eigenvalues and eigenvectors. Further information on the tests can be found in the appendix (section \ref{appendix}).
 
 
 \section{Results}
@@ -230,19 +230,24 @@ We can solve this with Jacobi's rotation algorithm described in the theory secti
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=\linewidth]{../output/QM1_200_0.pdf}
-	\label{fig:QM200}
-	\caption{}
+	\caption{The eigenfunction $u(\rho)$ for an electron in a harmonic oscillator well corresponding to the smallest eigenvalue $\lambda_1$, i.e the lowest energy value. The number of integration points is $n = 200$. The eigenvector is normalized to length 1.}
+  \label{fig:QM200}
 \end{figure}
-
 
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=\linewidth]{../output/QM2_200.pdf}
-	\label{fig:QM2002}
-	\caption{}
+	\caption{The radial wave function $\psi(\rho)$ for a system of two electrons interacting through the Coulomb potential in a harmonic oscillator well. This is the function corresponding to the smallest eigenvalue $\lambda_1$, i.e the lowest energy value. The number of integration points is $n = 200$. The eigenvector is normalized to length 1.}
+  \label{fig:QM2002}
 \end{figure}
 
+
+
 \section{Discussion}
+
+
+
+
 
 \section{Conclusion}
 
@@ -257,7 +262,7 @@ The simplest use case for our algorithm is a second order differential equation 
 	\label{eq:BB}
 \end{equation}
 
-Discretizing this equation gives a matrix equation on the form of equation \ref{eq:discrete_2nd_deriv_mat} with $e_i = e = -1/h^2$ and $d_i = d = 2/h^2$, where $h$ again is the step size. This is a tridiagonal Toeplitz matrix which has analytical eigenvalues described by \ref{eq:BB_eigvals} and analytical eigenvectors described by \ref{eq:BB_eigvecs}, both for $j = 1, 2, ..., N-1$.
+Discretizing this equation gives a matrix equation on the form of equation \ref{eq:discrete_2nd_deriv_mat} with $e_i = e = -1/h^2$ and $d_i = d = 2/h^2$, where $h$ again is the step size. This is a tridiagonal Toeplitz matrix which has analytical eigenvalues described by \ref{eq:BB_eigvals} and analytical eigenvectors described by \ref{eq:BB_eigvecs}, both for $j = 1, 2, ..., N-1$. Figure \ref{fig:BB200} shows the eigenvector corresponding to the smallest eigenvalue, both computed and analytic, for $n = 200$ integration points.
 \begin{align}
   \lambda_j &= d + 2 e \cos{\left( \frac{j \pi}{N} \right)} \label{eq:BB_eigvals} \\
   \mathbf u_j &= \left[ \sin{\left( \frac{j \pi}{N} \right)}, \sin{\left( \frac{2 j \pi}{N} \right)}, ..., \sin{\left( \frac{(N-1) j \pi}{N} \right)} \right]^T \label{eq:BB_eigvecs}
@@ -266,14 +271,14 @@ Discretizing this equation gives a matrix equation on the form of equation \ref{
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=\linewidth]{../output/BB_200_0.pdf}
-	\label{fig:BB200}
-	\caption{}
+	\caption{The displacement $u(\rho)$ of a buckling beam corresponding to the smallest eigenvalue $\lambda_1$. The number of integration points is $n = 200$. The eigenvector is normalized to length 1.}
+  \label{fig:BB200}
 \end{figure}
 
 
 \subsection{Unit-tests}
 
-There are several sections in this code that can be tested independantly. We have developed tests for a general tridiagonal Toeplitz matrix that checks that the program finds the correct
+There are several sections in this code that can be tested independently. We have developed tests for a general tridiagonal Toeplitz matrix that checks that the program finds the correct indices $k$ and $l$ for the largest off-diagonal element in the matrix and that the computed eigenvalues and eigenvectors match the analytic results in equations \ref{eq:BB_eigvals} and \ref{eq:BB_eigvecs}. For $n = 10$, the tests pass with a tolerance of $10^{-3}$ for the eigenvalues and $10^{-2}$ for each element in the eigenvector corresponding to the smallest eigenvalue. Figure \ref{fig:BB200} displaying the results of the algorithm does indeed show a very good correspondence between computed and analytic results.
 
 
 \onecolumngrid

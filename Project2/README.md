@@ -6,6 +6,7 @@ The report Project2.pdf is found in the tex directory.
 Code dependencies:
 - C++
     - armadillo
+    - Catch2
 - Python (runs with python version 3.6.9 and 3.8.2)
     - numpy
     - matplotlib
