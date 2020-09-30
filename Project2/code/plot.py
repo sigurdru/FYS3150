@@ -14,13 +14,10 @@ titles = {
     'QM2': 'Quantum mechanics, two electron',
 }
 
-xlabel = 'x' if method == 'BB' else r'\rho'
-xlabel = '$' + xlabel + '$'
-
 fig, ax = plt.subplots()
 title = titles[method] + '\n' + f'n = {n}'
 ax.set_title(title, fontsize=20)
-ax.set_xlabel(xlabel, fontsize=20)
+ax.set_xlabel(r'$\rho$', fontsize=20)
 ax.set_ylabel('Eigenvector', fontsize=20)
 
 if method == 'QM2' and omega == '0':
@@ -31,7 +28,7 @@ if method == 'QM2' and omega == '0':
         ax.plot(
             df['rho'], 
             df['eigenvec'], 
-            label=f'$\omega_r = {omega:.2f}$, $\lambda = {df["eigenvals"][0]:.3f}$'
+            label=f'$\omega_r = {omega:.2f}$, $\lambda_1 = {df["eigenvals"][0]:.3f}$'
         )
     fname = fname[:-6] + fname[-4:]
 else:
@@ -40,14 +37,14 @@ else:
     ax.plot(
         df['rho'], 
         df['eigenvec'], 
-        label=f'Computed, $\lambda = {df["eigenvals"][0]:.3f}$'
+        label=f'Computed, $\lambda_1 = {df["eigenvals"][0]:.3f}$'
     )
     try:
         ax.plot(
             df['rho'], 
             df['analytic_eigenvec'], 
-            '--',
-            label=f'Analytic, $\lambda = {df["analytic_eigenvals"][0]:.3f}$'
+            'r:',
+            label=f'Analytic, $\lambda_1 = {df["analytic_eigenvals"][0]:.3f}$'
         )
     except KeyError:
         pass
