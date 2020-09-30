@@ -220,7 +220,10 @@ As mentioned in the theory section, when you study one or more particles in a HO
 		u_{N-1}
 	\end{bmatrix}}
 \end{equation}
-Where $e_i = -1/h^2$, $d_i = 2/h^2 + V_i$ and $h = (\rho_N - \rho_0)/N$. Now we can solve this with Jacobi's rotation algorithm described in the theory section. We do this with the sets of equations (\ref{eq:jacobi}). To make sure algorithm was implemented properly we performed several tests. First unit-tests to make sure small chunks run as expected, then with a buckling beam problem that has analytical eigenvalues and eigenvectors. Further information on the tests can be found in the appendix (\ref{appendix}).
+Where $e_i = -1/h^2$, $d_i = 2/h^2 + V_i$ and $h = (\rho_N - \rho_0)/N$. $\rho_0$ and $\rho_N$ are the endpoints that in reality goes from $\rho_0 = 0$ to $\rho_N=\infty$. Of course we cannot do this for $\rho_N = \infty$, so we have to decide on a maximum we want to evaluate. We do this with trial end error. Our other problem is to decide the number of integration points $N$. As with the endpoint $\rho_N$ we try for different values and interpret the solutions.
+
+We can solve this with Jacobi's rotation algorithm described in the theory section. In order to do this we use the sets of equations (\ref{eq:jacobi}). To make sure algorithm was implemented properly we performed several tests. First unit-tests to make sure small chunks run as expected, then with a buckling beam problem that has analytical eigenvalues and eigenvectors. Further information on the tests can be found in the appendix (\ref{appendix}).
+
 
 \section{Results}
 
