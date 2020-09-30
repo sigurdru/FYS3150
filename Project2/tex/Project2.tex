@@ -218,7 +218,7 @@ As mentioned in the theory section, when you study one or more particles in a HO
 		u_{2} \\
 		\dots\\ \dots\\ \dots\\
 		u_{N-1}
-	\end{bmatrix}}
+  \end{bmatrix}}
 \end{equation}
 Where $e_i = -1/h^2$, $d_i = 2/h^2 + V_i$ and $h = (\rho_N - \rho_0)/N$. $\rho_0$ and $\rho_N$ are the endpoints that in reality goes from $\rho_0 = 0$ to $\rho_N=\infty$. Of course we cannot do this for $\rho_N = \infty$, so we have to decide on a maximum we want to evaluate. We do this with trial end error. Our other problem is to decide the number of integration points $N$. As with the endpoint $\rho_N$ we try for different values and interpret the solutions.
 
@@ -249,9 +249,6 @@ We can solve this with Jacobi's rotation algorithm described in the theory secti
 \section{Appendix}
 \label{appendix}
 
-\subsection{Unit-tests}
-
-
 \subsection{Buckling beam}
 
 The simplest use case for our algorithm is a second order differential equation like \ref{eq:SE1} and \ref{eq:SE2}, but without the potential. One such example is equation \ref{eq:BB} for the vertical displacement $u(\rho)$ of a horisontal beam of length $L$ when a force is applied in the x-direction towards the origin. $\rho = x/L \in [0, 1]$, where $L$ is the length of the beam, is a dimensionless length. The constant $\lambda$ can be expressed as $\lambda = F L^2 / \gamma$, where $F$ is the applied force and $\gamma$ is a constant defined by properties like the rigidity of the beam.
@@ -260,9 +257,9 @@ The simplest use case for our algorithm is a second order differential equation 
 	\label{eq:BB}
 \end{equation}
 
-Discretizing this equation gives a matrix equation on the form of equation \ref{eq:discrete_2nd_deriv_mat} with $e_i = e = -1/h^2$ and $d_i = d = 2/h^2$, where $h$ again is the step size. This equationhas analytical eigenvalues described by \ref{eq:BB_eigvals} and analytical eigenvectors described by \ref{eq:BB_eigvecs}, both for $j = 1, 2, ..., N-1$.
+Discretizing this equation gives a matrix equation on the form of equation \ref{eq:discrete_2nd_deriv_mat} with $e_i = e = -1/h^2$ and $d_i = d = 2/h^2$, where $h$ again is the step size. This is a tridiagonal Toeplitz matrix which has analytical eigenvalues described by \ref{eq:BB_eigvals} and analytical eigenvectors described by \ref{eq:BB_eigvecs}, both for $j = 1, 2, ..., N-1$.
 \begin{align}
-  \lambda_j &= d + 2 a \cos{\left( \frac{j \pi}{N} \right)} \label{eq:BB_eigvals} \\
+  \lambda_j &= d + 2 e \cos{\left( \frac{j \pi}{N} \right)} \label{eq:BB_eigvals} \\
   \mathbf u_j &= \left[ \sin{\left( \frac{j \pi}{N} \right)}, \sin{\left( \frac{2 j \pi}{N} \right)}, ..., \sin{\left( \frac{(N-1) j \pi}{N} \right)} \right]^T \label{eq:BB_eigvecs}
 \end{align}
 
@@ -272,6 +269,12 @@ Discretizing this equation gives a matrix equation on the form of equation \ref{
 	\label{fig:BB200}
 	\caption{}
 \end{figure}
+
+
+\subsection{Unit-tests}
+
+There are several sections in this code that can be tested independantly. We have developed tests for a general tridiagonal Toeplitz matrix that checks that the program finds the correct 
+
 
 \onecolumngrid
 \begin{thebibliography}{}
