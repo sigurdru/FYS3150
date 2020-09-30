@@ -4,7 +4,8 @@ execute () {
     else
         endl=", omega_r = ${4}"
     fi
-    echo Computing $2 with n = ${2}${endl}
+    echo
+    echo Computing $3 with n = ${2}${endl}
     ./main.exe $1 $2 $3 $4
     if [ $? -ne 0 ]; then
         exit 1

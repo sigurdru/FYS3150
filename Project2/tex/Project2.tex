@@ -250,7 +250,7 @@ This is most likely a gross underestimate, but it implies that increasing the nu
 
 To test our algorithm we used two unit tests, one to test that we find expected indexes and one to test right eigenvalues and eigenvectors. All the tests passed and the results can be found in the appendix \ref{appendix}.
 
-Confident in our algorithm we went fourth with the quantum mechanical systems. For one particle the resulting eigenvector can be seen in figure \ref{fig:QM200}. We notice that the eigenstate has a maximum at around $\rho = 1$ and goes towards zero at the ends. In order to produce this plot we tested for different integration points $n$ and endpoints $\rho_N$. We found $\rho_N= 5$ and $n=200$ to be reasonable, however all the plots, except those with very low $\rho_N$ and $n$, are almost indistinguishable. We found the eigenvalue to be $\lambda = 3.000$, where the analytical solution is $\lambda_{ana} = 3$. Note that the graph is normalized such that the vector has unit length, this means that the graph will be scaled differently based on how many integration points you have.
+Confident in our algorithm we went forth with the quantum mechanical systems. For one particle the resulting eigenvector can be seen in figure \ref{fig:QM200}. We notice that the eigenstate has a maximum at around $\rho = 1$ and goes towards zero at the ends. In order to produce this plot we tested for different integration points $n$ and endpoints $\rho_N$. We found $\rho_N= 5$ and $n=200$ to be reasonable, however all the plots, except those with very low $\rho_N$ and $n$, are almost indistinguishable. We found the eigenvalue to be $\lambda = 3.000$, where the analytical solution is $\lambda_{ana} = 3$. Note that the graph is normalized such that the vector has unit length, this means that the graph will be scaled differently based on how many integration points you have.
 
 \begin{figure}[h]
 	\centering
@@ -286,13 +286,13 @@ For those interested have we listed the numbers of iterations (see table \ref{ta
 
 \subsection{FLOPS in Jacobi's rotation algorithm}
 
-It is clear from tables REF-ITERS-TABLE and REF-TIME-TABLE that the number of FLOPS (equation \ref{eq:FLOPS} was underestimated. The number of iterations turned to be approximately five times what we estimated:
+It is clear from tables \ref{tab:iter} and \ref{tab:time} that the number of FLOPS (equation \ref{eq:FLOPS}) was underestimated. The number of iterations turned to be approximately five times what we estimated:
 \begin{equation*}
-  N_{\text{iters}} = \frac{5}{2}n^2
+  N_{\text{iter}} = \frac{5}{2}n^2
 \end{equation*}
-for $n$ integration points. The number of FLOPS per iterations was clearly missing some elements. We did not include the cost of iterating through all the elements above or below the diagonal to find the indices and value of the largest element.
+for $n$ integration points. The number of FLOPS per iterations was clearly missing some elements. We did not include the cost of iterating through all the elements above or below the diagonal to find the indices and value of the largest element. For all elements in the upper or lower half of the matrix, this involves at least a function call or FLOP to determine the absolute value of the element and a comparison to determine if it is greater than the largest number found so far. Though this is not an expensive operation for each element, the total number of FLOPS for all the elements combined would probably grow as $n^2$ as the number of elements grows as $n^2$. With a number of iterations that grows as $n^2$ this would result in a term in the total number of FLOPS that grows like $n^4$ which could have a substantial effect on computing time for large $n$.
 
-\section{Discussion}
+
 
 \section{Conclusion}
 
