@@ -1,4 +1,4 @@
-\documentclass[reprint,english,notitlepage,nofootinbib]{revtex4-1}  % defines the basic parameters of the document
+\documentclass[reprint,english,notitlepage]{revtex4-1}  % defines the basic parameters of the document
 % if you want a single-column, remove reprint
 
 % allows special characters (including æøå)
@@ -65,12 +65,12 @@
 
 The harmonic oscillator (HO) potential appears in many areas within quantum physics. This is because many potentials can be approximated, at least in some intervals, with a HO potential. The most famous example of this might be the model for a hydrogen atom, where the electron is bound to the proton by a HO potential. That is why, in this report, we are going to study both one and multiple electrons in a HO potential. We are also going to account for electrical forces between the particles.
 
-When we try to solve Schrodinger's equation for both one and two particles, we end up with a eigenvalue problem (see theory section). This can be represented with a linear set of equations written on matrix-form (a derivation can be found in our project 1\footnote{github.com/sigurdru/FYS3150/blob/master/Project1/tex/Project1.pdf}). Using Jacobi's rotation algorithm, also described in the theory section, we can diagonalize the matrix to find these eigenvalues and eigenvectors. Then plot the results, comparing them to experimental values.
+When we try to solve Schrodinger's equation for both one and two particles, we end up with a eigenvalue problem (see theory section). This can be represented with a linear set of equations written on matrix-form (from project 1 \citep{project1}). Using Jacobi's rotation algorithm, also described in the theory section, we can diagonalize the matrix to find these eigenvalues and eigenvectors. Then plot the results, comparing them to known values.
 
 When implementing algorithms it is important to test your code and make sure it performs as expected. Therefore we perform unit-tests to make sure sections of our program works as expected. We also test the code with a test scenario (buckling beam), which have analytical eigenvalues and eigenvectors. The testing is described in the appendix (\ref{appendix}).
 
-For our studies we have used c++ for heavy computation, python for visualization and bash for automation. All the code along with instructions on how to run it, can be cloned from our GitHub repository here\footnote{github.com/sigurdru/FYS3150/tree/master/Project2}.
-
+For our studies we have used c++ for heavy computation, python for visualization and bash for automation. All the code along with instructions on how to run it, can be cloned from our GitHub repository here \citep{github}.
+ 
 
 \section{Theory}
 
@@ -149,6 +149,8 @@ is an eigenvector with eigenvalue $\lambda$ that satisfy
 \end{equation*}
 Therefore, if you have the eigenvector $\mathbf{v}$ and matrices $U_i$ you can find $\mathbf{v}'$ with equation (\ref{eq:vmark}).
 
+FLOPS
+
 \subsection{Electrons in a harmonic oscillator potential}
 
 It turns out that if you try to solve Schrodinger's equation you end up with a eigenvalue problem. We will derive the math here, but everything is taken from here \citep{oppgavetekst}. First we consider the Schrodinger's equation for one electron. Because of spherical symmetry we only need to look at the radial part.
@@ -201,14 +203,14 @@ We arrive at the Schrodinger's equation (\ref{eq:SE2})
 
 \section{Method}
 
-As mentioned in the theory section, when you study one or more particles in a HO potential, you get a eigenvalue problem. For one particle this is given by equation (\ref{eq:SE1}). From Project 1 (see the theory section from Project 1\footnote{github.com/sigurdru/FYS3150/blob/master/Project1/tex/Project1.pdf}) we know this type of differential equation creates a set of equations, that can be represented as follows.
+As mentioned in the theory section, when you study one or more particles in a HO potential, you get a eigenvalue problem. For one particle this is given by equation (\ref{eq:SE1}). From Project 1 (see the theory section in \citep{project1}) we know this type of differential equation creates a set of equations, that can be represented as follows.
 \begin{equation}
-  \label{eq:discrete_2nd_deriv_mat}
+	\label{eq:discrete_2nd_deriv_mat}
 	\scriptsize{\begin{bmatrix}d_1 & e_1 & 0   & 0    & \dots  &0     & 0 \\
 		e_1 & d_2 & e_2 & 0    & \dots  &0     &0 \\
 		0   & e_2 & d_3 & e_3  &0       &\dots & 0\\
 		\dots  & \dots & \dots & \dots  &\dots      &\dots & \dots\\
-		0   & \dots & \dots & \dots  &  e_{N-3}     &d_{N-2} & e_{N-2}\\
+		0   & \dots & \dots & \dots  &\dots  e_{N-3}     &d_{N-2} & e_{N-2}\\
 		0   & \dots & \dots & \dots  &\dots       &e_{N-2} & d_{N-1}
 	\end{bmatrix}  \begin{bmatrix} u_{1} \\
 		u_{2} \\
@@ -220,10 +222,15 @@ As mentioned in the theory section, when you study one or more particles in a HO
 		u_{N-1}
 	\end{bmatrix}}
 \end{equation}
-Where $e_i = -1/h^2$, $d_i = 2/h^2 + V_i$ and $h = (\rho_N - \rho_0)/N$. $\rho_0$ and $\rho_N$ are the endpoints that in reality goes from $\rho_0 = 0$ to $\rho_N=\infty$. Of course we cannot do this for $\rho_N = \infty$, so we have to decide on a maximum we want to evaluate. We do this with trial end error. Our other problem is to decide the number of integration points $N$. As with the endpoint $\rho_N$ we try for different values and interpret the solutions.
+Where $e_i = -1/h^2$, $d_i = 2/h^2 + \rho_i^2$ and $h = (\rho_N - \rho_0)/N$. $\rho_0$ and $\rho_N$ are the endpoints that in reality goes from $\rho_0 = 0$ to $\rho_N=\infty$. Of course we cannot do this for $\rho_N = \infty$, so we have to decide on a maximum we want to evaluate. We do this with trial end error. Our other problem is to decide the number of integration points $N$. As with the endpoint $\rho_N$ we try for different values and interpret the solutions.
 
 We can solve this with Jacobi's rotation algorithm described in the theory section. In order to do this we use the sets of equations (\ref{eq:jacobi}). To make sure algorithm was implemented properly we performed several tests. First unit-tests to make sure small chunks run as expected, then with a buckling beam problem that has analytical eigenvalues and eigenvectors. Further information on the tests can be found in the appendix (\ref{appendix}).
 
+When we introduce another particle we end up with equation (\ref{eq:SE2}). This will also have the same shape as equation (\ref{eq:discrete_2nd_deriv_mat}), the only difference being the value of diagonal elements
+\begin{equation*}
+	d_i = \frac{2}{h²} + \omega_r^2\rho_i^2 + \frac{1}{\rho_i}.
+\end{equation*}
+We can then implement Jacobi's rotation algorithm the same way we did for one particle.
 
 \section{Results}
 
@@ -242,6 +249,12 @@ We can solve this with Jacobi's rotation algorithm described in the theory secti
 	\caption{}
 \end{figure}
 
+\begin{table}
+	\input{../output/table_iters.txt}
+	\label{}
+	\caption{}
+\end{table}
+
 \section{Discussion}
 
 \section{Conclusion}
@@ -252,19 +265,8 @@ We can solve this with Jacobi's rotation algorithm described in the theory secti
 \subsection{Unit-tests}
 
 
+
 \subsection{Buckling beam}
-
-The simplest use case for our algorithm is a second order differential equation like \ref{eq:SE1} and \ref{eq:SE2}, but without the potential. One such example is equation \ref{eq:BB} for the vertical displacement $u(\rho)$ of a horisontal beam of length $L$ when a force is applied in the x-direction towards the origin. $\rho = x/L \in [0, 1]$, where $L$ is the length of the beam, is a dimensionless length. The constant $\lambda$ can be expressed as $\lambda = F L^2 / \gamma$, where $F$ is the applied force and $\gamma$ is a constant defined by properties like the rigidity of the beam.
-\begin{equation}
-	-\frac{d^2}{d\rho^2}u(\rho) = \lambda u(\rho)
-	\label{eq:BB}
-\end{equation}
-
-Discretizing this equation gives a matrix equation on the form of equation \ref{eq:discrete_2nd_deriv_mat} with $e_i = e = -1/h^2$ and $d_i = d = 2/h^2$, where $h$ again is the step size. This equationhas analytical eigenvalues described by \ref{eq:BB_eigvals} and analytical eigenvectors described by \ref{eq:BB_eigvecs}, both for $j = 1, 2, ..., N-1$.
-\begin{align}
-  \lambda_j &= d + 2 a \cos{\left( \frac{j \pi}{N} \right)} \label{eq:BB_eigvals} \\
-  \mathbf u_j &= \left[ \sin{\left( \frac{j \pi}{N} \right)}, \sin{\left( \frac{2 j \pi}{N} \right)}, ..., \sin{\left( \frac{(N-1) j \pi}{N} \right)} \right]^T \label{eq:BB_eigvecs}
-\end{align}
 
 \begin{figure}[h]
 	\centering
@@ -278,6 +280,8 @@ Discretizing this equation gives a matrix equation on the form of equation \ref{
 \bibitem{lecnotes} http://compphysics.github.io/
 ComputationalPhysics/doc/pub/eigvalues/html/.\_eigvalues-bs011.html
 \bibitem{oppgavetekst} OPPGAVETEKST REF
-
+\bibitem{project1} REF PROJECT 1
+\bibitem{github} REF GITHUB
+ 
 \end{thebibliography}
 \end{document}
