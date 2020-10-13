@@ -1,0 +1,173 @@
+\documentclass[reprint, english,notitlepage,nofootinbib]{revtex4-1}  % defines the basic parameters of the document
+% if you want a single-column, remove reprint
+
+% allows special characters (including æøå)
+\usepackage[utf8]{inputenc}
+\usepackage [norsk]{babel} %if you write norwegian
+%\usepackage[english]{babel}  %if you write english
+
+
+%% note that you may need to download some of these packages manually, it depends on your setup.
+%% I recommend downloading TeXMaker, because it includes a large library of the most common packages.
+
+\usepackage{physics,amssymb}  % mathematical symbols (physics imports amsmath)
+\usepackage{graphicx}         % include graphics such as plots
+\usepackage{xcolor}           % set colors
+\usepackage{hyperref}         % automagic cross-referencing (this is GODLIKE)
+\usepackage{tikz}             % draw figures manually
+\usepackage{listings}         % display code
+\usepackage{subfigure}        % imports a lot of cool and useful figure commands
+\usepackage{verbatim}
+\usepackage{adjustbox}
+
+
+% defines the color of hyperref objects
+% Blending two colors:  blue!80!black  =  80% blue and 20% black
+\hypersetup{ % this is just my personal choice, feel free to change things
+    colorlinks,
+    linkcolor={red!50!black},
+    citecolor={blue!50!black},
+    urlcolor={blue!80!black}}
+
+%% Defines the style of the programming listing
+%% This is actually my personal template, go ahead and change stuff if you want
+\lstset{ %
+	inputpath=,
+	backgroundcolor=\color{white!88!black},
+	basicstyle={\ttfamily\scriptsize},
+	commentstyle=\color{magenta},
+	language=Python,
+	morekeywords={True,False},
+	tabsize=4,
+	stringstyle=\color{green!55!black},
+	frame=single,
+	keywordstyle=\color{blue},
+	showstringspaces=false,
+	columns=fullflexible,
+	keepspaces=true}
+
+\newcommand\numberthis{\addtocounter{equation}{1}\tag{\theequation}}
+\newcommand{\ihat}{\boldsymbol{\hat{\textbf{\i}}}}
+\newcommand{\jhat}{\boldsymbol{\hat{\textbf{\j}}}}
+\newcommand{\khat}{\boldsymbol{\hat{\textbf{k}}}}
+\newcommand{\del}[1]{\textbf{#1)}}
+\newcommand{\svar}[1]{\underline{\underline{{#1}}}}
+\newcommand{\vc}[1]{\mathbf{#1}}
+
+
+\begin{document}
+
+
+
+\title{FYS3150 - Project 3}
+\date{\today}
+\author{Vegard Falmår and Sigurd Sørlie Rustad}
+\affiliation{Universitetet i Oslo}
+
+\email{vegardfa@uio.no}
+\email{sigurdsr@gmail.com}
+
+\newpage
+
+\begin{abstract}
+Abstract om du vil
+\end{abstract}
+\maketitle                                % creates the title, author, date & abstract
+
+
+\section{Introduction}
+
+
+
+\section{Theory}
+
+\subsection{Newton's laws and the motion of planets}
+
+The well-known Newtons second law reads
+\begin{equation}
+  \label{eq:Newton_2nd}
+  \sum \vc F = m \frac{\mathrm d^2 \vc r}{\mathrm d t^2},
+\end{equation}
+where $\sum \vc F$ is the sum of forces acting on an object, $m$ is its mass and $\vc r$ its position.
+
+Newton's law of gravity says that the total gravitational force acting on an object $i$ from all the other objects in a system is
+\begin{equation}
+  \label{eq:Newton_grav}
+  F_{G, i} = - G m_i \sum_{j \neq i} m_j \frac{\vc r_i - \vc r_j}{ \lvert \vc r_i - \vc r_j \rvert ^3}
+\end{equation}
+where $\vc r_i$ are the positions and $m_i$ are the masses of the objects. $G$ is the gravitational constant.
+
+For the motions of planets, on which the gravitational force is the only force acting, the two equations \ref{eq:Newton_2nd} and \ref{eq:Newton_grav} combined give us the differential equation that describes the motion of an object:
+\begin{equation}
+  \label{eq:DE}
+  \frac{\mathrm d^2 \vc r_i}{\mathrm d t^2} = \frac{1}{m_i} F_{G, i} = - G \sum_{j \neq i} m_j \frac{\vc r_i - \vc r_j}{ \lvert \vc r_i - \vc r_j \rvert ^3}
+\end{equation}
+
+
+\subsection{Velocity Verlet}
+
+Classical problem of Newtonian mechanics often involve solvinga set of two coupled first order differential equations, namely
+\begin{align*}
+  \frac{\mathrm d x}{\mathrm dt} = v \\
+  \frac{\mathrm d v}{\mathrm dt} = a
+\end{align*}
+where $x$ is position, $v$ is velocity and $a$ is acceleration. Doing a Taylor expansion around a point in time $t = t_0$ gives
+\begin{align*}
+  x(t) &= x(t_0) + (t - t_0) \frac{\mathrm d x}{\mathrm dt}(t_0) + \frac{1}{2} (t - t_0)^2 \frac{\mathrm d^2 x}{\mathrm dt^2}(t_0) + O(h^3) \\
+  &= x(t_0) + (t - t_0) v(t_0) + \frac{1}{2} (t - t_0)^2 a + O(h^3)
+\end{align*}
+An expression can then be found for position at a time $t = t_0 \pm h$:
+\begin{equation}
+  \label{eq:Taylor_exp_x}
+  x(t \pm h) = x(t_0) \pm h v(t_0) + \frac{1}{2} h^2 a \pm O(h^3)
+\end{equation}
+
+Discretizing equation \ref{eq:Taylor_exp_x} and letting $x_i = x(t)$, $x_{i+1} = x(t + h)$, $v_i = v(t)$ and $v_{i+1} = v(t + h)$, we get
+\begin{align*}
+  x_{i+1} \approx x_i + h v_i + \frac{h^2}{2} a_i \\
+  v_{i+1} \approx v_i + h a_i + \frac{h^2}{2} \dot a_i,
+\end{align*}
+where $\dot a_i$ is the derivative of the acceleration with respect to time. Similarly to the case of Forward Euler, doing a Taylor expansion of $a$ gives after some manipulation
+\begin{equation}
+  \dot a_i \approx \frac{a_{i+1} - a_i}{h}
+\end{equation}
+Insering this into the expressions we have for $x_{i+1}$ and $v_{i+1}$ gives us the equations that describe the Velocity Verlet method:
+\begin{align*}
+  x_{i+1} \approx x_i + h v_i + \frac{h^2}{2} a_i \\
+  v_{i+1} \approx v_i + \frac{h}{2} (a_{i+1} + a_i)
+\end{align*}
+
+
+
+\section{Methods}
+
+\subsection{Discretization of the equations of motion}
+
+Equation \ref{eq:DE} is the equation of motion that describes the system of planets and stars in motion. We want to solve this equation numerically for all the planets in our solar system. In order to do this we must discretize the equations. We can rewrite the equation as a set of first order differential equations using the velocity:
+\begin{align*}
+   \frac{\mathrm d \vc r}{\mathrm d t} &= \vc v \\
+   \frac{\mathrm d \vc v}{\mathrm d t} &= - G \sum_{j \neq i} m_j \frac{\vc r_i - \vc r_j}{ \lvert \vc r_i - \vc r_j \rvert ^3}
+\end{align*}
+
+The Verlet is not a self-starting algorithm.
+Mainly applicable when we are not interested in the velocity
+Velocity Verlet
+
+
+
+
+
+\onecolumngrid
+\vspace{1cm} % some extra space
+\newpage
+
+\begin{thebibliography}{}
+\bibitem[Engeland, Hjorth-Jensen, Viefers, Raklev og Flekkøy (2020)]{Kompendium81} Engeland, Hjorth-Jensen, Viefers, Raklev og Flekkøy,  2020, \textit{Kompendium i FYS2140 Kvantefysikk, Versjon 3}, s. 81
+\bibitem[Griffiths (2018)]{Griffiths44} Griffiths, D. J, Schroeter, D. F.,  2018, \textit{Introduction to Quantum Mechanics, Third edition}, s. 44
+\bibitem[Griffiths (2018)]{Griffiths75} Griffiths, D. J, Schroeter, D. F.,  2018, \textit{Introduction to Quantum Mechanics, Third edition}, s. 75
+\bibitem[Griffiths (2018)]{Griffiths133} Griffiths, D. J, Schroeter, D. F.,  2018, \textit{Introduction to Quantum Mechanics, Third edition}, s. 133
+
+\end{thebibliography}
+
+
+\end{document}
