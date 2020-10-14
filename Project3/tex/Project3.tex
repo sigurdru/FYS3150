@@ -136,6 +136,17 @@ Insering this into the expressions we have for $x_{i+1}$ and $v_{i+1}$ gives us 
   x_{i+1} \approx x_i + h v_i + \frac{h^2}{2} a_i \\
   v_{i+1} \approx v_i + \frac{h}{2} (a_{i+1} + a_i)
 \end{align*}
+From equation \ref{eq:Taylor_exp_x} we see that the mathematical error in this approximation goes like $O(h^3)$.
+
+
+\subsection{Forward Euler}
+
+From equation \ref{eq:Taylor_exp_x} we see that by including only the two first terms in the Taylor expansion of $x(t)$ and $v(t)$ we get
+\begin{align*}
+  x_{i+1} \approx x_i + h v_i \\
+  v_{i+1} \approx v_i + h a_i
+\end{align*}
+This is referred to as the Forward Euler method of solving differential equations. The mathematical error in this approximation goes like $O(h^2)$.
 
 
 
@@ -151,7 +162,7 @@ Equation \ref{eq:DE} is the equation of motion that describes the system of plan
 
 The Verlet is not a self-starting algorithm.
 Mainly applicable when we are not interested in the velocity
-Velocity Verlet
+Velocity Verlet is energy conserving, Forward Euler is not
 
 
 
