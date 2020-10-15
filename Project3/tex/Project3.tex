@@ -111,7 +111,7 @@ Classical problem of Newtonian mechanics often involve solvinga set of two coupl
   \frac{\mathrm d x}{\mathrm dt} = v \\
   \frac{\mathrm d v}{\mathrm dt} = a
 \end{align*}
-where $x$ is position, $v$ is velocity and $a$ is acceleration. Doing a Taylor expansion around a point in time $t = t_0$ gives
+where $x$ is position, $v$ is velocity and $a$ is acceleration. Doing a Taylor expansion of $x$ around a point in time $t = t_0$ gives
 \begin{align*}
   x(t) &= x(t_0) + (t - t_0) \frac{\mathrm d x}{\mathrm dt}(t_0) + \frac{1}{2} (t - t_0)^2 \frac{\mathrm d^2 x}{\mathrm dt^2}(t_0) + O(h^3) \\
   &= x(t_0) + (t - t_0) v(t_0) + \frac{1}{2} (t - t_0)^2 a + O(h^3)
@@ -119,7 +119,7 @@ where $x$ is position, $v$ is velocity and $a$ is acceleration. Doing a Taylor e
 An expression can then be found for position at a time $t = t_0 \pm h$:
 \begin{equation}
   \label{eq:Taylor_exp_x}
-  x(t \pm h) = x(t_0) \pm h v(t_0) + \frac{1}{2} h^2 a \pm O(h^3)
+  x(t_0 \pm h) = x(t_0) \pm h v(t_0) + \frac{1}{2} h^2 a \pm O(h^3)
 \end{equation}
 
 Discretizing equation \ref{eq:Taylor_exp_x} and letting $x_i = x(t)$, $x_{i+1} = x(t + h)$, $v_i = v(t)$ and $v_{i+1} = v(t + h)$, we get
@@ -149,6 +149,50 @@ From equation \ref{eq:Taylor_exp_x} we see that by including only the two first 
 This is referred to as the Forward Euler method of solving differential equations. The mathematical error in this approximation goes like $O(h^2)$.
 
 
+\subsection{Conservation of angular momentum}
+
+Kepler's second law states that if you draw a line from the Sun to a planet orbiting it, then that line would sweep out the same area in equal periods of time. We will use this law to derive the conservation of angular momentum.
+
+For short periods of time $\mathrm d t$ the area swept out by the line from the Sun to the planet is approximately a triangle with area
+\begin{equation*}
+  A = \frac{1}{2} r v_\theta \mathrm dt
+\end{equation*}
+where $r$ is the distance from the planet to the sun and $v_\theta$ is the tangential velocity of the planet. Kepler's second law states that this area is constant for all intervalls of time of the same length. For this to be true, we must require
+\begin{equation*}
+  r v_\theta = \text{constant}
+\end{equation*}
+The angular momentum $\vc L$ of the planet around the Sun is
+\begin{align*}
+  \vc L &= \vc r \times \vc p \\
+  &= r \ihat_r \times m(v_\theta \ihat_\theta + v_r \ihat_r) \\
+  &= m r v_\theta \khat, \quad \text{as } \ihat_r \times \ihat_\theta = \khat \text{ and } \ihat_r \times \ihat_r = 0 \\
+  &= \text{constant}
+\end{align*}
+
+
+\subsection{Escape velocity}
+
+The inverse square law of gravity (Newton's law of gravity) is a conservative force with a potential
+\begin{equation}
+  \label{eq:pot_G}
+  U_G(r) = - G \frac{m_1 m_2}{r}
+\end{equation}
+The sum of this potential energy and the kinetic energy will be conserved for celestial objects. In order to escape the gravitational pull of the Sun, a planet in orbit must have a total energy $E = U_G + K \ge 0$ as the potential energy goes to zero infinitely far away:
+\begin{align*}
+  E = U_G + K &\ge 0 \\
+  K &\ge - U_G \\
+  \frac{1}{2} M v^2 &\ge G \frac{M M_\odot}{r} \\
+  v &\ge \sqrt{G \frac{2 M_\odot}{r}}
+\end{align*}
+A planet which begins at a distance 1 AU from the Sun, will therefore need an initial velocity of
+\begin{align*}
+  v_0 &= \sqrt{G \frac{2 M_\odot}{1 \text{ AU}}} \\
+  &= \sqrt{8 \pi^2 \frac{\text{AU}^2}{\text{yr}^2}} \\
+  &= 2 \sqrt 2 \pi \frac{\text{AU}}{\text{yr}} \numberthis \label{eq:escape_velocity}
+\end{align*}
+in order to be able to escape the gravitational pull of the Sun.
+
+
 
 \section{Methods}
 
@@ -163,6 +207,22 @@ Equation \ref{eq:DE} is the equation of motion that describes the system of plan
 The Verlet is not a self-starting algorithm.
 Mainly applicable when we are not interested in the velocity
 Velocity Verlet is energy conserving, Forward Euler is not
+
+
+\subsection{Units of measurement}
+
+Measuring distance in meters and time in seconds leads to very large numbers when doing calculations on the solar system. In order to do our calculations with numbers of magnitudes closer to $10^0$, we will measure time in years and distance in astronomical units AU, which is the mean distance between the Sun and the Earth. For an object in circular motion with radius $R$ and period $T$, the acceleration is given by the sentripetal acceleration
+\begin{equation*}
+  a = \frac{v^2}{r} = \frac{(2 \pi R / T)^2}{R} = \frac{4 \pi^2 R}{T^2}
+\end{equation*}
+With a small error, we can model the orbit of the Earth around the Sun as circular. To further simplify the expressions, we will measure masses in solar masses $M_\odot$. For the Earth's orbit we have $R = 1$ AU and $T = 1$ yr. This means that the force acting on the Earth from the Sun is
+\begin{align*}
+  F_{G, \text{Earth}} &= G \frac{M_{\text{Earth}} M_\odot}{\text{AU}^2} \\
+  &= M_{\text{Earth}} a_{\text{Earth}} \\
+  &\approx M_{\text{Earth}} \frac{4 \pi^2 \text{AU}}{\text{yr}^2} \\
+  G &\approx 4 \pi^2 \frac{\text{AU}^3}{M_\odot \text{yr}^2}
+\end{align*}
+In units of AU, $M_\odot$ and yr the gravitational constant has a value of approximately $4 \pi$.
 
 
 
