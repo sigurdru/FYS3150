@@ -7,32 +7,39 @@ SolarSystem::SolarSystem() : m_kineticEnergy(0), m_potentialEnergy(0) {}
 CelestialBody& SolarSystem::createCelestialBody(vec3 position,
                                                 vec3 velocity,
                                                 double mass) {
-  m_bodies.push_back(CelestialBody(position, velocity, mass));
-  return m_bodies.back();  // Return reference to the newest added celstial body
+    m_bodies.push_back(CelestialBody(position, velocity, mass));
+    return m_bodies.back();  // Return reference to the newest added celstial body
 }
 
-void SolarSystem::calculateForcesAndEnergy() {
-  m_kineticEnergy = 0;
-  m_potentialEnergy = 0;
-  m_angularMomentum.zeros();
-
-  for (CelestialBody& body : m_bodies) {
-    // Reset forces on all bodies
-    body.force.zeros();
-  }
-
-  for (int i = 0; i < numberOfBodies(); i++) {
-    CelestialBody& body1 = m_bodies[i];
-    for (int j = i + 1; j < numberOfBodies(); j++) {
-      CelestialBody& body2 = m_bodies[j];
-      vec3 deltaRVector = body1.position - body2.position;
-      double dr = deltaRVector.length();
-      // Calculate the force and potential energy here
+void SolarSystem::calculateForces() {
+    for (CelestialBody& body : m_bodies) {
+        // Reset forces on all bodies
+        body.force.zeros();
     }
 
-    m_kineticEnergy += 0.5 * body1.mass * body1.velocity.lengthSquared();
-  }
+    for (int i = 0; i < numberOfBodies(); i++) {
+        CelestialBody& body1 = m_bodies[i];
+        for (int j = 0; j < numberOfBodies(); j++) {
+            if (j != i) {
+                CelestialBody& body2 = m_bodies[j];
+                vec3 deltaRVector = body1.position - body2.position;
+                double dr = deltaRVector.length();
+                // Calculate the force
+                body1.force += body2.mass*deltaRVector/(dr*dr*dr);
+            }
+        }
+        body1.force *= 4*M_PI*body1.mass;
+    }
 }
+// MANGLER
+void SolarSystem::calculateEnergyAndAngularMomentum() {
+    m_angularMomentum.zeros();
+    m_kineticEnergy = 0;
+    m_potentialEnergy = 0;
+    m_kineticEnergy += 0.5 * body1.mass * body1.velocity.lengthSquared();
+    // regn ut potential energy her: m_potentialEnergy
+}
+// MANGLER
 
 int SolarSystem::numberOfBodies() const {
   return m_bodies.size();
