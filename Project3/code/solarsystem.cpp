@@ -1,4 +1,5 @@
 #include "solarsystem.hpp"
+#include <cmath>
 #include <iostream>
 using namespace std;
 
@@ -19,16 +20,15 @@ void SolarSystem::calculateForces() {
 
     for (int i = 0; i < numberOfBodies(); i++) {
         CelestialBody& body1 = m_bodies[i];
-        for (int j = 0; j < numberOfBodies(); j++) {
-            if (j != i) {
-                CelestialBody& body2 = m_bodies[j];
-                vec3 deltaRVector = body1.position - body2.position;
-                double dr = deltaRVector.length();
-                // Calculate the force
-                body1.force += body2.mass*deltaRVector/(dr*dr*dr);
-            }
+        for (int j = i + 1; j < numberOfBodies(); j++) {
+            CelestialBody& body2 = m_bodies[j];
+            vec3 deltaRVector = body2.position - body1.position;
+            double dr = deltaRVector.length();
+            // Calculate the force
+            body1.force += body2.mass*deltaRVector/(dr*dr*dr);
+            body2.force -= body1.force*body1.mass*4*M_PI;
         }
-        body1.force *= 4*M_PI*body1.mass;
+        body1.force *= 4*M_PI*M_PI*body1.mass;
     }
 }
 
@@ -42,7 +42,8 @@ void SolarSystem::calculateEnergyAndAngularMomentum() {
         m_kineticEnergy += 0.5 * body1.mass * body1.velocity.lengthSquared();
         for (int j = 0; j < numberOfBodies(); j++){
             if (j != i) {
-                vec3 deltaRVector = body1.postion - body2.postion;
+                CelestialBody& body2 = m_bodies[j];
+                vec3 deltaRVector = body1.position - body2.position;
                 m_potentialEnergy += body2.mass/deltaRVector.length();
             }
         }
