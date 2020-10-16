@@ -10,7 +10,8 @@ class SolarSystem {
     public:
         SolarSystem();
         CelestialBody& createCelestialBody(vec3 position, vec3 velocity, double mass);
-        void calculateForcesAndEnergy();
+        void calculateForces();
+        void calculateEnergy();
         int numberOfBodies() const;
 
         double totalEnergy() const;
