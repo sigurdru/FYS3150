@@ -4,6 +4,7 @@
 #include <iostream>
 #include <string>
 #include "euler.hpp"
+#include "verlet.hpp"
 #include "solarsystem.hpp"
 
 int main(int argc, char* argv[]) {
@@ -30,7 +31,7 @@ int main(int argc, char* argv[]) {
     }
 
     // std::vector<char> planets;
-    // char planet[20], date[11];
+    char planet[20];
 
     const char* input_file_char = input_file.c_str(); //fopen takes char* so we convert
     FILE *init_file = fopen(input_file_char, "r"); //open file with initial conditions
@@ -56,14 +57,12 @@ int main(int argc, char* argv[]) {
         // std::cout << i << " " << num_bodies << std::endl;
         // std::cout << planet << date << std::endl;
         // std::cout << x << std::endl << std::endl;
-
-        fscanf
-        (
-            init_file, 
-            "%lf %lf %lf %lf %lf %lf %lf", 
-            &mass, &x, &y, &z, &vx, &vy, &vz
+        x = 0.;
+        fscanf(init_file, 
+            "%s %lf %lf %lf %lf %lf %lf %lf", 
+            planet, &mass, &x, &y, &z, &vx, &vy, &vz
         );
-
+        std::cout << planet << std::endl;
 
         our_system.createCelestialBody(
             vec3(x, y, z),
@@ -77,9 +76,16 @@ int main(int argc, char* argv[]) {
         std::cout << "The position of this object is " << body.position << " with velocity " << body.velocity << std::endl;
     }
 
-    Euler integrator(dt);
-    for(int timestep=0; timestep<N; timestep++) {
-        integrator.integrateOneStep(our_system);
-        our_system.writeToFile("positions.xyz");
+    // Euler integrator_euler(dt);
+    // for(int timestep=0; timestep<N; timestep++) {
+    //     our_system.writeToFile("../output/positions_euler.xyz");
+    //     integrator_euler.integrateOneStep(our_system);
+    //     std::cout << our_system.bodies()[1].velocity << std::endl;
+    // }
+
+    Verlet integrator_verlet(dt);
+    for (int timestep = 0; timestep < N; timestep++) {
+      integrator_verlet.integrateOneStep(our_system);
+      our_system.writeToFile("../output/positions_verlet.xyz");
     }
 }
