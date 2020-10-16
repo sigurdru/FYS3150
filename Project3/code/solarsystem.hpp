@@ -11,9 +11,9 @@ class SolarSystem {
         SolarSystem();
         CelestialBody& createCelestialBody(vec3 position, vec3 velocity, double mass);
         void calculateForces();
-        void calculateEnergy();
+        void calculateEnergyAndAngularMomentum();
+        
         int numberOfBodies() const;
-
         double totalEnergy() const;
         double potentialEnergy() const;
         double kineticEnergy() const;
