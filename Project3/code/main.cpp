@@ -30,39 +30,22 @@ int main(int argc, char* argv[]) {
         N = std::atoi(argv[4]);
     }
 
-    // std::vector<char> planets;
     char planet[20];
 
-    const char* input_file_char = input_file.c_str(); //fopen takes char* so we convert
-    FILE *init_file = fopen(input_file_char, "r"); //open file with initial conditions
-    
-    //initialize our system
-    SolarSystem our_system;
-    //store number of bodies, dt, and number of time steps
-    // fscanf(init_file, "%i %lf %i", &num_bodies, &dt, &N);
-    fscanf(init_file, "%i", &num_bodies);
+    const char* input_file_char = input_file.c_str();   //fopen takes char* so we convert
+    FILE *init_file = fopen(input_file_char, "r");      //open file with initial conditions
+
+    SolarSystem our_system;                             // initialize our system
+    fscanf(init_file, "%i", &num_bodies);               // store number of bodies, dt, and number of time steps
 
     std::cout << num_bodies << std::endl;
     
     for (int i = 0; i < num_bodies; i++) {
         //Here we store the initial conditions and masses
-        // fscanf(init_file, "%lf %lf %lf %lf %lf %lf %lf", 
-        // &mass, &x, &y, &z, &vx, &vy, &vz);
-        // fscanf
-        // (
-            // init_file, 
-            // "%s %s %lf %lf %lf %lf %lf %lf", 
-            // planet, date, &x, &y, &z, &vx, &vy, &vz
-        // );
-        // std::cout << i << " " << num_bodies << std::endl;
-        // std::cout << planet << date << std::endl;
-        // std::cout << x << std::endl << std::endl;
-        x = 0.;
         fscanf(init_file, 
             "%s %lf %lf %lf %lf %lf %lf %lf", 
             planet, &mass, &x, &y, &z, &vx, &vy, &vz
         );
-        std::cout << planet << std::endl;
 
         our_system.createCelestialBody(
             vec3(x, y, z),
@@ -76,16 +59,15 @@ int main(int argc, char* argv[]) {
         std::cout << "The position of this object is " << body.position << " with velocity " << body.velocity << std::endl;
     }
 
-    // Euler integrator_euler(dt);
-    // for(int timestep=0; timestep<N; timestep++) {
-    //     our_system.writeToFile("../output/positions_euler.xyz");
-    //     integrator_euler.integrateOneStep(our_system);
-    //     std::cout << our_system.bodies()[1].velocity << std::endl;
-    // }
-
-    Verlet integrator_verlet(dt);
-    for (int timestep = 0; timestep < N; timestep++) {
-      integrator_verlet.integrateOneStep(our_system);
-      our_system.writeToFile("../output/positions_verlet.xyz");
+    Euler integrator_euler(dt);
+    for(int timestep=0; timestep<N; timestep++) {
+        our_system.writeToFile("../output/positions_euler.xyz");
+        integrator_euler.integrateOneStep(our_system);
     }
+
+    // Verlet integrator_verlet(dt);
+    // for (int timestep = 0; timestep < N; timestep++) {
+    //     integrator_verlet.integrateOneStep(our_system);
+    //     our_system.writeToFile("../output/positions_verlet.xyz");
+    // }
 }

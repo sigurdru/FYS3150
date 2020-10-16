@@ -25,10 +25,9 @@ void SolarSystem::calculateForces() {
             vec3 deltaRVector = body2.position - body1.position;
             double dr = deltaRVector.length();
             // Calculate the force
-            body1.force += body2.mass*deltaRVector/(dr*dr*dr);
-            body2.force -= body1.force*body1.mass*4*M_PI;
+            body1.force += body2.mass*body1.mass*4*M_PI*M_PI*deltaRVector/(dr*dr*dr);
+            body2.force -= body1.force;
         }
-        body1.force *= 4*M_PI*M_PI*body1.mass;
     }
 }
 
@@ -54,42 +53,42 @@ void SolarSystem::calculateEnergyAndAngularMomentum() {
 // MANGLER
 
 int SolarSystem::numberOfBodies() const {
-  return m_bodies.size();
+    return m_bodies.size();
 }
 
 double SolarSystem::totalEnergy() const {
-  return m_kineticEnergy + m_potentialEnergy;
+    return m_kineticEnergy + m_potentialEnergy;
 }
 
 double SolarSystem::potentialEnergy() const {
-  return m_potentialEnergy;
+    return m_potentialEnergy;
 }
 
 double SolarSystem::kineticEnergy() const {
-  return m_kineticEnergy;
+    return m_kineticEnergy;
 }
 
 void SolarSystem::writeToFile(string filename) {
-  if (!m_file.good()) {
-    m_file.open(filename.c_str(), ofstream::out);
     if (!m_file.good()) {
-      cout << "Error opening file " << filename << ". Aborting!" << endl;
-      terminate();
+        m_file.open(filename.c_str(), ofstream::out);
+        if (!m_file.good()) {
+            cout << "Error opening file " << filename << ". Aborting!" << endl;
+            terminate();
+        }
     }
-  }
 
-  m_file << numberOfBodies() << endl;
-  m_file << "Comment line that needs to be here. Balle." << endl;
-  for (CelestialBody& body : m_bodies) {
-    m_file << "1 " << body.position.x() << " " << body.position.y() << " "
-           << body.position.z() << "\n";
-  }
+    m_file << numberOfBodies() << endl;
+    m_file << "Comment line that needs to be here. Balle." << endl;
+    for (CelestialBody& body : m_bodies) {
+        m_file << "1 " << body.position.x() << " " << body.position.y() << " "
+        << body.position.z() << "\n";
+    }
 }
 
 vec3 SolarSystem::angularMomentum() const {
-  return m_angularMomentum;
+    return m_angularMomentum;
 }
 
 std::vector<CelestialBody>& SolarSystem::bodies() {
-  return m_bodies;
+    return m_bodies;
 }
