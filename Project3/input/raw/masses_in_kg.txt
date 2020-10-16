@@ -6,5 +6,5 @@ venus 4.9E24
 saturn 5.5E26
 mercury 3.3E23
 uranus 8.8E25
-neptun 1.03E26
+neptune 1.03E26
 pluto 1.31E22
