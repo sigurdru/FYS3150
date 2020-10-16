@@ -31,13 +31,24 @@ void SolarSystem::calculateForces() {
         body1.force *= 4*M_PI*body1.mass;
     }
 }
-// MANGLER
+
+// MANGLER Å REGNE UT ANGULAR MOMENTUM
 void SolarSystem::calculateEnergyAndAngularMomentum() {
     m_angularMomentum.zeros();
     m_kineticEnergy = 0;
     m_potentialEnergy = 0;
-    m_kineticEnergy += 0.5 * body1.mass * body1.velocity.lengthSquared();
-    // regn ut potential energy her: m_potentialEnergy
+    for (int i = 0; i < numberOfBodies(); i++) {
+        CelestialBody& body1 = m_bodies[i];
+        m_kineticEnergy += 0.5 * body1.mass * body1.velocity.lengthSquared();
+        for (int j = 0; j < numberOfBodies(); j++){
+            if (j != i) {
+                vec3 deltaRVector = body1.postion - body2.postion;
+                m_potentialEnergy += body2.mass/deltaRVector.length();
+            }
+        }
+        m_potentialEnergy *= body1.mass;
+    }
+    m_potentialEnergy *= 4*M_PI;
 }
 // MANGLER
 
