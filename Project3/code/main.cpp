@@ -14,16 +14,19 @@ int main(int argc, char* argv[]) {
     double mass;                      // Store mass of planets.
     double dt;                        // Time between each step
     int N;                            // Number of integration points
-    if (argc < 3) {
-        std::cout << "Please include input and output file" << std::endl;
+    double mass_sun = 1.989e30;       // Mass of the sun
+    if (argc < 5) {
+        std::cout << "Please include input, output file, dt and number of time steps" << std::endl;
         exit(1);
     }
     else {
-        // Store input and output file
+        // Store input, output file and dt
         output_file = "../output/";
         input_file = "../input/";
         input_file.append(argv[1]);
         output_file.append(argv[2]).append(".cvs");
+        dt = std::atof(argv[3]);
+        N = std::atoi(argv[4]);
     }
 
     // std::vector<char> planets;
@@ -65,12 +68,18 @@ int main(int argc, char* argv[]) {
         our_system.createCelestialBody(
             vec3(x, y, z),
             vec3(vx, vy, vz)*365, 
-            mass);
+            mass/mass_sun);
     }
     fclose(init_file);  //close file with initial conditions
     std::vector<CelestialBody> &bodies = our_system.bodies();
     for(int i = 0; i<num_bodies; i++) {
         CelestialBody &body = bodies[i]; // Reference to this body
         std::cout << "The position of this object is " << body.position << " with velocity " << body.velocity << std::endl;
+    }
+
+    Euler integrator(dt);
+    for(int timestep=0; timestep<N; timestep++) {
+        integrator.integrateOneStep(our_system);
+        our_system.writeToFile("positions.xyz");
     }
 }
