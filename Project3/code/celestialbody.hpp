@@ -4,13 +4,15 @@
 
 class CelestialBody {
     public:
+        char name[10];
         vec3 position;
         vec3 velocity;
         vec3 force;
-    double mass;
+        double mass;
 
-    CelestialBody(vec3 position, vec3 velocity, double mass);
-    CelestialBody(double x,
+    CelestialBody(char name[], vec3 position, vec3 velocity, double mass);
+    CelestialBody(char name[], 
+                  double x,
                   double y,
                   double z,
                   double vx,

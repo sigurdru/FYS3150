@@ -5,10 +5,11 @@ using namespace std;
 
 SolarSystem::SolarSystem() : m_kineticEnergy(0), m_potentialEnergy(0) {}
 
-CelestialBody& SolarSystem::createCelestialBody(vec3 position,
+CelestialBody& SolarSystem::createCelestialBody(char name[],
+                                                vec3 position,
                                                 vec3 velocity,
                                                 double mass) {
-    m_bodies.push_back(CelestialBody(position, velocity, mass));
+    m_bodies.push_back(CelestialBody(name, position, velocity, mass));
     return m_bodies.back();  // Return reference to the newest added celstial body
 }
 
@@ -25,9 +26,10 @@ void SolarSystem::calculateForces() {
             vec3 deltaRVector = body2.position - body1.position;
             double dr = deltaRVector.length();
             // Calculate the force
-            body1.force += body2.mass*body1.mass*4*M_PI*M_PI*deltaRVector/(dr*dr*dr);
+            body1.force += body1.mass*body2.mass*deltaRVector/(dr*dr*dr);
             body2.force -= body1.force;
         }
+        body1.force *= 4*M_PI*M_PI;
     }
 }
 
