@@ -6,15 +6,15 @@ declare -a bodies
 ### comment out the other bodies
 bodies=(
     "sun"
-    # "mercury"
-    # "venus"
+    "mercury"
+    "venus"
     "earth"
-    # "mars"
-    # "jupiter"
-    # "saturn"
-    # "uranus"
-    # "neptune"
-    # "pluto"
+    "mars"
+    "jupiter"
+    "saturn"
+    "uranus"
+    "neptune"
+    "pluto"
 )
 
 ### give the IC file an appropriate name

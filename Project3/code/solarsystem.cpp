@@ -33,26 +33,52 @@ void SolarSystem::calculateForces() {
     }
 }
 
-// MANGLER Å REGNE UT ANGULAR MOMENTUM
 void SolarSystem::calculateEnergyAndAngularMomentum() {
+    // Calculate total angular momentum and energy
     m_angularMomentum.zeros();
     m_kineticEnergy = 0;
     m_potentialEnergy = 0;
     for (int i = 0; i < numberOfBodies(); i++) {
         CelestialBody& body1 = m_bodies[i];
-        m_kineticEnergy += 0.5 * body1.mass * body1.velocity.lengthSquared();
-        for (int j = 0; j < numberOfBodies(); j++){
-            if (j != i) {
-                CelestialBody& body2 = m_bodies[j];
-                vec3 deltaRVector = body1.position - body2.position;
-                m_potentialEnergy += body2.mass/deltaRVector.length();
-            }
-        }
-        m_potentialEnergy *= body1.mass;
+        m_kineticEnergy += body1.mass * body1.velocity.lengthSquared();
+        double centerofmass_mass = m_totalMassofSystem - body1.mass;
+        potentialEnergy -= body1.mass*centerofmass_mass/body1.position.length();
     }
-    m_potentialEnergy *= 4*M_PI;
+    m_kineticEnergy *= 0.5;
+    m_potentialEnergy *= 4*M_PI*M_PI;
 }
-// MANGLER
+
+void SolarSystem::read_initial_conditions(string input_file) {
+    int num_bodies;                 // number of planets
+    double mass_sun = 1.989e30;     // Mass of the sun
+
+    double x, y, z, vx, vy, vz;     // To store initial conditions for each planet.
+    double mass;                    // Store mass of planets.
+
+    int name_length = 10;           // length of planet names, unimportant
+    char name[name_length];         // capture the name of objects
+
+
+    const char* input_file_char = input_file.c_str();   // fopen takes char* so we convert
+    FILE *init_file = fopen(input_file_char, "r");      // open file with initial conditions
+
+    fscanf(init_file, "%i", &num_bodies);               // read number of bodies
+    
+    for (int i = 0; i < num_bodies; i++) {
+        // Read names, masses and initial conditions
+        fscanf(init_file, 
+            "%s %lf %lf %lf %lf %lf %lf %lf", 
+            name, &mass, &x, &y, &z, &vx, &vy, &vz
+        );
+        m_totalMassofSystem += mass/mass_sun;           // calculate total mass of system, useful for potential energy
+        createCelestialBody(
+            name,
+            vec3(x, y, z),
+            vec3(vx, vy, vz)*365,       // convert from AU/day to AU/yr
+            mass/mass_sun);             // convert from kg to sun masses
+    }
+    fclose(init_file);  // close file with initial conditions
+}
 
 int SolarSystem::numberOfBodies() const {
     return m_bodies.size();
@@ -86,6 +112,7 @@ void SolarSystem::writeToFile(string filename) {
         << body.position.z() << "\n";
     }
 }
+
 
 vec3 SolarSystem::angularMomentum() const {
     return m_angularMomentum;
