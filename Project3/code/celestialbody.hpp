@@ -9,9 +9,11 @@ class CelestialBody {
         vec3 velocity;
         vec3 force;
         double mass;
+        int type;
 
-    CelestialBody(char name[], vec3 position, vec3 velocity, double mass);
+    CelestialBody(char name[], int body_type, vec3 position, vec3 velocity, double mass);
     CelestialBody(char name[], 
+                  int body_type,
                   double x,
                   double y,
                   double z,

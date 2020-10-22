@@ -6,10 +6,11 @@ using namespace std;
 SolarSystem::SolarSystem() : m_kineticEnergy(0), m_potentialEnergy(0) {}
 
 CelestialBody& SolarSystem::createCelestialBody(char name[],
+                                                int body_type,
                                                 vec3 position,
                                                 vec3 velocity,
                                                 double mass) {
-    m_bodies.push_back(CelestialBody(name, position, velocity, mass));
+    m_bodies.push_back(CelestialBody(name, body_type, position, velocity, mass));
     return m_bodies.back();  // Return reference to the newest added celstial body
 }
 
@@ -42,14 +43,14 @@ void SolarSystem::calculateEnergyAndAngularMomentum() {
         CelestialBody& body1 = m_bodies[i];
         m_kineticEnergy += body1.mass * body1.velocity.lengthSquared();
         double centerofmass_mass = m_totalMassofSystem - body1.mass;
-        potentialEnergy -= body1.mass*centerofmass_mass/body1.position.length();
+        m_potentialEnergy -= body1.mass*centerofmass_mass/body1.position.length();
     }
     m_kineticEnergy *= 0.5;
     m_potentialEnergy *= 4*M_PI*M_PI;
 }
 
 void SolarSystem::read_initial_conditions(string input_file) {
-    int num_bodies;                 // number of planets
+    int num_bodies, body_type;                 // number of planets
     double mass_sun = 1.989e30;     // Mass of the sun
 
     double x, y, z, vx, vy, vz;     // To store initial conditions for each planet.
@@ -67,12 +68,13 @@ void SolarSystem::read_initial_conditions(string input_file) {
     for (int i = 0; i < num_bodies; i++) {
         // Read names, masses and initial conditions
         fscanf(init_file, 
-            "%s %lf %lf %lf %lf %lf %lf %lf", 
-            name, &mass, &x, &y, &z, &vx, &vy, &vz
+            "%s %d %lf %lf %lf %lf %lf %lf %lf", 
+            name, &body_type, &mass, &x, &y, &z, &vx, &vy, &vz
         );
         m_totalMassofSystem += mass/mass_sun;           // calculate total mass of system, useful for potential energy
         createCelestialBody(
             name,
+            body_type,
             vec3(x, y, z),
             vec3(vx, vy, vz)*365,       // convert from AU/day to AU/yr
             mass/mass_sun);             // convert from kg to sun masses
@@ -108,8 +110,8 @@ void SolarSystem::writeToFile(string filename) {
     m_file << numberOfBodies() << endl;
     m_file << "Comment line that needs to be here. Balle." << endl;
     for (CelestialBody& body : m_bodies) {
-        m_file << "1 " << body.position.x() << " " << body.position.y() << " "
-        << body.position.z() << "\n";
+        m_file << body.type << " " << body.position.x() << " " 
+ << body.position.y() << " " << body.position.z() << "\n";
     }
 }
 

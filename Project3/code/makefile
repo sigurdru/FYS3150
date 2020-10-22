@@ -2,4 +2,4 @@ compile:
 	g++ -o main.exe -Wall main.cpp vec3.cpp solarsystem.cpp celestialbody.cpp euler.cpp verlet.cpp
 test:
 	make compile
-	./main.exe planets.txt output 0.001 1000 verlet
+	./main.exe earth_sun_jup_eur.txt output 0.001 1000 verlet
