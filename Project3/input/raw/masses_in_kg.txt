@@ -1,10 +1,11 @@
-sun 1.989E30
-earth 6E24
-jupiter 1.9E27
-mars 6.6E23
-venus 4.9E24
-saturn 5.5E26
-mercury 3.3E23
-uranus 8.8E25
-neptune 1.03E26
-pluto 1.31E22
+sun 1 1.989E30
+earth 2 6E24
+jupiter 2 1.9E27
+mars 2 6.6E23
+venus 2 4.9E24
+saturn 2 5.5E26
+mercury 2 3.3E23
+uranus 2 8.8E25
+neptune 2 1.03E26
+pluto 2 1.31E22
+europa 3 4.8E22

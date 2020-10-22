@@ -10,16 +10,17 @@ bodies=(
     # "venus"
     "earth"
     # "mars"
-    # "jupiter"
+    "jupiter"
     # "saturn"
     # "uranus"
     # "neptune"
     # "pluto"
+    "europa"
 )
 
 ### give the IC file an appropriate name
 # fname="planets"
-fname="earth_sun"
+fname="earth_sun_jup_eur"
 
 
 # the rest is handled automatically
@@ -33,7 +34,7 @@ for body in ${bodies[@]}; do
     line=`cat $fname | head -n 23 | tail -n 1 | cut -d"," -f2-`
     line=`echo $line | cut -d" " -f4- | tr ',' ' '`
 
-    mass=`cat ${path}/masses_in_kg.txt | grep $body | cut -d" " -f2`
+    mass=`cat ${path}/masses_in_kg.txt | grep $body | cut -d" " -f2-`
 
     echo $body $mass $line >> $outfname
 done
