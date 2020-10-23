@@ -11,6 +11,7 @@ class SolarSystem {
         SolarSystem();
         CelestialBody& createCelestialBody(
             char name[], 
+            int body_type,
             vec3 position, 
             vec3 velocity, 
             double mass

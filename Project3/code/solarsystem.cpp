@@ -6,10 +6,11 @@ using namespace std;
 SolarSystem::SolarSystem() : m_kineticEnergy(0), m_potentialEnergy(0) {}
 
 CelestialBody& SolarSystem::createCelestialBody(char name[],
+                                                int body_type,
                                                 vec3 position,
                                                 vec3 velocity,
                                                 double mass) {
-    m_bodies.push_back(CelestialBody(name, position, velocity, mass));
+    m_bodies.push_back(CelestialBody(name, body_type, position, velocity, mass));
     return m_bodies.back();  // Return reference to the newest added celstial body
 }
 
@@ -51,7 +52,7 @@ void SolarSystem::calculateEnergyAndAngularMomentum() {
 
 
 void SolarSystem::read_initial_conditions(string input_file) {
-    int num_bodies;                 // number of planets
+    int num_bodies, body_type;                 // number of planets
     double mass_sun = 1.989e30;     // Mass of the sun
     double reduced_mass;
 
@@ -70,8 +71,8 @@ void SolarSystem::read_initial_conditions(string input_file) {
     for (int i = 0; i < num_bodies; i++) {
         // Read names, masses and initial conditions
         fscanf(init_file, 
-            "%s %lf %lf %lf %lf %lf %lf %lf", 
-            name, &mass, &x, &y, &z, &vx, &vy, &vz
+            "%s %d %lf %lf %lf %lf %lf %lf %lf", 
+            name, &body_type, &mass, &x, &y, &z, &vx, &vy, &vz
         );
         reduced_mass = mass/mass_sun;
         m_totalMassofSystem += reduced_mass;           // calculate total mass of system, useful for potential energy
@@ -79,6 +80,7 @@ void SolarSystem::read_initial_conditions(string input_file) {
         m_totalPositionofSystem += vec3(x, y, z)*reduced_mass;
         createCelestialBody(
             name,
+            body_type,
             vec3(x, y, z),
             vec3(vx, vy, vz)*365,       // convert from AU/day to AU/yr
             reduced_mass);             // convert from kg to sun masses
@@ -121,8 +123,13 @@ void SolarSystem::writeToFile(string filename) {
     m_file << numberOfBodies() << endl;
     m_file << "Comment line that needs to be here. Balle." << endl;
     for (CelestialBody& body : m_bodies) {
+<<<<<<< HEAD
         m_file << body.name << " " << body.position.x() << " " << body.position.y() << " "
         << body.position.z() << "\n";
+=======
+        m_file << body.type << " " << body.position.x() << " " 
+ << body.position.y() << " " << body.position.z() << "\n";
+>>>>>>> 173d83a744f10a73cf07e634f4e14c51dcae2014
     }
 }
 
