@@ -123,13 +123,8 @@ void SolarSystem::writeToFile(string filename) {
     m_file << numberOfBodies() << endl;
     m_file << "Comment line that needs to be here. Balle." << endl;
     for (CelestialBody& body : m_bodies) {
-<<<<<<< HEAD
-        m_file << body.name << " " << body.position.x() << " " << body.position.y() << " "
+        m_file << body.type << " " << body.position.x() << " " << body.position.y() << " "
         << body.position.z() << "\n";
-=======
-        m_file << body.type << " " << body.position.x() << " " 
- << body.position.y() << " " << body.position.z() << "\n";
->>>>>>> 173d83a744f10a73cf07e634f4e14c51dcae2014
     }
 }
 

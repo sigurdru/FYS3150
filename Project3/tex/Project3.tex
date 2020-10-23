@@ -192,7 +192,25 @@ A planet which begins at a distance 1 AU from the Sun, will therefore need an in
 \end{align*}
 in order to be able to escape the gravitational pull of the Sun.
 
+\subsection{Energy and angular momentum}
+In this project we are going to be working with conservative forces. Therefore both energy and spin for our system should be conserved. When we are working with non-relativistic sizes, the total energy is given by the sum of kinetic and gravitational potential energy. Kinetic energy is given by
+\begin{equation}
+	\label{eq:kinetic_energy}
+	K = \frac{1}{2}mv^2,
+\end{equation}
+where $K$ is the kinetic energy, $m$ is the mass and $v$ is the velocity. The potential energy of an object in a gravitational field is given by
+\begin{equation}
+	\label{eq:potential_energy}
+	U = G\sum_{i}\frac{Mm_i}{r_i}
+\end{equation}
+Where $U$ is the potential energy, $G$ the gravitational constant, $r_i$ the relative distance between the objects, $m_i$ mass of an object creating the gravitational field, and $M$ mass of the object we want to find the energy of. Notice that the zero-point of potential energy is set to infinity.
 
+Another conserved size is angular momentum, and has the equation
+\begin{equation}
+	\label{eq:angular_momentum}
+	\mathbf{L} = \mathbf{r} \cross \mathbf{v}.
+\end{equation}
+$\mathbf{L}$ is the angular momentum and $\mathbf{r}$ the position of an object with velocity $\mathbf{v}$. We can choose from what point we calculate the angular momentum ($\mathbf{r}$ depends on it), but in order for them to be conserved we have to be consistent.
 
 \section{Methods}
 
@@ -224,7 +242,8 @@ With a small error, we can model the orbit of the Earth around the Sun as circul
 \end{align*}
 In units of AU, $M_\odot$ and yr the gravitational constant has a value of approximately $4 \pi$.
 
-
+\subsection{Testing of the algorithms}
+In order to make sure our algorithm runs correctly, we want to test it. Throughout all the simulations we are going to make sure both energy and spin is conserved. 
 
 
 

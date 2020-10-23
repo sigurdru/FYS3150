@@ -36,7 +36,6 @@ int main(int argc, char* argv[]) {
 
     SolarSystem our_system;                             // initialize our system
     our_system.read_initial_conditions(input_file);     // read input file and add planets
-    our_system.remove_cm_velocity();
 
     std::vector<CelestialBody> &bodies = our_system.bodies();
     for (int i = 0; i<our_system.numberOfBodies(); i++) {
@@ -47,7 +46,26 @@ int main(int argc, char* argv[]) {
         std::cout << body.velocity << std::endl;    // print velocity
     }
 
+    if (solver_method == "sun_earth_euler") {
+        for (int timestep=0; timestep<N; timestep++) {
+            our_system.calculateForces();
+            CelestialBody& earth = our_system.bodies()[1];
+            earth.position += earth.velocity * dt;
+            earth.velocity += earth.force/earth.mass * dt;
+            if (timestep%print_step == 0) {
+                our_system.writeToFile(output_file);
+                our_system.calculateEnergyAndAngularMomentum();
+                std::cout << our_system.totalEnergy() << std::endl;
+            }
+        }
+    }
+
+    // if (solver_method == "sun_earth_verlet") {
+    //     for (int timestep=0; timestep<N; timestep++)
+    // }
+
     if (solver_method == "euler") {
+        our_system.remove_cm_velocity();
         Euler solver(dt);
         for (int timestep=0; timestep<N; timestep++) {
             solver.integrateOneStep(our_system);
@@ -60,6 +78,7 @@ int main(int argc, char* argv[]) {
     }
     
     if (solver_method == "verlet") {
+        our_system.remove_cm_velocity();
         Verlet solver(dt);
         for (int timestep=0; timestep<N; timestep++) {
             solver.integrateOneStep(our_system);
