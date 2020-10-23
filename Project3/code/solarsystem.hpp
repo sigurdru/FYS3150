@@ -18,6 +18,7 @@ class SolarSystem {
         void calculateForces();
         void calculateEnergyAndAngularMomentum();
 
+        void remove_cm_velocity();
         void read_initial_conditions(std::string input_file);
 
         int numberOfBodies() const;
@@ -35,6 +36,8 @@ class SolarSystem {
         double m_kineticEnergy;
         double m_potentialEnergy;
         double m_totalMassofSystem;
+        vec3 m_totalMomentumofSystem;
+        vec3 m_totalPositionofSystem;
 };
 
 #endif  // SOLARSYSTEM_H

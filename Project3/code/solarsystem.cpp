@@ -42,15 +42,18 @@ void SolarSystem::calculateEnergyAndAngularMomentum() {
         CelestialBody& body1 = m_bodies[i];
         m_kineticEnergy += body1.mass * body1.velocity.lengthSquared();
         double centerofmass_mass = m_totalMassofSystem - body1.mass;
-        potentialEnergy -= body1.mass*centerofmass_mass/body1.position.length();
+        m_potentialEnergy -= body1.mass*centerofmass_mass/body1.position.length();
+        m_angularMomentum += body1.position.cross(body1.velocity);
     }
     m_kineticEnergy *= 0.5;
     m_potentialEnergy *= 4*M_PI*M_PI;
 }
 
+
 void SolarSystem::read_initial_conditions(string input_file) {
     int num_bodies;                 // number of planets
     double mass_sun = 1.989e30;     // Mass of the sun
+    double reduced_mass;
 
     double x, y, z, vx, vy, vz;     // To store initial conditions for each planet.
     double mass;                    // Store mass of planets.
@@ -70,14 +73,24 @@ void SolarSystem::read_initial_conditions(string input_file) {
             "%s %lf %lf %lf %lf %lf %lf %lf", 
             name, &mass, &x, &y, &z, &vx, &vy, &vz
         );
-        m_totalMassofSystem += mass/mass_sun;           // calculate total mass of system, useful for potential energy
+        reduced_mass = mass/mass_sun;
+        m_totalMassofSystem += reduced_mass;           // calculate total mass of system, useful for potential energy
+        m_totalMomentumofSystem += vec3(vx, vy, vz)*reduced_mass;
+        m_totalPositionofSystem += vec3(x, y, z)*reduced_mass;
         createCelestialBody(
             name,
             vec3(x, y, z),
             vec3(vx, vy, vz)*365,       // convert from AU/day to AU/yr
-            mass/mass_sun);             // convert from kg to sun masses
+            reduced_mass);             // convert from kg to sun masses
     }
     fclose(init_file);  // close file with initial conditions
+}
+
+void SolarSystem::remove_cm_velocity(){
+    for (CelestialBody& body: m_bodies){
+        body.velocity -= m_totalMomentumofSystem/m_totalMassofSystem;
+        body.position -= m_totalPositionofSystem/m_totalMassofSystem;
+    }
 }
 
 int SolarSystem::numberOfBodies() const {
@@ -108,7 +121,7 @@ void SolarSystem::writeToFile(string filename) {
     m_file << numberOfBodies() << endl;
     m_file << "Comment line that needs to be here. Balle." << endl;
     for (CelestialBody& body : m_bodies) {
-        m_file << "1 " << body.position.x() << " " << body.position.y() << " "
+        m_file << body.name << " " << body.position.x() << " " << body.position.y() << " "
         << body.position.z() << "\n";
     }
 }

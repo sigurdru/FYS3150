@@ -36,6 +36,7 @@ int main(int argc, char* argv[]) {
 
     SolarSystem our_system;                             // initialize our system
     our_system.read_initial_conditions(input_file);     // read input file and add planets
+    our_system.remove_cm_velocity();
 
     std::vector<CelestialBody> &bodies = our_system.bodies();
     for (int i = 0; i<our_system.numberOfBodies(); i++) {
@@ -52,6 +53,8 @@ int main(int argc, char* argv[]) {
             solver.integrateOneStep(our_system);
             if (timestep%print_step == 0) {
                 our_system.writeToFile(output_file);
+                our_system.calculateEnergyAndAngularMomentum();
+                std::cout << our_system.totalEnergy() << std::endl;
             }
         }
     }
@@ -61,7 +64,10 @@ int main(int argc, char* argv[]) {
         for (int timestep=0; timestep<N; timestep++) {
             solver.integrateOneStep(our_system);
             if (timestep%print_step == 0) {
+
                 our_system.writeToFile(output_file);
+                our_system.calculateEnergyAndAngularMomentum();
+                std::cout << "method: verlet" << "| energy: " << our_system.totalEnergy() << "| angular momentum: " << our_system.angularMomentum().length() << std::endl;
             }
         }    
     }
