@@ -44,35 +44,48 @@ int main(int argc, char* argv[]) {
         std::cout << body.position << std::endl;    // print position
         printf("%*s", name_length, "");
         std::cout << body.velocity << std::endl;    // print velocity
+        std::cout << body.mass << std::endl;
     }
 
     if (solver_method == "sun_earth_euler") {
+        our_system.bodies()[1].position[0] = 1;
+        our_system.bodies()[1].velocity[1] = 2*M_PI;
+        Euler solver(dt);
         for (int timestep=0; timestep<N; timestep++) {
             our_system.calculateForces();
-            CelestialBody& earth = our_system.bodies()[1];
-            earth.position += earth.velocity * dt;
-            earth.velocity += earth.force/earth.mass * dt;
+            our_system.bodies()[1].force = vec3(0,0,0); //want a stationary sun
+            solver.integrateOneStep(our_system);
             if (timestep%print_step == 0) {
                 our_system.writeToFile(output_file);
                 our_system.calculateEnergyAndAngularMomentum();
-                std::cout << our_system.totalEnergy() << std::endl;
             }
         }
     }
 
-    // if (solver_method == "sun_earth_verlet") {
-    //     for (int timestep=0; timestep<N; timestep++)
-    // }
+    if (solver_method == "sun_earth_verlet") {
+        our_system.bodies()[1].position[0] = 1;
+        our_system.bodies()[1].velocity[1] = 2*M_PI;
+        Verlet solver(dt);
+        for (int timestep=0; timestep<N; timestep++) {
+            our_system.calculateForces();
+            our_system.bodies()[1].force = vec3(0,0,0); //want a stationary sun
+            solver.integrateOneStep(our_system);
+            if (timestep%print_step == 0) {
+                our_system.writeToFile(output_file);
+                our_system.calculateEnergyAndAngularMomentum();
+            }
+        }
+    }
 
     if (solver_method == "euler") {
         our_system.remove_cm_velocity();
         Euler solver(dt);
         for (int timestep=0; timestep<N; timestep++) {
+            our_system.calculateForces();
             solver.integrateOneStep(our_system);
             if (timestep%print_step == 0) {
                 our_system.writeToFile(output_file);
                 our_system.calculateEnergyAndAngularMomentum();
-                std::cout << our_system.totalEnergy() << std::endl;
             }
         }
     }
@@ -81,13 +94,24 @@ int main(int argc, char* argv[]) {
         our_system.remove_cm_velocity();
         Verlet solver(dt);
         for (int timestep=0; timestep<N; timestep++) {
+            our_system.calculateForces();
             solver.integrateOneStep(our_system);
             if (timestep%print_step == 0) {
-
                 our_system.writeToFile(output_file);
                 our_system.calculateEnergyAndAngularMomentum();
-                std::cout << "method: verlet" << "| energy: " << our_system.totalEnergy() << "| angular momentum: " << our_system.angularMomentum().length() << std::endl;
             }
         }    
     }
+
+    // if (solver_method == "mercury_rel") {
+    //     our_system.remove_cm_velocity();
+    //     Verlet solver(dt);
+    //     for (int timestep=0; timestep<N; timestep++) {
+    //         our_system.calculateRelForces();
+    //         solver.integrateOneStep(our_system);
+    //         if (timestep%print_step == 0) {
+    //             our_system.writeToFile(output_file);
+    //             our_system.calculateEnergyAndAngularMomentum();
+    //     }
+    // }
 }

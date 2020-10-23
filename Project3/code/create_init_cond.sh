@@ -6,21 +6,21 @@ declare -a bodies
 ### comment out the other bodies
 bodies=(
     "sun"
-    # "mercury"
-    # "venus"
+    "mercury"
+    "venus"
     "earth"
-    # "mars"
+    "mars"
     "jupiter"
-    # "saturn"
-    # "uranus"
-    # "neptune"
-    # "pluto"
+    "saturn"
+    "uranus"
+    "neptune"
+    "pluto"
     "europa"
 )
 
 ### give the IC file an appropriate name
 # fname="planets"
-fname="earth_sun_jup_eur"
+fname="planets"
 
 
 # the rest is handled automatically

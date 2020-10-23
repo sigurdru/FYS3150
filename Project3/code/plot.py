@@ -7,7 +7,7 @@ plt.style.use('seaborn')
 plt.rc('text', usetex=True)
 plt.rc('font', family='DejaVu Sans')
 
-fname, N, dt, = sys.argv[1:]
+fname, dt, N = sys.argv[1:]
 dt = float(dt)
 N = int(N)
 print_step = int(0.01/dt)

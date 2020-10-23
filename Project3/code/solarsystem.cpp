@@ -60,9 +60,7 @@ void SolarSystem::read_initial_conditions(string input_file) {
     double mass;                    // Store mass of planets.
 
     int name_length = 10;           // length of planet names, unimportant
-    char name[name_length];         // capture the name of objects
-
-
+    char name[name_length];         // capture the name of object
     const char* input_file_char = input_file.c_str();   // fopen takes char* so we convert
     FILE *init_file = fopen(input_file_char, "r");      // open file with initial conditions
 
@@ -71,13 +69,14 @@ void SolarSystem::read_initial_conditions(string input_file) {
     for (int i = 0; i < num_bodies; i++) {
         // Read names, masses and initial conditions
         fscanf(init_file, 
-            "%s %d %lf %lf %lf %lf %lf %lf %lf", 
+            "%s %i %lf %lf %lf %lf %lf %lf %lf", 
             name, &body_type, &mass, &x, &y, &z, &vx, &vy, &vz
         );
         reduced_mass = mass/mass_sun;
         m_totalMassofSystem += reduced_mass;           // calculate total mass of system, useful for potential energy
         m_totalMomentumofSystem += vec3(vx, vy, vz)*reduced_mass;
         m_totalPositionofSystem += vec3(x, y, z)*reduced_mass;
+        
         createCelestialBody(
             name,
             body_type,
@@ -123,7 +122,7 @@ void SolarSystem::writeToFile(string filename) {
     m_file << numberOfBodies() << endl;
     m_file << "Comment line that needs to be here. Balle." << endl;
     for (CelestialBody& body : m_bodies) {
-        m_file << body.type << " " << body.position.x() << " " << body.position.y() << " "
+        m_file << body.name << " " << body.position.x() << " " << body.position.y() << " "
         << body.position.z() << "\n";
     }
 }

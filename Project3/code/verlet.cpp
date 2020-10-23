@@ -4,7 +4,6 @@
 Verlet::Verlet(double dt) : m_dt(dt) {}
 
 void Verlet::integrateOneStep(SolarSystem &system) {
-    system.calculateForces();
     int N = system.numberOfBodies();
     vec3 current_accelerations[N];
     int i = 0;
