@@ -77,6 +77,7 @@ Abstract om du vil
 
 \section{Introduction}
 
+In this report we will study the solar system in three dimensions.
 
 
 \section{Theory}
@@ -212,6 +213,9 @@ Another conserved size is angular momentum, and has the equation
 \end{equation}
 $\mathbf{L}$ is the angular momentum and $\mathbf{r}$ the position of an object with velocity $\mathbf{v}$. We can choose from what point we calculate the angular momentum ($\mathbf{r}$ depends on it), but in order for them to be conserved we have to be consistent.
 
+\subsection{Adjusting speed and position of the center of mass}
+blah
+
 \section{Methods}
 
 \subsection{Discretization of the equations of motion}
@@ -242,8 +246,19 @@ With a small error, we can model the orbit of the Earth around the Sun as circul
 \end{align*}
 In units of AU, $M_\odot$ and yr the gravitational constant has a value of approximately $4 \pi$.
 
-\subsection{Testing of the algorithms}
-In order to make sure our algorithm runs correctly, we want to test it. Throughout all the simulations we are going to make sure both energy and spin is conserved. 
+\subsection{Testing the stability of the algorithms}
+In order to make sure our algorithms runs correctly, we want to test it. Our first test will be to simulate the simplest possible system, namely earth orbiting the sun. We only look at the gravitational force from the sun on earth. We place the sun in origin and with zero velocity. The earth has a radii of $r=1$AU, and orbits the earth every year. This gives it an initial velocity of $v = 2\pi \text{ AU}/\text{yr}.$ Testing for different time steps $\Delta t$ we can look at the stability of velocity Verlet and Euler's forward method. In this system earth's distance from the sun and velocity should be constant, meaning both potential and kinetic energy ideally is conserved. Therefore we also test for conservation of energy.
+\\
+In the Theory section, from Kepler's second law, we showed that angular momentum is conserved. Therefore we also tested whether that is the case for our Earth-Sun system. We did the tests for our ideal orbit over, and for the actual values collected from NASA (see \citep{NASA}).
+
+\section{results}
+
+\section{discussion}
+
+discuss eventual differences between the verlet algorithm and the euler algorithm. Consider also the numver of flops involved and perform a timing of the two algorithm for equal final times.
+
+\section{conclusion}
+
 
 
 
@@ -252,10 +267,7 @@ In order to make sure our algorithm runs correctly, we want to test it. Througho
 \newpage
 
 \begin{thebibliography}{}
-\bibitem[Engeland, Hjorth-Jensen, Viefers, Raklev og Flekkøy (2020)]{Kompendium81} Engeland, Hjorth-Jensen, Viefers, Raklev og Flekkøy,  2020, \textit{Kompendium i FYS2140 Kvantefysikk, Versjon 3}, s. 81
-\bibitem[Griffiths (2018)]{Griffiths44} Griffiths, D. J, Schroeter, D. F.,  2018, \textit{Introduction to Quantum Mechanics, Third edition}, s. 44
-\bibitem[Griffiths (2018)]{Griffiths75} Griffiths, D. J, Schroeter, D. F.,  2018, \textit{Introduction to Quantum Mechanics, Third edition}, s. 75
-\bibitem[Griffiths (2018)]{Griffiths133} Griffiths, D. J, Schroeter, D. F.,  2018, \textit{Introduction to Quantum Mechanics, Third edition}, s. 133
+\bibitem[]{NASA} ref til nasa dataen
 
 \end{thebibliography}
 
