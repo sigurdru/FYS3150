@@ -27,6 +27,7 @@ class SolarSystem {
         double potentialEnergy() const;
         double kineticEnergy() const;
         void writeToFile(std::string filename);
+        void print_our_system();
         vec3 angularMomentum() const;
         std::vector<CelestialBody>& bodies();
 

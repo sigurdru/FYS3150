@@ -150,7 +150,7 @@ From equation \ref{eq:Taylor_exp_x} we see that by including only the two first 
 This is referred to as the Forward Euler method of solving differential equations. The mathematical error in this approximation goes like $O(h^2)$.
 
 
-\subsection{Conservation of angular momentum}
+\subsection{Conservation of angular momentum and energy}
 
 Kepler's second law states that if you draw a line from the Sun to a planet orbiting it, then that line would sweep out the same area in equal periods of time. We will use this law to derive the conservation of angular momentum.
 
@@ -170,6 +170,17 @@ The angular momentum $\vc L$ of the planet around the Sun is
   &= \text{constant}
 \end{align*}
 
+In this project we are going to be working with conservative forces. Therefore both energy and spin for our system should be conserved. When we are working with non-relativistic sizes, the total energy is given by the sum of kinetic and gravitational potential energy. Kinetic energy is given by
+\begin{equation}
+\label{eq:kinetic_energy}
+K = \frac{1}{2}mv^2,
+\end{equation}
+where $K$ is the kinetic energy, $m$ is the mass and $v$ is the velocity. The potential energy of an object in a gravitational field is given by
+\begin{equation}
+\label{eq:potential_energy}
+U = G\sum_{i}\frac{Mm_i}{r_i}
+\end{equation}
+Where $U$ is the potential energy, $G$ the gravitational constant, $r_i$ the relative distance between the objects, $m_i$ mass of an object creating the gravitational field, and $M$ mass of the object we want to find the energy of. Notice that the zero-point of potential energy is set to infinity.
 
 \subsection{Escape velocity}
 
@@ -192,26 +203,6 @@ A planet which begins at a distance 1 AU from the Sun, will therefore need an in
   &= 2 \sqrt 2 \pi \frac{\text{AU}}{\text{yr}} \numberthis \label{eq:escape_velocity}
 \end{align*}
 in order to be able to escape the gravitational pull of the Sun.
-
-\subsection{Energy and angular momentum}
-In this project we are going to be working with conservative forces. Therefore both energy and spin for our system should be conserved. When we are working with non-relativistic sizes, the total energy is given by the sum of kinetic and gravitational potential energy. Kinetic energy is given by
-\begin{equation}
-	\label{eq:kinetic_energy}
-	K = \frac{1}{2}mv^2,
-\end{equation}
-where $K$ is the kinetic energy, $m$ is the mass and $v$ is the velocity. The potential energy of an object in a gravitational field is given by
-\begin{equation}
-	\label{eq:potential_energy}
-	U = G\sum_{i}\frac{Mm_i}{r_i}
-\end{equation}
-Where $U$ is the potential energy, $G$ the gravitational constant, $r_i$ the relative distance between the objects, $m_i$ mass of an object creating the gravitational field, and $M$ mass of the object we want to find the energy of. Notice that the zero-point of potential energy is set to infinity.
-
-Another conserved size is angular momentum, and has the equation
-\begin{equation}
-	\label{eq:angular_momentum}
-	\mathbf{L} = \mathbf{r} \cross \mathbf{v}.
-\end{equation}
-$\mathbf{L}$ is the angular momentum and $\mathbf{r}$ the position of an object with velocity $\mathbf{v}$. We can choose from what point we calculate the angular momentum ($\mathbf{r}$ depends on it), but in order for them to be conserved we have to be consistent.
 
 \subsection{Adjusting speed and position of the center of mass}
 blah
@@ -246,10 +237,20 @@ With a small error, we can model the orbit of the Earth around the Sun as circul
 \end{align*}
 In units of AU, $M_\odot$ and yr the gravitational constant has a value of approximately $4 \pi$.
 
+\subsection{The data from NASA}
+si litt om dataen fra nasa
+
 \subsection{Testing the stability of the algorithms}
-In order to make sure our algorithms runs correctly, we want to test it. Our first test will be to simulate the simplest possible system, namely earth orbiting the sun. We only look at the gravitational force from the sun on earth. We place the sun in origin and with zero velocity. The earth has a radii of $r=1$AU, and orbits the earth every year. This gives it an initial velocity of $v = 2\pi \text{ AU}/\text{yr}.$ Testing for different time steps $\Delta t$ we can look at the stability of velocity Verlet and Euler's forward method. In this system earth's distance from the sun and velocity should be constant, meaning both potential and kinetic energy ideally is conserved. Therefore we also test for conservation of energy.
+In order to make sure our algorithms runs correctly, we want to test it. Our first test will be to simulate the simplest possible system, namely earth orbiting the sun. We only look at the gravitational force from the sun on earth. We place the sun in origin and with zero velocity. The earth orbits with a distance of $r=1$AU away from the sun, and makes a full orbit every year. This gives it an initial velocity of $v = 2\pi \text{ AU}/\text{yr}.$ 
 \\
-In the Theory section, from Kepler's second law, we showed that angular momentum is conserved. Therefore we also tested whether that is the case for our Earth-Sun system. We did the tests for our ideal orbit over, and for the actual values collected from NASA (see \citep{NASA}).
+Testing for different time steps $\Delta t$, we can look at the stability of velocity Verlet and Euler's forward method. Now we have to decide on what constitutes a stable orbit. The earth should have a constant distance away from the sun (1AU), so testing the distance away from the sun could be a good starting point. We will try to test for different $\Delta t$ and see how the distance varies from our theoretical value. We do each test over 10 years, and calculate the difference every $0.01/\Delta t$ steps (100 times).
+\\
+Another test will be conservation of kinetic and potential energy. As mentioned above, the earth should have a constant distance away from the sun, meaning potential energy is conserved. Earths speed should also be the same, meaning kinetic energy stays the same. Therefore, we will test for this as well. 
+\\
+The last test of our algorithm will be conservation of angular momentum. In the theory section, from Kepler's second law, we showed that angular momentum is conserved. Therefore we will also test whether that is the case for our Earth-Sun system. Adding some complexity, as well as testing it for the ideal orbit over, we tested conservation of angular momentum with the initial conditions collected from NASA (see \citep{NASA}). Still with the sun fixed in the origin, and only looking at the force from sun on the earth.
+
+\subsection{Unit tests}
+We are going to test several widely different systems. In order to reassure everything runs correct, we are going to have unit tests during simulations. We will test for conserved quantities, namely energy and angular momentum (see the theory section). The more we test and smaller tolerances, gives us more reassurance that our results are correct. This however, will be at the cost of computing time. We decide to test every $0.01/\Delta t$ step, giving us a total of 100 tests every simulation. The tolerance for energy and angular momentum have to depend on the simulation. For longer simulations we expect to see larger errors than for short ones.
 
 \section{results}
 

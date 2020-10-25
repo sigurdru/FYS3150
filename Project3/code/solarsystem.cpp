@@ -42,12 +42,16 @@ void SolarSystem::calculateEnergyAndAngularMomentum() {
     for (int i = 0; i < numberOfBodies(); i++) {
         CelestialBody& body1 = m_bodies[i];
         m_kineticEnergy += body1.mass * body1.velocity.lengthSquared();
-        double centerofmass_mass = m_totalMassofSystem - body1.mass;
-        m_potentialEnergy -= body1.mass*centerofmass_mass/body1.position.length();
         m_angularMomentum += body1.position.cross(body1.velocity);
+        for (int j = i + 1; j < numberOfBodies(); j++){
+            CelestialBody& body2 = m_bodies[j];
+            vec3 deltaRVector = body2.position - body1.position;
+            double dr = deltaRVector.length();
+            m_potentialEnergy -= body1.mass*body2.mass/dr;
+        }
     }
     m_kineticEnergy *= 0.5;
-    m_potentialEnergy *= 4*M_PI*M_PI;
+    m_potentialEnergy *= 8*M_PI*M_PI;
 }
 
 
@@ -87,11 +91,25 @@ void SolarSystem::read_initial_conditions(string input_file) {
     fclose(init_file);  // close file with initial conditions
 }
 
-void SolarSystem::remove_cm_velocity(){
+void SolarSystem::remove_cm_velocity() {
     for (CelestialBody& body: m_bodies){
         body.velocity -= m_totalMomentumofSystem/m_totalMassofSystem;
         body.position -= m_totalPositionofSystem/m_totalMassofSystem;
     }
+}
+
+void SolarSystem::print_our_system() {
+    // Print the system
+    int name_length = 10;  // length of planet names, unimportant
+    for (int i = 0; i<numberOfBodies(); i++) {
+        CelestialBody &body = bodies()[i];            // Reference to this body
+        printf("\n%-*s", name_length, body.name);   // print body name
+        std::cout << body.position << std::endl;    // print position
+        printf("%*s", name_length, "");
+        std::cout << body.velocity << std::endl;    // print velocity
+        std::cout << "mass: " << body.mass << std::endl;
+    }
+
 }
 
 int SolarSystem::numberOfBodies() const {
