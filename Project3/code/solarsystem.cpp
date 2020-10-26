@@ -77,15 +77,17 @@ void SolarSystem::read_initial_conditions(string input_file) {
             name, &body_type, &mass, &x, &y, &z, &vx, &vy, &vz
         );
         reduced_mass = mass/mass_sun;
+        vec3 pos = vec3(x,y,z);
+        vec3 vel = vec3(vx, vy, vz)*360;
         m_totalMassofSystem += reduced_mass;           // calculate total mass of system, useful for potential energy
-        m_totalMomentumofSystem += vec3(vx, vy, vz)*reduced_mass;
-        m_totalPositionofSystem += vec3(x, y, z)*reduced_mass;
+        m_totalMomentumofSystem += vel*reduced_mass;
+        m_totalPositionofSystem += pos*reduced_mass;
         
         createCelestialBody(
             name,
             body_type,
-            vec3(x, y, z),
-            vec3(vx, vy, vz)*365,       // convert from AU/day to AU/yr
+            pos,
+            vel,       // convert from AU/day to AU/yr
             reduced_mass);             // convert from kg to sun masses
     }
     fclose(init_file);  // close file with initial conditions
