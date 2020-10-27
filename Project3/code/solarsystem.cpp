@@ -5,12 +5,8 @@ using namespace std;
 
 SolarSystem::SolarSystem() : m_kineticEnergy(0), m_potentialEnergy(0) {}
 
-CelestialBody& SolarSystem::createCelestialBody(char name[],
-                                                int body_type,
-                                                vec3 position,
-                                                vec3 velocity,
-                                                double mass) {
-    m_bodies.push_back(CelestialBody(name, body_type, position, velocity, mass));
+CelestialBody& SolarSystem::createCelestialBody(CelestialBodyData &data) {
+    m_bodies.push_back(CelestialBody(data));
     return m_bodies.back();  // Return reference to the newest added celstial body
 }
 
@@ -85,7 +81,8 @@ void SolarSystem::read_initial_conditions(string input_file) {
         m_totalMomentumofSystem += vel*mass;
         m_totalPositionofSystem += pos*mass;
         
-        createCelestialBody(name, body_type, pos, vel, mass);
+        CelestialBodyData data(name, body_type, pos, vel, mass);
+        createCelestialBody(data);
     }
     fclose(init_file);  // close file with initial conditions
 }
@@ -103,11 +100,11 @@ void SolarSystem::printSystem() {
     for (int i = 0; i<numberOfBodies(); i++) {
         CelestialBody &body = bodies()[i];          // Reference to this body
         printf("\n%-*s pos:  ", name_length, body.name);   // print body name
-        std::cout << body.position << std::endl;    // print position
+        cout << body.position << endl;    // print position
         printf("%*s vel:  ", name_length, "");
-        std::cout << body.velocity << std::endl;    // print velocity
+        cout << body.velocity << endl;    // print velocity
         printf("%*s mass: ", name_length, "");
-        std::cout << body.mass << std::endl;
+        cout << body.mass << endl;
     }
 
 }
@@ -150,6 +147,6 @@ vec3 SolarSystem::angularMomentum() const {
     return m_angularMomentum;
 }
 
-std::vector<CelestialBody>& SolarSystem::bodies() {
+vector<CelestialBody>& SolarSystem::bodies() {
     return m_bodies;
 }

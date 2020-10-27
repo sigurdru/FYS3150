@@ -21,8 +21,8 @@ int main(int argc, char* argv[]) {
     
     double dt;                  // Time between each step
     int N, print_step;          // Number of integration points
-    double tol_angular = 1e-2;  // Tolerance on angular momentum conservation
-    double tol_energy = 1e-3;   // Tolerance on energy conservation
+    // double tol_angular = 1e-2;  // Tolerance on angular momentum conservation
+    // double tol_energy = 1e-3;   // Tolerance on energy conservation
 
     if (argc < 4) {
         std::cout << "Please include input file, "
@@ -44,27 +44,22 @@ int main(int argc, char* argv[]) {
     our_system.read_initial_conditions(input_file); // read input file and add planets
     our_system.printSystem();
     our_system.remove_cm_velocity();
-    std::cout << std::endl << "Vel. and pos. of center of mass removed:";
+    std::cout << std::endl << "Vel. and pos. of center of mass subtracted:";
     our_system.printSystem();
     our_system.calculateEnergyAndAngularMomentum();
+    our_system.calculateForces();
 
     if (solver_method == "euler") {
         Euler solver(dt);
-        our_system.calculateForces();
         for (int timestep=0; timestep<N; timestep++) {
             solver.integrateOneStep(our_system);
-            if (timestep%print_step == 0) {
-                our_system.writeToFile(output_file);
-            }
+            if (timestep%print_step == 0) our_system.writeToFile(output_file);
         }
     } else if (solver_method == "verlet") {
         Verlet solver(dt);
-        our_system.calculateForces();
         for (int timestep=0; timestep<N; timestep++) {
             solver.integrateOneStep(our_system);
-            if (timestep%print_step == 0) {
-                our_system.writeToFile(output_file);
-            }
+            if (timestep%print_step == 0) our_system.writeToFile(output_file);
         }
     } else {
         std::cout << "Unknown method " << solver_method << std::endl;

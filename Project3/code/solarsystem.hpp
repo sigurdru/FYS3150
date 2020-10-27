@@ -9,13 +9,7 @@
 class SolarSystem {
     public:
         SolarSystem();
-        CelestialBody& createCelestialBody(
-            char name[], 
-            int body_type,
-            vec3 position, 
-            vec3 velocity, 
-            double mass
-        );
+        CelestialBody& createCelestialBody(CelestialBodyData &data);
         void calculateForces();
         void calculateEnergyAndAngularMomentum();
 
