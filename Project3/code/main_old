@@ -1,10 +1,6 @@
 
     if (solver_method == "sun_earth_euler") {
         double tol_orbit = 1e-2;
-        our_system.bodies()[1].position[0] = 1;
-        our_system.bodies()[1].velocity[1] = 2*M_PI;
-        our_system.print_our_system();
-        our_system.calculateEnergyAndAngularMomentum();
         Euler solver(dt);
         for (int timestep=0; timestep<N; timestep++) {
             our_system.calculateForces();

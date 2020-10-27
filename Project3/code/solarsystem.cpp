@@ -3,7 +3,10 @@
 #include <iostream>
 using namespace std;
 
-SolarSystem::SolarSystem() : m_kineticEnergy(0), m_potentialEnergy(0) {}
+SolarSystem::SolarSystem(double distDependence) : 
+    m_kineticEnergy(0), 
+    m_potentialEnergy(0),
+    distDependence(distDependence) {}
 
 CelestialBody& SolarSystem::createCelestialBody(CelestialBodyData &data) {
     m_bodies.push_back(CelestialBody(data));
@@ -11,18 +14,18 @@ CelestialBody& SolarSystem::createCelestialBody(CelestialBodyData &data) {
 }
 
 void SolarSystem::calculateForces() {
-    // reset force on all bodies
+    // reset force and energy of all bodies
     for (CelestialBody& body : m_bodies) body.resetForce();
 
-    vec3 deltaRVector, force;
+    vec3 deltaRVec, force;
     double dr;
     for (int i = 0; i < numberOfBodies(); i++) {
         CelestialBody& body1 = m_bodies[i];
         for (int j = i + 1; j < numberOfBodies(); j++) {
             CelestialBody& body2 = m_bodies[j];
-            deltaRVector = body2.position - body1.position;
-            dr = deltaRVector.length();
-            force = body1.mass*body2.mass*deltaRVector/(dr*dr*dr);
+            deltaRVec = body2.position - body1.position;
+            dr = deltaRVec.length();
+            force = body1.mass*body2.mass*deltaRVec/pow(dr, distDependence+1);
             body1.force += force;
             body2.force -= force;
         }
@@ -135,7 +138,11 @@ void SolarSystem::writeToFile(string filename) {
     }
 
     m_file << numberOfBodies() << endl;
-    m_file << "Comment line" << endl;
+    m_file << potentialEnergy() 
+        << " " << kineticEnergy() 
+        << " " << totalEnergy() 
+        << " " << angularMomentum() 
+        << endl;
     for (CelestialBody& body : m_bodies) {
         m_file << body.name << " " << body.type << " " << body.position.x() 
             << " " << body.position.y() << " " << body.position.z() << "\n";

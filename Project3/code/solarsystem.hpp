@@ -8,7 +8,7 @@
 
 class SolarSystem {
     public:
-        SolarSystem();
+        SolarSystem(double distDependence);
         CelestialBody& createCelestialBody(CelestialBodyData &data);
         void calculateForces();
         void calculateEnergyAndAngularMomentum();
@@ -32,6 +32,7 @@ class SolarSystem {
         double m_kineticEnergy;
         double m_potentialEnergy;
         double m_totalMassofSystem;
+        double distDependence;
         vec3 m_totalMomentumofSystem;
         vec3 m_totalPositionofSystem;
 };

@@ -7,59 +7,67 @@
 #include "verlet.hpp"
 #include "solarsystem.hpp"
 
-//test conservation of angular and energy
+// test conservation of angular and energy
 void testEnergy_and_Angular(SolarSystem& system, double tol_energy, double tol_angular);
-//test conservation of kinetic and potential energy seperatly
+// test conservation of kinetic and potential energy seperatly
 void testKinetic_and_potential(SolarSystem& system, double tol_pot, double tol_kin);
-//test for conservation of circular orbit
+// test for conservation of circular orbit
 void testCirc_Orbit(CelestialBody& body, double tol_orbit);
 
 int main(int argc, char* argv[]) {
-    std::string input_file;     // input file
-    std::string output_file;    // output file
-    std::string solver_method;  // method for solving our system
+    std::string input_file, output_file, solver_method;
     
-    double dt;                  // Time between each step
+    double dt, distDependence;  // Time between each step and parameter beta
     int N, print_step;          // Number of integration points
+    bool shouldPrint;
     // double tol_angular = 1e-2;  // Tolerance on angular momentum conservation
     // double tol_energy = 1e-3;   // Tolerance on energy conservation
 
-    if (argc < 4) {
-        std::cout << "Please include input file, "
-            << "dt, number of time steps and solver method" << std::endl;
+    if (argc < 5) {
+        std::cout << "Please include input file, dt, number of time steps, "
+            << "solver method and distance dependence parameter beta" 
+            << std::endl;
         exit(1);
     } else {
-        // Store input, output file, dt and N
-        output_file = "../output/positions/";
+        // Store input, dt, N, solver_method and distDependence
         input_file = "../input/";
+        output_file = "../output/positions/";
         input_file.append(argv[1]).append(".txt");
-        output_file.append(argv[1]).append(".xyz");
         dt = std::atof(argv[2]);
         N = std::atoi(argv[3]);
         solver_method = argv[4];
+        distDependence = std::atof(argv[5]);
         print_step = 0.01/dt;
+        output_file.append(argv[1]).append("-") // same name as input file
+            .append(argv[4]).append("-")        //   + solver_method
+            .append(argv[2]).append("-")        //   + dt
+            .append(argv[3]).append("-")        //   + N
+            .append(argv[5]).append(".xyz");    //   + distance dependence
     }
 
-    SolarSystem our_system;                         // initialize our system
+    SolarSystem our_system(distDependence);         // initialize our system
     our_system.read_initial_conditions(input_file); // read input file and add planets
     our_system.printSystem();
     our_system.remove_cm_velocity();
     std::cout << std::endl << "Vel. and pos. of center of mass subtracted:";
     our_system.printSystem();
     our_system.calculateEnergyAndAngularMomentum();
-    our_system.calculateForces();
 
+    // Solve!
+    our_system.calculateForces();
     if (solver_method == "euler") {
         Euler solver(dt);
         for (int timestep=0; timestep<N; timestep++) {
             solver.integrateOneStep(our_system);
-            if (timestep%print_step == 0) our_system.writeToFile(output_file);
+            shouldPrint = (timestep%print_step == 0);
+            if (shouldPrint) our_system.writeToFile(output_file);
         }
     } else if (solver_method == "verlet") {
         Verlet solver(dt);
         for (int timestep=0; timestep<N; timestep++) {
             solver.integrateOneStep(our_system);
-            if (timestep%print_step == 0) our_system.writeToFile(output_file);
+            shouldPrint = (timestep%print_step == 0);
+            if (shouldPrint) our_system.writeToFile(output_file);
         }
     } else {
         std::cout << "Unknown method " << solver_method << std::endl;

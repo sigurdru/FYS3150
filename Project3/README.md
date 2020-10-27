@@ -25,6 +25,7 @@ bash create_init_cond.sh
 
 The following input files are already prepared:
 - "earth_sun_circ.txt", initial conditions for the Sun and the Earth that should make the Earth's orbit circular.
+- "earth_sun_ellip.txt", initial conditions for the Sun and the Earth that should make the Earth's orbit elliptical.
 - "three_body.txt", initial conditions for the Sun, the Earth and Jupiter
 - "three_body10.txt", initial conditions for the Sun, the Earth and Jupiter with the mass of Jupiter multiplied with 10
 - "three_body1000.txt", initial conditions for the Sun, the Earth and Jupiter with the mass of Jupiter multiplied with 1000

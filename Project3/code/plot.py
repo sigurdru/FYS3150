@@ -4,62 +4,85 @@ import matplotlib.pyplot as plt
 import sys
 
 plt.style.use('seaborn')
-plt.rc('text', usetex=True)
-plt.rc('font', family='DejaVu Sans')
+# plt.rc('text', usetex=True)
+# plt.rc('font', family='DejaVu Sans')
 
-fname, dt, N = sys.argv[1:]
+def read_xyz_file(fname, N_lines):
+    file_position = '../output/positions/' + fname + '.xyz'
+    with open(file_position, 'r') as infile:
+        line = infile.readline()
+        data = line.split()
+        num_bodies = int(data[0])
+        
+        position = np.zeros((num_bodies, N_lines, 3))
+        energy = np.zeros((N_lines, 3))
+        ang_momentum = np.zeros((N_lines, 3))
+        names = []
+
+        energies = infile.readline()
+        pot, kin, tot, *ang_mom = energies[:-3].split()
+        energy[0] = [pot, kin, tot]
+        ang_momentum[0] = [float(e.strip('[').strip(',')) for e in ang_mom]
+        
+        for i in range(num_bodies):
+            line = infile.readline()
+            data = line.split()
+            names.append(data[0])
+            position[i, 0] = [float(val) for val in data[2:5]]
+        
+        for i in range(1, N_lines):
+            infile.readline()   # Read past number of bodies
+            energies = infile.readline()
+            pot, kin, tot, *ang_mom = energies[:-3].split()
+            energy[0] = [pot, kin, tot]
+            ang_momentum[0] = [float(e.strip('[').strip(',')) for e in ang_mom]
+            for j in range(num_bodies):
+                line = infile.readline()
+                data = line.split()
+                position[j, i] = [float(val) for val in data[2:5]]
+        return position, energy, ang_momentum, num_bodies, names
+
+fname, projection = sys.argv[1:]
+description, solver_method, dt, N, beta = fname.split('-')
 dt = float(dt)
 N = int(N)
 print_step = int(0.01/dt)
 N_lines = int(N/print_step)-1
 
-fig = plt.figure
-ax = plt.axes(projection='3d')
+position, energies, ang_momentum, num_bodies, names = read_xyz_file(fname, N_lines)
 
-title = "Orbit"
-ax.set_title(title, fontsize=20)
-ax.set_xlabel('Position x [AU]', fontsize=20)
-ax.set_ylabel('Position y [AU]', fontsize=20)
-ax.set_zlabel('Position z [AU]', fontsize=20)
+if projection == '3D':
+    fig = plt.figure
+    ax = plt.axes(projection='3d')
 
-file_position = '../output/'+fname+'.xyz'
-infile = open(file_position, 'r')
+    title = "Orbit"
+    ax.set_title(title, fontsize=20)
+    ax.set_xlabel('Position x [AU]', fontsize=20)
+    ax.set_ylabel('Position y [AU]', fontsize=20)
+    ax.set_zlabel('Position z [AU]', fontsize=20)
 
-line = infile.readline()
-data = line.split()
-num_bodies = int(data[0])
-infile.readline()
+    for i in range(num_bodies):
+        ax.scatter3D(position[i, 0, 0], position[i, 0, 1], position[i, 0, 2])
+        ax.plot3D(position[i, 1:, 0], position[i, 1:, 1], position[i, 1:, 2], label = names[i])
+    ax.legend(fontsize=15)
+    ax.tick_params(axis='both', which='major', labelsize=15)
+    plt.show()
+else:
+    fig, ax = plt.subplots()
+    for i in range(num_bodies):
+        ax.plot(position[i, 0, 0], position[i, 0, 1], 'o')
+        ax.plot(position[i, 1:, 0], position[i, 1:, 1], label = names[i])
+    ax.legend()
+    ax.axis('equal')
+    fig.tight_layout()
+    fig.savefig('../output/' + description + '.pdf')
 
-x_positions = [np.zeros(N_lines) for _ in range(num_bodies)]
-y_positions = [np.zeros(N_lines) for _ in range(num_bodies)]
-z_positions = [np.zeros(N_lines) for _ in range(num_bodies)]
-names = []
-
-for i in range(num_bodies):
-    line = infile.readline()
-    data = line.split()
-    names.append(data[0])
-    x_positions[i][0] = float(data[2])
-    y_positions[i][0] = float(data[3])
-    z_positions[i][0] = float(data[4])
-
-for i in range(1, N_lines):
-    infile.readline()
-    infile.readline()
-    for j in range(num_bodies):
-        line = infile.readline()
-        data = line.split()
-        x_positions[j][i] = float(data[2])
-        y_positions[j][i] = float(data[3])
-        z_positions[j][i] = float(data[4])
-
-infile.close()
-
-for i in range(num_bodies):
-    ax.scatter3D(x_positions[i][0], y_positions[i][0], z_positions[i][0])
-    ax.plot3D(x_positions[i][1:], y_positions[i][1:], z_positions[i][1:], label = names[i])
-ax.legend(fontsize=15)
-ax.tick_params(axis='both', which='major', labelsize=15)
-# fig.tight_layout()
-plt.show()
-# fig.savefig(fname.replace('csv', 'pdf'))
+fig, ax = plt.subplots()
+dt = 0.01
+t = np.arange(0, N_lines*dt, dt)
+ax.plot(t, energies[:, 0], label='Potential')
+ax.plot(t, energies[:, 1], label='Kinetic')
+ax.plot(t, energies[:, 2], label='Total')
+ax.legend()
+fig.tight_layout()
+fig.savefig('../output/' + description + '_energy.pdf')

@@ -4,9 +4,7 @@
 
 struct CelestialBodyData {
     char name[10];
-    vec3 position;
-    vec3 velocity;
-    vec3 force;
+    vec3 position, velocity, force;
     double mass;
     int type;
 
@@ -25,10 +23,8 @@ struct CelestialBodyData {
 class CelestialBody {
     public:
         char name[10];
-        vec3 position;
-        vec3 velocity;
-        vec3 force;
-        double mass;
+        vec3 position, velocity, force;
+        double mass, kineticEnergy, potentialEnergy;
         int type;
 
     CelestialBody(CelestialBodyData &data);
