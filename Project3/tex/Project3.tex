@@ -3,8 +3,8 @@
 
 % allows special characters (including æøå)
 \usepackage[utf8]{inputenc}
-\usepackage [norsk]{babel} %if you write norwegian
-%\usepackage[english]{babel}  %if you write english
+%\usepackage [norsk]{babel} %if you write norwegian
+\usepackage[english]{babel}  %if you write english
 
 
 %% note that you may need to download some of these packages manually, it depends on your setup.
@@ -58,21 +58,32 @@
 \begin{document}
 
 
+\begin{titlepage}
+	\begin{center}
+	\vspace*{1cm}
 
-\title{FYS3150 - Project 3}
-\date{\today}
-\author{Vegard Falmår and Sigurd Sørlie Rustad}
-\affiliation{Universitetet i Oslo}
+	\textbf{FYS3150 - Project 3}
 
-\email{vegardfa@uio.no}
-\email{sigurdsr@gmail.com}
+	\vspace{0.5cm}
+	Vegard Falmår and Sigurd Sørlie Rustad
+	
+	\vspace{1cm}
+	\includegraphics[scale=0.5]{UIO}
+	\vspace{0.8cm}
 
-\newpage
+	University of Oslo\\
+	Norway\\
+	\today	
+		
+	\end{center}
+	\tableofcontents
+	\clearpage
+\end{titlepage}
 
 \begin{abstract}
 Abstract om du vil
 \end{abstract}
-\maketitle                                % creates the title, author, date & abstract
+\maketitle                              % creates the title
 
 
 \section{Introduction}
@@ -205,7 +216,29 @@ A planet which begins at a distance 1 AU from the Sun, will therefore need an in
 in order to be able to escape the gravitational pull of the Sun.
 
 \subsection{Adjusting speed and position of the center of mass}
-blah
+When you have a planetary system, all the planets orbit a common center of mass. This point can have a velocity, meaning that if we don't account for it, the system will drift when we simulate. There are many ways to account for this drift, however we choose to adjust the velocity of all the objects, such that there are none. In order to do this you first have to find the velocity. This is done by first finding the momentum
+\begin{equation*}
+	\mathbf{p}_{\text{CM}} = \sum_{i=1}^{n}m_i\mathbf{v_i}
+\end{equation*} 
+and then dividing by the total mass of the system
+\begin{equation}
+	\label{eq:v_cm}
+	\mathbf{v}_{\text{CM}} = \frac{1}{M}\mathbf{p}_{\text{CM}} =  \frac{1}{M}\sum_{i=1}^{n}m_i\mathbf{v_i}.
+\end{equation} 
+Where $\mathbf{p}_{\text{CM}}$ and $\mathbf{v}_{\text{CM}}$ is the momentum and velocity of the center of mass. $M$ the total mass of the system, $n$ the number of planets and, $m_i$ and $\mathbf{v_i}$ the mass and velocity of the individual planets. By subtracting $\mathbf{v}_{\text{CM}}$ from the velocity of every planet, the center of mass should not drift. Similarly, we can place the origin in the center of mass. This is done by first finding the position:
+\begin{equation}
+	\label{eq:r_cm}
+	\mathbf{r}_{\text{CM}} =  \frac{1}{M}\sum_{i=1}^{n}m_i\mathbf{r_i},
+\end{equation}
+where $\mathbf{r}_{\text{CM}}$ is the center of mass position and $r_i$ the individual planets positions. Then we can do the same as above, subtract $\mathbf{r}_{\text{CM}}$ from the positions of all the planets. Then with the center of mass placed in the origin with zero velocity, it should not move.
+
+\subsection{The perihelion precession of Mercury}
+We know, because of general relativity, that Newtons law of gravitation is not entirely correct. An example of where we see this effect is in the precession of Mercury's perihelion. Even when taking into account the gravitational force from all the other planets in the solar-system, Newtons law of gravitation cannot explain how the perihelion moves around the sun. Therefore, when we have relativistic effects, we add a correction. For binary systems this becomes (see \citep{oppgavetekst})
+\begin{equation}
+	\label{eq:general_relativity}
+	F_{1 \rightarrow 2} = \frac{GM_1M_2}{r^2}\left[ 1 + \frac{3l^2}{r^2c^2} \right].
+\end{equation}
+Where $F_{1 \rightarrow 2}$ is the force acting on object 2, $G$ the gravitational constant, $M_1$ and $M_2$ are the masses, $r$ their relative position, $l$ the magnitude of object 2's orbital angular momentum and $c$ the speed of light.
 
 \section{Methods}
 
@@ -241,16 +274,16 @@ In units of AU, $M_\odot$ and yr the gravitational constant has a value of appro
 si litt om dataen fra nasa
 
 \subsection{Testing the stability of the algorithms}
-In order to make sure our algorithms runs correctly, we want to test it. Our first test will be to simulate the simplest possible system, namely earth orbiting the sun. We only look at the gravitational force from the sun on earth. We place the sun in origin and with zero velocity. The earth orbits with a distance of $r=1$AU away from the sun, and makes a full orbit every year. This gives it an initial velocity of $v = 2\pi \text{ AU}/\text{yr}.$ 
+In order to make sure our algorithms runs correctly, we want to test it. Our first test will be to simulate the simplest possible system, namely earth orbiting the sun. We place the sun in origin and with zero velocity. The earth orbits with a distance of $r=1$AU away from the sun, and makes a full orbit every year. This gives it an initial velocity of $v = 2\pi \text{ AU}/\text{yr}.$ This system however will have a center of mass that drifts. In order to counteract this we will move the origin to where the center of mass is, and zero its velocity. See the theory section on how this is done.
 \\
-Testing for different time steps $\Delta t$, we can look at the stability of velocity Verlet and Euler's forward method. Now we have to decide on what constitutes a stable orbit. The earth should have a constant distance away from the sun (1AU), so testing the distance away from the sun could be a good starting point. We will try to test for different $\Delta t$ and see how the distance varies from our theoretical value. We do each test over 10 years, and calculate the difference every $0.01/\Delta t$ steps (100 times).
+Testing for different time steps $\Delta t$, we can look at the stability of velocity Verlet and Euler's forward method. Now we have to decide on what constitutes a stable orbit. Even though we adjust the barycenters drift, this effect is neglishable and we should still expect the earths orbit to have a distance of 1AU away from the barycenter. Therefore we will test for different $\Delta t$ and see how the distance varies from our expected value. We do each test over 10 years, and calculate the difference every $0.01/\Delta t$ steps (100 times).
 \\
-Another test will be conservation of kinetic and potential energy. As mentioned above, the earth should have a constant distance away from the sun, meaning potential energy is conserved. Earths speed should also be the same, meaning kinetic energy stays the same. Therefore, we will test for this as well. 
+Another test will be conservation of kinetic and potential energy. As mentioned above, the earth should have a constant distance away from the barycenter, meaning potential energy is conserved. Earths speed should also be the same, meaning kinetic energy stays the same. Therefore, we will test for this as well. 
 \\
-The last test of our algorithm will be conservation of angular momentum. In the theory section, from Kepler's second law, we showed that angular momentum is conserved. Therefore we will also test whether that is the case for our Earth-Sun system. Adding some complexity, as well as testing it for the ideal orbit over, we tested conservation of angular momentum with the initial conditions collected from NASA (see \citep{NASA}). Still with the sun fixed in the origin, and only looking at the force from sun on the earth.
+The last test of our algorithm will be conservation of angular momentum. In the theory section, from Kepler's second law, we showed that angular momentum is conserved. Therefore we will also test whether that is the case for our Earth-Sun system. Adding some complexity, as well as testing it for the near ideal orbit over, we tested conservation of angular momentum with the initial conditions collected from NASA (see \citep{NASA}).
 
 \subsection{Unit tests}
-We are going to test several widely different systems. In order to reassure everything runs correct, we are going to have unit tests during simulations. We will test for conserved quantities, namely energy and angular momentum (see the theory section). The more we test and smaller tolerances, gives us more reassurance that our results are correct. This however, will be at the cost of computing time. We decide to test every $0.01/\Delta t$ step, giving us a total of 100 tests every simulation. The tolerance for energy and angular momentum have to depend on the simulation. For longer simulations we expect to see larger errors than for short ones.
+We are going to test several widely different systems. In order to reassure ourselves everything runs correct, we are going to have unit tests during simulations. We will test for conserved quantities, namely energy and angular momentum. More tests and smaller tolerances, gives us more reassurance that our results are correct. This however, will be at the cost of computing time. We decide to test every $0.01/\Delta t$ step, giving us a total of 100 tests every simulation. The tolerance for energy and angular momentum have to depend on the simulation. For longer simulations we expect to see larger errors than for short ones.
 
 \section{results}
 
@@ -268,7 +301,8 @@ discuss eventual differences between the verlet algorithm and the euler algorith
 \newpage
 
 \begin{thebibliography}{}
-\bibitem[]{NASA} ref til nasa dataen
+\bibitem[]{oppgavetekst} Department of Physics, Univeristy of Oslo, Fall semester 2020, Computational Physics I FYS3150/FYS4150, Project 3.
+\bibitem[]{NASA} Ryan S. Park, Alan B. Chamberlin, NASA, 27. October 2020, https://ssd.jpl.nasa.gov/horizons.cgi\#top.
 
 \end{thebibliography}
 
