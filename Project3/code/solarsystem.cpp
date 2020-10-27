@@ -15,20 +15,20 @@ CelestialBody& SolarSystem::createCelestialBody(char name[],
 }
 
 void SolarSystem::calculateForces() {
-    for (CelestialBody& body : m_bodies) {
-        // Reset forces on all bodies
-        body.force.zeros();
-    }
+    // reset force on all bodies
+    for (CelestialBody& body : m_bodies) body.resetForce();
 
+    vec3 deltaRVector, force;
+    double dr;
     for (int i = 0; i < numberOfBodies(); i++) {
         CelestialBody& body1 = m_bodies[i];
         for (int j = i + 1; j < numberOfBodies(); j++) {
             CelestialBody& body2 = m_bodies[j];
-            vec3 deltaRVector = body2.position - body1.position;
-            double dr = deltaRVector.length();
-            // Calculate the force
-            body1.force += body1.mass*body2.mass*deltaRVector/(dr*dr*dr);
-            body2.force -= body1.force;
+            deltaRVector = body2.position - body1.position;
+            dr = deltaRVector.length();
+            force = body1.mass*body2.mass*deltaRVector/(dr*dr*dr);
+            body1.force += force;
+            body2.force -= force;
         }
         body1.force *= 4*M_PI*M_PI;
     }
@@ -56,39 +56,36 @@ void SolarSystem::calculateEnergyAndAngularMomentum() {
 
 
 void SolarSystem::read_initial_conditions(string input_file) {
-    int num_bodies, body_type;                 // number of planets
+    int num_bodies, body_type;      // number of planets, and type identifier
     double mass_sun = 1.989e30;     // Mass of the sun
-    double reduced_mass;
-
-    double x, y, z, vx, vy, vz;     // To store initial conditions for each planet.
+    double x, y, z, vx, vy, vz;     // To store initial cond. for each planet
+    vec3 pos, vel;
     double mass;                    // Store mass of planets.
 
     int name_length = 10;           // length of planet names, unimportant
     char name[name_length];         // capture the name of object
-    const char* input_file_char = input_file.c_str();   // fopen takes char* so we convert
-    FILE *init_file = fopen(input_file_char, "r");      // open file with initial conditions
 
-    fscanf(init_file, "%i", &num_bodies);               // read number of bodies
+    // fopen takes char* so we convert
+    const char* input_file_char = input_file.c_str();
+    // open file with initial conditions
+    FILE *init_file = fopen(input_file_char, "r");
+
+    fscanf(init_file, "%i", &num_bodies);   // read number of bodies
     
     for (int i = 0; i < num_bodies; i++) {
-        // Read names, masses and initial conditions
+        // Read names, types, masses and initial conditions
         fscanf(init_file, 
-            "%s %i %lf %lf %lf %lf %lf %lf %lf", 
+            "%s %d %lf %lf %lf %lf %lf %lf %lf", 
             name, &body_type, &mass, &x, &y, &z, &vx, &vy, &vz
         );
-        reduced_mass = mass/mass_sun;
-        vec3 pos = vec3(x,y,z);
-        vec3 vel = vec3(vx, vy, vz)*360;
-        m_totalMassofSystem += reduced_mass;           // calculate total mass of system, useful for potential energy
-        m_totalMomentumofSystem += vel*reduced_mass;
-        m_totalPositionofSystem += pos*reduced_mass;
+        mass /= mass_sun;               // convert from kg to sun masses
+        pos = vec3(x, y, z);
+        vel = vec3(vx, vy, vz)*365;     // convert from AU/day to AU/yr
+        m_totalMassofSystem += mass;    // calculate total mass of system
+        m_totalMomentumofSystem += vel*mass;
+        m_totalPositionofSystem += pos*mass;
         
-        createCelestialBody(
-            name,
-            body_type,
-            pos,
-            vel,       // convert from AU/day to AU/yr
-            reduced_mass);             // convert from kg to sun masses
+        createCelestialBody(name, body_type, pos, vel, mass);
     }
     fclose(init_file);  // close file with initial conditions
 }
@@ -100,16 +97,17 @@ void SolarSystem::remove_cm_velocity() {
     }
 }
 
-void SolarSystem::print_our_system() {
+void SolarSystem::printSystem() {
     // Print the system
     int name_length = 10;  // length of planet names, unimportant
     for (int i = 0; i<numberOfBodies(); i++) {
-        CelestialBody &body = bodies()[i];            // Reference to this body
-        printf("\n%-*s", name_length, body.name);   // print body name
+        CelestialBody &body = bodies()[i];          // Reference to this body
+        printf("\n%-*s pos:  ", name_length, body.name);   // print body name
         std::cout << body.position << std::endl;    // print position
-        printf("%*s", name_length, "");
+        printf("%*s vel:  ", name_length, "");
         std::cout << body.velocity << std::endl;    // print velocity
-        std::cout << "mass: " << body.mass << std::endl;
+        printf("%*s mass: ", name_length, "");
+        std::cout << body.mass << std::endl;
     }
 
 }
@@ -140,10 +138,10 @@ void SolarSystem::writeToFile(string filename) {
     }
 
     m_file << numberOfBodies() << endl;
-    m_file << "Comment line that needs to be here. Balle." << endl;
+    m_file << "Comment line" << endl;
     for (CelestialBody& body : m_bodies) {
-        m_file << body.name << " " << body.position.x() << " " << body.position.y() << " "
-        << body.position.z() << "\n";
+        m_file << body.name << " " << body.type << " " << body.position.x() 
+            << " " << body.position.y() << " " << body.position.z() << "\n";
     }
 }
 

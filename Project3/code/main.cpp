@@ -15,114 +15,63 @@ void testKinetic_and_potential(SolarSystem& system, double tol_pot, double tol_k
 void testCirc_Orbit(CelestialBody& body, double tol_orbit);
 
 int main(int argc, char* argv[]) {
-    std::string input_file;         // input file
-    std::string output_file;        // output file
-    std::string solver_method;      // method for solving our system
+    std::string input_file;     // input file
+    std::string output_file;    // output file
+    std::string solver_method;  // method for solving our system
     
-    double dt;                      // Time between each step
-    int N, print_step;              // Number of integration points
-    double tol_angular = 1e-2;      // Tolerance on angular momentum conservation
-    double tol_energy = 1e-3;       // Tolerance on energy conservation
+    double dt;                  // Time between each step
+    int N, print_step;          // Number of integration points
+    double tol_angular = 1e-2;  // Tolerance on angular momentum conservation
+    double tol_energy = 1e-3;   // Tolerance on energy conservation
 
-    if (argc < 5) {
-        std::cout << "Please include input file, output file, "
-            << "dt and number of time ste ps" << std::endl;
+    if (argc < 4) {
+        std::cout << "Please include input file, "
+            << "dt, number of time steps and solver method" << std::endl;
         exit(1);
-    }
-    else {
+    } else {
         // Store input, output file, dt and N
-        output_file = "../output/";
+        output_file = "../output/positions/";
         input_file = "../input/";
-        input_file.append(argv[1]);
-        output_file.append(argv[2]).append(".xyz");
-        dt = std::atof(argv[3]);
-        N = std::atoi(argv[4]);
-        solver_method = argv[5];
+        input_file.append(argv[1]).append(".txt");
+        output_file.append(argv[1]).append(".xyz");
+        dt = std::atof(argv[2]);
+        N = std::atoi(argv[3]);
+        solver_method = argv[4];
         print_step = 0.01/dt;
-
     }
 
-    SolarSystem our_system;                             // initialize our system
-    our_system.read_initial_conditions(input_file);     // read input file and add planets
-
-    if (solver_method == "sun_earth_euler") {
-        double tol_orbit = 1e-2;
-        our_system.bodies()[1].position[0] = 1;
-        our_system.bodies()[1].velocity[1] = 2*M_PI;
-        our_system.print_our_system();
-        our_system.calculateEnergyAndAngularMomentum();
-        Euler solver(dt);
-        for (int timestep=0; timestep<N; timestep++) {
-            our_system.calculateForces();
-            our_system.bodies()[1].force = vec3(0,0,0); //want a stationary sun
-            solver.integrateOneStep(our_system);
-            if (timestep%print_step == 0) {
-                our_system.writeToFile(output_file);
-                testCirc_Orbit(our_system.bodies()[1], tol_orbit);
-            }
-        }
-    }
-
-    if (solver_method == "sun_earth_verlet") {
-        double tol_orbit = 1e-7;
-        double tol_kin = 1e-3;
-        double tol_pot = 1e-3;
-        our_system.bodies()[1].position[0] = 1;
-        our_system.bodies()[1].velocity[1] = 2*M_PI;
-        our_system.calculateEnergyAndAngularMomentum();
-        our_system.print_our_system();
-        Verlet solver(dt);
-        for (int timestep=0; timestep<N; timestep++) {
-            our_system.calculateForces();
-            our_system.bodies()[1].force = vec3(0,0,0); //want a stationary sun
-            solver.integrateOneStep(our_system);
-            if (timestep%print_step == 0) {
-                our_system.writeToFile(output_file);
-                testKinetic_and_potential(our_system, tol_kin, tol_pot);
-                testCirc_Orbit(our_system.bodies()[1], tol_orbit);
-            }
-        }
-    }
+    SolarSystem our_system;                         // initialize our system
+    our_system.read_initial_conditions(input_file); // read input file and add planets
+    our_system.printSystem();
+    our_system.remove_cm_velocity();
+    std::cout << std::endl << "Vel. and pos. of center of mass removed:";
+    our_system.printSystem();
     our_system.calculateEnergyAndAngularMomentum();
 
     if (solver_method == "euler") {
-        our_system.remove_cm_velocity();
-        our_system.calculateEnergyAndAngularMomentum();
         Euler solver(dt);
+        our_system.calculateForces();
         for (int timestep=0; timestep<N; timestep++) {
-            our_system.calculateForces();
             solver.integrateOneStep(our_system);
             if (timestep%print_step == 0) {
                 our_system.writeToFile(output_file);
             }
         }
-    }
-    
-    if (solver_method == "verlet") {
-        our_system.remove_cm_velocity();
-        our_system.calculateEnergyAndAngularMomentum();
+    } else if (solver_method == "verlet") {
         Verlet solver(dt);
+        our_system.calculateForces();
         for (int timestep=0; timestep<N; timestep++) {
-            our_system.calculateForces();
             solver.integrateOneStep(our_system);
             if (timestep%print_step == 0) {
                 our_system.writeToFile(output_file);
             }
-        }    
+        }
+    } else {
+        std::cout << "Unknown method " << solver_method << std::endl;
+        exit(1);
     }
-
-    // if (solver_method == "mercury_rel") {
-    //     our_system.remove_cm_velocity();
-    //     Verlet solver(dt);
-    //     for (int timestep=0; timestep<N; timestep++) {
-    //         our_system.calculateRelForces();
-    //         solver.integrateOneStep(our_system);
-    //         if (timestep%print_step == 0) {
-    //             our_system.writeToFile(output_file);
-    //             our_system.calculateEnergyAndAngularMomentum();
-    //     }
-    // }
 }
+
 void testEnergy_and_Angular(SolarSystem& system, double tol_energy, double tol_angular){
     double old_energy = system.totalEnergy();
     vec3 old_angular_momentum = system.angularMomentum();

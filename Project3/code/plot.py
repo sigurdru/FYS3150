@@ -39,9 +39,9 @@ for i in range(num_bodies):
     line = infile.readline()
     data = line.split()
     names.append(data[0])
-    x_positions[i][0] = float(data[1])
-    y_positions[i][0] = float(data[2])
-    z_positions[i][0] = float(data[3])
+    x_positions[i][0] = float(data[2])
+    y_positions[i][0] = float(data[3])
+    z_positions[i][0] = float(data[4])
 
 for i in range(1, N_lines):
     infile.readline()
@@ -49,9 +49,9 @@ for i in range(1, N_lines):
     for j in range(num_bodies):
         line = infile.readline()
         data = line.split()
-        x_positions[j][i] = float(data[1])
-        y_positions[j][i] = float(data[2])
-        z_positions[j][i] = float(data[3])
+        x_positions[j][i] = float(data[2])
+        y_positions[j][i] = float(data[3])
+        z_positions[j][i] = float(data[4])
 
 infile.close()
 

@@ -19,11 +19,15 @@ bodies=(
 )
 
 ### give the IC file an appropriate name
+# fname="earth_sun_circ"
+# fname="three_body"
+# fname="three_body10"
+# fname="three_body1000"
 # fname="planets"
-fname="planets"
+fname="all"
 
 
-# the rest is handled automatically
+### the rest is handled automatically
 num_bodies=${#bodies[@]}
 outfname="../input/${fname}.txt"
 path="../input/raw"
