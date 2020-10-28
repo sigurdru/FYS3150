@@ -14,7 +14,7 @@ CelestialBody& SolarSystem::createCelestialBody(CelestialBodyData &data) {
 }
 
 void SolarSystem::calculateForces() {
-    // reset force and energy of all bodies
+    // reset force of all bodies
     for (CelestialBody& body : m_bodies) body.resetForce();
 
     vec3 deltaRVec, force;
@@ -49,6 +49,8 @@ void SolarSystem::calculateMercForces() {
 
 void SolarSystem::calculateEnergyAndAngularMomentum() {
     // Calculate total angular momentum and energy
+    double dr;
+    vec3 deltaRVector;
     m_angularMomentum.zeros();
     m_kineticEnergy = 0;
     m_potentialEnergy = 0;
@@ -58,8 +60,8 @@ void SolarSystem::calculateEnergyAndAngularMomentum() {
         m_angularMomentum += body1.position.cross(body1.velocity);
         for (int j = i + 1; j < numberOfBodies(); j++){
             CelestialBody& body2 = m_bodies[j];
-            vec3 deltaRVector = body2.position - body1.position;
-            double dr = deltaRVector.length();
+            deltaRVector = body2.position - body1.position;
+            dr = deltaRVector.length();
             m_potentialEnergy -= body1.mass*body2.mass/dr;
         }
     }

@@ -61,7 +61,10 @@ int main(int argc, char* argv[]) {
         for (int timestep=0; timestep<N; timestep++) {
             solver.integrateOneStep(our_system);
             shouldPrint = (timestep%print_step == 0);
-            if (shouldPrint) our_system.writeToFile(output_file);
+            if (shouldPrint) {
+                our_system.calculateEnergyAndAngularMomentum();
+                our_system.writeToFile(output_file);
+            }
         }
     } else if (solver_method == "verlet") {
         Verlet solver(dt, our_system);
@@ -71,7 +74,10 @@ int main(int argc, char* argv[]) {
             our_system.calculateForces();
             solver.integrateOneStep2();
             shouldPrint = (timestep%print_step == 0);
-            if (shouldPrint) our_system.writeToFile(output_file);
+            if (shouldPrint) {
+                our_system.calculateEnergyAndAngularMomentum();
+                our_system.writeToFile(output_file);
+            }
         }
     } else if (solver_method == "mercury") {
         our_system.writeToFile(output_file);
@@ -84,7 +90,10 @@ int main(int argc, char* argv[]) {
             our_system.calculateMercForces();
             solver.integrateOneStep2();
             shouldPrint = (timestep%print_step == 0);
-            if (shouldPrint) our_system.writeToFile(output_file);
+            if (shouldPrint) {
+                our_system.calculateEnergyAndAngularMomentum();
+                our_system.writeToFile(output_file);
+            }
         }
         for (int timestep=0; timestep<bonus_steps; timestep++) {
             solver.integrateOneStep1();
