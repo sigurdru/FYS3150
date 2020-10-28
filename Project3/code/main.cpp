@@ -63,9 +63,22 @@ int main(int argc, char* argv[]) {
             if (shouldPrint) our_system.writeToFile(output_file);
         }
     } else if (solver_method == "verlet") {
-        Verlet solver(dt);
+        Verlet solver(dt, our_system);
         for (int timestep=0; timestep<N; timestep++) {
-            solver.integrateOneStep(our_system);
+            solver.integrateOneStep1();
+            our_system.calculateForces();
+            solver.integrateOneStep2();
+            our_system.calculateForces();
+            shouldPrint = (timestep%print_step == 0);
+            if (shouldPrint) our_system.writeToFile(output_file);
+        }
+    } else if (solver_method == "Mercury") {
+        Verlet solver(dt, our_system);
+        for (int timestep=0; timestep<N; timestep++) {
+            solver.integrateOneStep1();
+            our_system.calculateMercForces();
+            solver.integrateOneStep2();
+            our_system.calculateMercForces();
             shouldPrint = (timestep%print_step == 0);
             if (shouldPrint) our_system.writeToFile(output_file);
         }

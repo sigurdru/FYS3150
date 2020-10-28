@@ -6,9 +6,9 @@ declare -a bodies
 ### comment out the other bodies
 bodies=(
     "sun"
-    # "mercury"
+    "mercury"
     # "venus"
-    "earth"
+    # "earth"
     # "mars"
     # "jupiter"
     # "saturn"
@@ -20,7 +20,7 @@ bodies=(
 
 ### give the IC file an appropriate name
 # fname="earth_sun_circ"
-fname="earth_sun_ellip"
+fname="mercury_relativistic"
 # fname="three_body"
 # fname="three_body10"
 # fname="three_body1000"

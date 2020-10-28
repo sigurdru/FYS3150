@@ -33,6 +33,23 @@ void SolarSystem::calculateForces() {
     }
 }
 
+void SolarSystem::calculateMercForces() {
+    //calculate the relative force on Mercury
+    for (CelestialBody& body: m_bodies) body.resetForce();
+
+    vec3 deltaRVec, force;
+    double dr;
+    double l;
+    double c = 63239.7263;
+    CelestialBody& sun = m_bodies[0];
+    CelestialBody& mercury = m_bodies[1];
+    deltaRVec = sun.position - mercury.position;
+    l = (deltaRVec.cross(mercury.velocity)).length();
+    dr = deltaRVec.length();
+    sun.force -= 4*M_PI*M_PI*deltaRVec/(dr*dr*dr);
+    mercury.force = sun.force*(1 + 3*l*l/(dr*dr*c*c));
+}
+
 void SolarSystem::calculateEnergyAndAngularMomentum() {
     // Calculate total angular momentum and energy
     m_angularMomentum.zeros();

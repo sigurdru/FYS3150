@@ -11,6 +11,7 @@ class SolarSystem {
         SolarSystem(double distDependence);
         CelestialBody& createCelestialBody(CelestialBodyData &data);
         void calculateForces();
+        void calculateMercForces();
         void calculateEnergyAndAngularMomentum();
 
         void remove_cm_velocity();
