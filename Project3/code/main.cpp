@@ -54,33 +54,42 @@ int main(int argc, char* argv[]) {
     our_system.calculateEnergyAndAngularMomentum();
 
     // Solve!
-    our_system.calculateForces();
     if (solver_method == "euler") {
         Euler solver(dt);
+        our_system.calculateForces();
         for (int timestep=0; timestep<N; timestep++) {
             solver.integrateOneStep(our_system);
             shouldPrint = (timestep%print_step == 0);
-            if (shouldPrint) our_system.writeToFile(output_file);
+            if (shouldPrint) {
+                our_system.calculateEnergyAndAngularMomentum();
+                our_system.writeToFile(output_file);
+            }
         }
     } else if (solver_method == "verlet") {
         Verlet solver(dt, our_system);
+        our_system.calculateForces();
         for (int timestep=0; timestep<N; timestep++) {
             solver.integrateOneStep1();
             our_system.calculateForces();
             solver.integrateOneStep2();
-            our_system.calculateForces();
             shouldPrint = (timestep%print_step == 0);
-            if (shouldPrint) our_system.writeToFile(output_file);
+            if (shouldPrint) {
+                our_system.calculateEnergyAndAngularMomentum();
+                our_system.writeToFile(output_file);
+            }
         }
     } else if (solver_method == "Mercury") {
         Verlet solver(dt, our_system);
+        our_system.calculateMercForces();
         for (int timestep=0; timestep<N; timestep++) {
             solver.integrateOneStep1();
             our_system.calculateMercForces();
             solver.integrateOneStep2();
-            our_system.calculateMercForces();
             shouldPrint = (timestep%print_step == 0);
-            if (shouldPrint) our_system.writeToFile(output_file);
+            if (shouldPrint) {
+                our_system.calculateEnergyAndAngularMomentum();
+                our_system.writeToFile(output_file);
+            }
         }
     } else {
         std::cout << "Unknown method " << solver_method << std::endl;
