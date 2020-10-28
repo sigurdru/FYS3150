@@ -11,10 +11,10 @@ test2:
 
 test3:
 	make compile
-	./main.exe planets.txt output 0.000001 1000000 verlet
+	./main.exe planets.txt output 0.000001 100000000 verlet
 merc:
 	make compile
-	./main.exe mercury_relativistic 0.00001 10000000 mercury 2
+	./main.exe mercury_relativistic 5 7 mercury 2
 
 plot:
-	python3 plot.py mercury_relativistic-mercury-0.01-10000-2 2D
+	python3 plot.py mercury_relativistic-mercury-5-7-2 2D

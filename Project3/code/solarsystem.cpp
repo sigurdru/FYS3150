@@ -43,7 +43,7 @@ void SolarSystem::calculateMercForces() {
     CelestialBody& mercury = m_bodies[1];
     dr = mercury.position.length();
     l = (mercury.position.cross(mercury.velocity)).length();
-    mercury.force -= 4*M_PI*M_PI*mercury.position/(dr*dr*dr);
+    mercury.force -= 4*M_PI*M_PI*mercury.mass*m_bodies[0].mass*mercury.position/(dr*dr*dr);
     mercury.force *= (1 + 3*l*l/(dr*dr*c*c));
 }
 

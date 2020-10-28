@@ -35,8 +35,8 @@ int main(int argc, char* argv[]) {
         input_file = "../input/";
         output_file = "../output/positions/";
         input_file.append(argv[1]).append(".txt");
-        dt = std::atof(argv[2]);
-        N = std::atoi(argv[3]);
+        dt = std::pow(10, -1*std::atof(argv[2]));
+        N = std::pow(10, std::atoi(argv[3]));
         solver_method = argv[4];
         distDependence = std::atof(argv[5]);
         print_step = 0.01/dt;
@@ -49,7 +49,7 @@ int main(int argc, char* argv[]) {
     SolarSystem our_system(distDependence);         // initialize our system
     our_system.read_initial_conditions(input_file); // read input file and add planets
     our_system.printSystem();
-    our_system.remove_cm_velocity();
+    // our_system.remove_cm_velocity();
     std::cout << std::endl << "Vel. and pos. of center of mass subtracted:";
     our_system.printSystem();
     our_system.calculateEnergyAndAngularMomentum();
@@ -95,11 +95,11 @@ int main(int argc, char* argv[]) {
                 our_system.writeToFile(output_file);
             }
         }
+        CelestialBody& mercury = our_system.bodies()[1];
         for (int timestep=0; timestep<bonus_steps; timestep++) {
             solver.integrateOneStep1();
             our_system.calculateMercForces();
             solver.integrateOneStep2();
-            CelestialBody& mercury = our_system.bodies()[1];
             last_positions[timestep] = mercury.position;
         }
         testPrecession(last_positions, bonus_steps);
@@ -117,13 +117,12 @@ void testPrecession(vec3* last_positions, int bonus_steps) {
     for (int i = 1; i<bonus_steps; i++) {
         double r1 = last_positions[i].length();
         if (r1 < r_peri) {
-            std::cout << "yo" << std::endl;
             perihelion_position = last_positions[i];
             r_peri = perihelion_position.length();
         }
     }
     double precession_calc = std::atan(perihelion_position[1]/perihelion_position[0]);
-    precession_calc /= (4.848e-6 * 100);
+    precession_calc /= 4.848e-6;
     std::cout << "calculated: " << precession_calc << "  expected: " << precession_ana << std::endl;
 }
 

@@ -47,8 +47,8 @@ else:
     plot3D_bool = False
 out_fname = fname.replace('.', '_')
 description, solver_method, dt, N, beta = fname.split('-')
-dt = float(dt)
-N = int(N)
+dt = 10**(-int(dt))
+N = 10**int(N)
 print_step = int(0.01/dt)
 N_lines = int(N/print_step)-1
 
