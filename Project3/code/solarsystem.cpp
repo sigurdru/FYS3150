@@ -37,17 +37,14 @@ void SolarSystem::calculateMercForces() {
     //calculate the relative force on Mercury
     for (CelestialBody& body: m_bodies) body.resetForce();
 
-    vec3 deltaRVec, force;
     double dr;
     double l;
     double c = 63239.7263;
-    CelestialBody& sun = m_bodies[0];
     CelestialBody& mercury = m_bodies[1];
-    deltaRVec = sun.position - mercury.position;
-    l = (deltaRVec.cross(mercury.velocity)).length();
-    dr = deltaRVec.length();
-    sun.force -= 4*M_PI*M_PI*deltaRVec/(dr*dr*dr);
-    mercury.force = sun.force*(1 + 3*l*l/(dr*dr*c*c));
+    dr = mercury.position.length();
+    l = (mercury.position.cross(mercury.velocity)).length();
+    mercury.force -= 4*M_PI*M_PI*mercury.position/(dr*dr*dr);
+    mercury.force *= (1 + 3*l*l/(dr*dr*c*c));
 }
 
 void SolarSystem::calculateEnergyAndAngularMomentum() {
@@ -87,7 +84,7 @@ void SolarSystem::read_initial_conditions(string input_file) {
     FILE *init_file = fopen(input_file_char, "r");
 
     fscanf(init_file, "%i", &num_bodies);   // read number of bodies
-    
+    std::cout << '1' << std::endl;
     for (int i = 0; i < num_bodies; i++) {
         // Read names, types, masses and initial conditions
         fscanf(init_file, 

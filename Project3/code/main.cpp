@@ -13,6 +13,8 @@ void testEnergy_and_Angular(SolarSystem& system, double tol_energy, double tol_a
 void testKinetic_and_potential(SolarSystem& system, double tol_pot, double tol_kin);
 // test for conservation of circular orbit
 void testCirc_Orbit(CelestialBody& body, double tol_orbit);
+// test the final precession of Mercury
+void testPrecession(vec3* last_positions, int bonus_steps);
 
 int main(int argc, char* argv[]) {
     std::string input_file, output_file, solver_method;
@@ -23,7 +25,7 @@ int main(int argc, char* argv[]) {
     // double tol_angular = 1e-2;  // Tolerance on angular momentum conservation
     // double tol_energy = 1e-3;   // Tolerance on energy conservation
 
-    if (argc < 5) {
+    if (argc < 6) {
         std::cout << "Please include input file, dt, number of time steps, "
             << "solver method and distance dependence parameter beta" 
             << std::endl;
@@ -44,7 +46,6 @@ int main(int argc, char* argv[]) {
             .append(argv[3]).append("-")        //   + N
             .append(argv[5]).append(".xyz");    //   + distance dependence
     }
-
     SolarSystem our_system(distDependence);         // initialize our system
     our_system.read_initial_conditions(input_file); // read input file and add planets
     our_system.printSystem();
@@ -54,9 +55,9 @@ int main(int argc, char* argv[]) {
     our_system.calculateEnergyAndAngularMomentum();
 
     // Solve!
-    our_system.calculateForces();
     if (solver_method == "euler") {
         Euler solver(dt);
+        our_system.calculateForces();
         for (int timestep=0; timestep<N; timestep++) {
             solver.integrateOneStep(our_system);
             shouldPrint = (timestep%print_step == 0);
@@ -64,28 +65,57 @@ int main(int argc, char* argv[]) {
         }
     } else if (solver_method == "verlet") {
         Verlet solver(dt, our_system);
+        our_system.calculateForces();
         for (int timestep=0; timestep<N; timestep++) {
             solver.integrateOneStep1();
             our_system.calculateForces();
             solver.integrateOneStep2();
-            our_system.calculateForces();
             shouldPrint = (timestep%print_step == 0);
             if (shouldPrint) our_system.writeToFile(output_file);
         }
-    } else if (solver_method == "Mercury") {
+    } else if (solver_method == "mercury") {
+        our_system.writeToFile(output_file);
         Verlet solver(dt, our_system);
+        our_system.calculateMercForces();
+        int bonus_steps = int(N/400);
+        vec3* last_positions = new vec3[bonus_steps];
         for (int timestep=0; timestep<N; timestep++) {
             solver.integrateOneStep1();
             our_system.calculateMercForces();
             solver.integrateOneStep2();
-            our_system.calculateMercForces();
             shouldPrint = (timestep%print_step == 0);
             if (shouldPrint) our_system.writeToFile(output_file);
         }
+        for (int timestep=0; timestep<bonus_steps; timestep++) {
+            solver.integrateOneStep1();
+            our_system.calculateMercForces();
+            solver.integrateOneStep2();
+            CelestialBody& mercury = our_system.bodies()[1];
+            last_positions[timestep] = mercury.position;
+        }
+        testPrecession(last_positions, bonus_steps);
+        delete[] last_positions;
     } else {
         std::cout << "Unknown method " << solver_method << std::endl;
         exit(1);
     }
+}
+
+void testPrecession(vec3* last_positions, int bonus_steps) {
+    double precession_ana = 43; // arcseconds
+    vec3 perihelion_position = last_positions[0];
+    double r_peri = perihelion_position.length();
+    for (int i = 1; i<bonus_steps; i++) {
+        double r1 = last_positions[i].length();
+        if (r1 < r_peri) {
+            std::cout << "yo" << std::endl;
+            perihelion_position = last_positions[i];
+            r_peri = perihelion_position.length();
+        }
+    }
+    double precession_calc = std::atan(perihelion_position[1]/perihelion_position[0]);
+    precession_calc /= (4.848e-6 * 100);
+    std::cout << "calculated: " << precession_calc << "  expected: " << precession_ana << std::endl;
 }
 
 void testEnergy_and_Angular(SolarSystem& system, double tol_energy, double tol_angular){
