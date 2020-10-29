@@ -79,6 +79,36 @@ int main(int argc, char* argv[]) {
                 our_system.writeToFile(output_file);
             }
         }
+    } else if (solver_method == "escape") {
+        Verlet solver(dt, our_system);
+        double dv = 0.001;
+        double tol_pot_energy = 1e-5;
+        double v0;
+        double pot_energy;
+        CelestialBody& sun = our_system.bodies()[0];
+        CelestialBody& earth = our_system.bodies()[1];
+        v0 = earth.velocity[0];
+        while (true) {
+            our_system.calculateForces();
+            while (earth.velocity[0] > 0) {
+                solver.integrateOneStep1();
+                our_system.calculateForces();
+                solver.integrateOneStep2();
+                pot_energy = 4*M_PI*M_PI/earth.position.length();
+                if (pot_energy < tol_pot_energy) {
+                    std::cout << "Escape velocity is: " << v0 << "AU/yr" <<std::endl; 
+                    exit(1);
+                }
+            }
+            v0 += dv;
+            // our_system.read_initial_conditions(input_file);
+            sun.position[0] = 0;
+            sun.velocity[0] = 0;
+            earth.position[0] = 1;
+            earth.velocity[0] = v0;
+            // our_system.printSystem();
+            std::cout << "Testing for initial velocity: " << v0 << std::endl;
+        }
     } else if (solver_method == "mercury") {
         our_system.writeToFile(output_file);
         Verlet solver(dt, our_system);

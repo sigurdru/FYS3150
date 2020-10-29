@@ -181,17 +181,17 @@ The angular momentum $\vc L$ of the planet around the Sun is
   &= \text{constant}
 \end{align*}
 
-In this project we are going to be working with conservative forces. Therefore both energy and spin for our system should be conserved. When we are working with non-relativistic sizes, the total energy is given by the sum of kinetic and gravitational potential energy. Kinetic energy is given by
+Newton's gravitational force is conservative, therefore the energy of our system should be conserved. Kinetic energy is given by
 \begin{equation}
 \label{eq:kinetic_energy}
 K = \frac{1}{2}mv^2,
 \end{equation}
-where $K$ is the kinetic energy, $m$ is the mass and $v$ is the velocity. The potential energy of an object in a gravitational field is given by
+where $K$ is the kinetic energy, $m$ is the mass and $v$ is the velocity. The potential energy of an object (with reference point set to infinity) in a gravitational field is given by
 \begin{equation}
 \label{eq:potential_energy}
 U = G\sum_{i}\frac{Mm_i}{r_i}
 \end{equation}
-Where $U$ is the potential energy, $G$ the gravitational constant, $r_i$ the relative distance between the objects, $m_i$ mass of an object creating the gravitational field, and $M$ mass of the object we want to find the energy of. Notice that the zero-point of potential energy is set to infinity.
+Where $U$ is the potential energy, $G$ the gravitational constant, $r_i$ the relative distance between the objects, $m_i$ mass of an object creating the gravitational field, and $M$ mass of the object we want to find the energy of.
 
 \subsection{Escape velocity}
 
@@ -238,7 +238,7 @@ We know, because of general relativity, that Newtons law of gravitation is not e
 	\label{eq:general_relativity}
 	F_{1 \rightarrow 2} = \frac{GM_1M_2}{r^2}\left[ 1 + \frac{3l^2}{r^2c^2} \right].
 \end{equation}
-Where $F_{1 \rightarrow 2}$ is the force acting on object 2, $G$ the gravitational constant, $M_1$ and $M_2$ are the masses, $r$ their relative position, $l$ the magnitude of object 2's orbital angular momentum and $c$ the speed of light.
+Where $F_{1 \rightarrow 2}$ is the force acting from object one on two, $G$ the gravitational constant, $M_1$ and $M_2$ are the masses of object one and two, $r$ their relative position, $l$ the magnitude of object two's orbital angular momentum and $c$ the speed of light.
 
 \section{Methods}
 
@@ -271,7 +271,7 @@ With a small error, we can model the orbit of the Earth around the Sun as circul
 In units of AU, $M_\odot$ and yr the gravitational constant has a value of approximately $4 \pi$.
 
 \subsection{The data from NASA}
-si litt om dataen fra nasa
+When we study orbits in our solar-system, we want them to be realistic. Therefore we use actual data from NASA (see \citep{NASA}), that provides us the real positions, velocities and masses of planets and moons in our solar system. The data shows positions and velocities from the perspective of the barycenter, which is the center of mass. In our solvers, we still adjust for , because it allows us to test for data which does not have this property. 
 
 \subsection{Testing the stability of the algorithms}
 In order to make sure our algorithms runs correctly, we want to test it. Our first test will be to simulate the simplest possible system, namely earth orbiting the sun. We place the sun in origin and with zero velocity. The earth orbits with a distance of $r=1$AU away from the sun, and makes a full orbit every year. This gives it an initial velocity of $v = 2\pi \text{ AU}/\text{yr}.$ This system however will have a center of mass that drifts. In order to counteract this we will move the origin to where the center of mass is, and zero its velocity. See the theory section on how this is done.
@@ -285,7 +285,50 @@ The last test of our algorithm will be conservation of angular momentum. In the 
 \subsection{Unit tests}
 We are going to test several widely different systems. In order to reassure ourselves everything runs correct, we are going to have unit tests during simulations. We will test for conserved quantities, namely energy and angular momentum. More tests and smaller tolerances, gives us more reassurance that our results are correct. This however, will be at the cost of computing time. We decide to test every $0.01/\Delta t$ step, giving us a total of 100 tests every simulation. The tolerance for energy and angular momentum have to depend on the simulation. For longer simulations we expect to see larger errors than for short ones.
 
+\subsection{General relativity}
+Like we discussed in the theory section, newtons law of gravitation is not entirely correct. For example it does not explain the precession of Mercury's orbit. Therefore we try to implement an relativistic correction into our model (see equation \eqref{eq:general_relativity}). From \citep{oppgavetekst} we know that the observed value for Mercury's perihelion precession is around $43''$. This is with all interactions from other planets accounted for. Therefore, we are going to see if we can reproduce this, with only Mercury and the sun. We neglect the gravitational interactions on the sun, because it is around seven orders of magnitude larger than Mercury. With this in mind we can place the stationary sun in origin, and from \citep{oppgavetekst} we have the initial conditions for Mercury. Starting velocity is 12.44AU/yr in the y-direction, and an initial position in its perihelion, an x-position of 0.3075AU.
+\\
+We do the simulation for 100 years, and then find the new perihelion. We cannot guarantee that Mercury is in the perihelion after 100 years, therefore we let the simulation go on for around 90 more days (reassuring us that Mercury completes another orbit), then finding the closest position to the sun (which is the perihelion). With the new position of the perihelion, we can easily calculate its precession with
+\begin{equation*}
+	\tan(\theta_P) = \frac{y_P}{x_P}.
+\end{equation*}
+Where $\theta_P$ is precession angle, $x_P$ and $y_P$ is the x- and y-position of the new perihelion.
+\\
+Because we are running the simulation for such a long time, we use Velocity Verlet. Choosing a low enough time step is the biggest challenge. Our solution to this is testing for different time steps and comparing the results. Lowering it by a factor of 10$^{-1}$ until we are satisfied, or until the computation time takes over an hour.
+
 \section{results}
+
+\subsection{Testing the algorithm}
+blah
+
+\subsection{Different forms of gravitational force}
+blah
+
+\subsection{Escape velocity}
+blah
+
+\subsection{Many-body problem}
+3-body, alle planeter
+
+\subsection{General relativity}
+
+We ended up doing the tests for three different time steps (see \ref{tab:general_relativity}). Notice that with a time step of around 3.16 seconds, we got a precession of 43.2592$''$ which is quite close to the theoretical value of 43$''$. Time step of 31.56 seconds was also quite close, with a value of 40.4317$''$. Our first result however, showed precession in the opposite direction.
+\begin{table}[h]
+	\begin{tabular}{|l|l|l|}
+		\hline
+		Timestep {[}s{]} & Integration points N & Result {[}arcseconds{]} \\
+		\hline
+		315.56              & $10^7$          & -0.792203               \\
+		31.56               & $10^8$          & 40.4317                 \\
+		3.16                & $10^9$          & 43.2592	\\
+		\hline                
+	\end{tabular}
+	\caption{In this table you have the different time steps we tested for, in units of seconds. The second column shows the number of integration points needed, and the last column is our results in arcseconds. 
+	\label{tab:general_relativity}}
+\end{table}
+\\
+We wanted to test for smaller time steps, however we exceeded the maximum array-length. Also, because our last result were quite close to the theoretical, we opted against it.
+
 
 \section{discussion}
 
