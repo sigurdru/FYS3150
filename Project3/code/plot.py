@@ -41,7 +41,7 @@ def read_xyz_file(fname, N_lines):
         return position, energy, ang_momentum, num_bodies, names
 
 fname = sys.argv[1]
-if len(sys.argv) == 2 and sys.argv[2] =='3D':
+if len(sys.argv) == 3 and sys.argv[2] =='3D':
     plot3D_bool = True
 else:
     plot3D_bool = False
