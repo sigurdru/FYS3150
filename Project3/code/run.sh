@@ -37,10 +37,13 @@ produce_circ_orbit ()
         for dt in ${dts[@]};do
             printf " $dt"
             N=$(($dt + 2 ))
-            calc_and_plot earth_sun_circ $dt $N $method 2 > /dev/null
+            output_fname="earth_sun_circ-${method}-${dt}-${N}-2"
+            output_fname="../output/reports/${output_fname}.txt"
+            calc_and_plot earth_sun_circ $dt $N $method 2 > $output_fname &
         done
         echo
     done
+    wait
 }
 
 produce_beta ()
@@ -66,15 +69,22 @@ produce_beta ()
         printf "        beta:"
         for beta in ${betas[@]}; do
             printf " $beta"
-            calc_and_plot $fname $dt $N $method $beta > /dev/null
+            output_fname="${fname}-${method}-${dt}-${N}-${beta}"
+            output_fname="../output/reports/${output_fname}.txt"
+            calc_and_plot $fname $dt $N $method $beta > $output_fname &
         done
         echo
     done
+    wait
 }
 
 produce_esc_vel ()
 {
-    calc_and_plot earth_sun_escape 4 6 verlet 2
+    echo Escape velocity
+    path="../output/reports"
+    output_fname="earth_sun_escape-verlet-4-6-2"
+    output_fname="${path}/${output_fname}.txt"
+    calc_and_plot earth_sun_escape 4 6 verlet 2 > $output_fname
 }
 
 produce_three_body ()
@@ -91,38 +101,49 @@ produce_three_body ()
         "4"
         "5"
     )
+    beta="2"
+    solver_method="verlet"
     for fname in ${fnames[@]}; do
         echo "    File: $fname"
         printf "        dt:"
         for dt in ${dts[@]}; do
             printf " $dt"
             N=$(($dt + 1 ))
-            calc_and_plot $fname $dt $N verlet 2 > /dev/null
+            output_fname="${fname}-${solver_method}-${dt}-${N}-${beta}"
+            output_fname="../output/reports/${output_fname}.txt"
+            calc_and_plot $fname $dt $N $solver_method $beta > $output_fname &
         done
         echo
     done
+    wait
 }
 
 produce_mercury ()
 {
-    calc_and_plot mercury_relativistic 6 8 mercury 2
+    echo Mercury
+    path="../output/reports"
+    output_fname="mercury_relativistic-mercury-6-8-2"
+    output_fname="${path}/${output_fname}.txt"
+    calc_and_plot mercury_relativistic 6 8 mercury 2 > $output_fname
 }
 
 produce_solar_system()
 {
-    calc_and_plot all 5 8 verlet 2
+    echo Solar system
+    path="../output/reports"
+    output_fname="all-verlet-5-8-2"
+    output_fname="${path}/${output_fname}.txt"
+    calc_and_plot all 5 8 verlet 2 > $output_fname
 }
 
 produce_all_results ()
 {
     produce_circ_orbit
     produce_beta
-    echo Escape velocity
-    produce_esc_vel > /dev/null
     produce_three_body
-    produce_mercury
-    echo Solar system
-    produce_solar_system > /dev/null
+    produce_esc_vel &
+    produce_mercury &
+    wait
 }
 
 HELPFUL_MSG="Option must be \"all\", \"circ\", \"beta\", \"escape_vel\", \"three_body\", \"mercury\" or \"solar_system\""
@@ -153,12 +174,12 @@ elif [ "$#" -lt "5" ]; then
     echo example: bash run.sh all
     echo
     echo Or run directly with parameters:
-    echo "   - input file"
-    echo "   - dt"
-    echo "   - number of time steps"
-    echo "   - solver method"
-    echo "   - distance dependence parameter beta"
-    echo "   - optionally, projection \"2D\" or \"3D\""
+    echo "   - input file (\"all\", \"earth_sun_circ\" etc.)"
+    echo "   - dt (\"2\", \"3\", \"4\", ...)"
+    echo "   - number of time steps (\"2\", \"3\", \"4\", ...)"
+    echo "   - solver method (\"euler\", \"verlet\" or \"mercury\")"
+    echo "   - distance dependence parameter beta (\"2\" for normal inverse square gravity)"
+    echo "   - optional, projection for plots (\"2D\" or \"3D\")"
     exit 1
 else
     calc_and_plot $@

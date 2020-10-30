@@ -1,0 +1,19 @@
+1
+
+sun        pos:  [0, 0, 0];
+           vel:  [0, 0, 0];
+           mass: 1
+
+mercury    pos:  [0.3075, 0, 0];
+           vel:  [0, 12.44, 0];
+           mass: 1.65913e-07
+
+Vel. and pos. of center of mass subtracted:
+sun        pos:  [0, 0, 0];
+           vel:  [0, 0, 0];
+           mass: 1
+
+mercury    pos:  [0.3075, 0, 0];
+           vel:  [0, 12.44, 0];
+           mass: 1.65913e-07
+calculated: 40.4317  expected: 43

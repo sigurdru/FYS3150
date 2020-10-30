@@ -1,7 +1,7 @@
 # FYS3150 Project 3
 Sigurd Sørlie Rustad and Vegard Falmår.
 
-The report Project2.pdf is found in the tex directory.
+The report Project3.pdf is found in the tex directory.
 
 Code dependencies:
 - Python (runs with python version 3.6.9 and 3.8.2)
@@ -13,12 +13,38 @@ Code dependencies:
 # move into the code directory
 cd code
 
-# compile the code with
+# compile the code
 make compile
 ```
+The code can now be run with the desired parameters and the results plotted with
+```
+bash run.sh input_file dt N solver_method beta
+```
+for example
+```
+bash run.sh earth_sun_circ 4 7 verlet 2
+```
+This will run a simulation of the Earth-Sun system with initial conditions that should give a circular orbit. The four last arguments specify
+- dt = 10^(-4)
+- N = 10^7
+- solver method is velocity verlet
+- distance dependence parameter beta is 2 (normal inverse square law of gravity)
 
-# Input parameters
-The code is designed to run with input files created by `create_init_cond.sh`. The raw data from NASA located in the `input/raw` directory should not be edited. In order to produce initial new initial conditions, edit `create_init_cond.sh` according to the instructions in the program file and run it with
+The `run.sh` program can also be run with a single keyword to produce a bunch of the results in the report automatically, for instance
+```
+bash run.sh three_body
+```
+This will run the simulations of the three-body system with all three different masses of Jupiter and for several different values of dt. A complete list of possible keywords is
+- "all" to produce all the results in the report except a full simulation of the entire solar system
+- "solar_system" to run a full simulation of the entire solar system (takes some time)
+- "circ" to run simulations of the Earth-Sun system with both euler and velocity verlet for a range of different values for dt
+- "beta" to run simulations of the Earth-Sun system with five different values of beta
+- "escape_vel" to run the code showing the Earth just escaping the gravitational pull of the Sun
+- "three_body" to run the simulations of the three-body system with all three different masses of Jupiter and for several different values of dt
+- "mercury" to run code that calculates the perihelion presession of Mercury
+
+# Input files
+The code is designed to read intial conditions from input files created by `create_init_cond.sh`. The raw data from NASA located in the `input/raw` directory should not be edited. In order to produce new initial conditions, edit `create_init_cond.sh` according to the instructions in the program file and run it with
 ```
 bash create_init_cond.sh
 ```
@@ -39,3 +65,12 @@ Ovito can be used to visualize the results. In Ovito, open a trajectory file sto
 - Read column 2 as "Particle types"
     - This will give different colors to stars, planets and moons and allow you to adjust their sizes separately
 - Read columns 3-5 as xyz-positions
+
+# Example run
+The following runs will reproduce all the results in the report:
+```
+cd code
+make compile
+bash run.sh all
+bash run.sh solar_system
+```
