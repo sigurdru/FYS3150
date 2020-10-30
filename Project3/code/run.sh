@@ -84,7 +84,8 @@ produce_esc_vel ()
     path="../output/reports"
     output_fname="earth_sun_escape-escape-4-6-2"
     output_fname="${path}/${output_fname}.txt"
-    calc_and_plot earth_sun_escape 4 6 escape 2 > $output_fname
+    ./main.exe earth_sun_escape 4 6 escape 2 > $output_fname
+    cat $output_fname | tail -n 1
 }
 
 produce_three_body ()
@@ -141,9 +142,9 @@ produce_all_results ()
     produce_circ_orbit
     produce_beta
     produce_three_body
-    produce_esc_vel &
     produce_solar_system &
     produce_mercury &
+    produce_esc_vel &
     wait
 }
 
