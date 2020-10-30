@@ -86,8 +86,18 @@ Abstract om du vil
 
 \section{Introduction}
 
-In this report we will study the solar system in three dimensions.
-
+In this report We will try to tackle many problems connected to planetary orbits. Everything from testing algorithms, to implementing general relativity. Planetary orbits and simulations are very relevant. An example of this is when we send probes far into space. Then we need to predict precise planetary orbits in order to do gravity assist maneuvers. Also being able to predict the initial velocity needed in order to escape the solar system is important. Therefore, in this report we are going to study different algorithms, looking at the conservation of energy and angular momentum. Using Velocity Verlet we will try to simulate many-many body problems, test for different gravitational forces, try to find the velocity needed to escape gravitational field of our sun and last but not least, study the perihelion precession of Mercury. We also have a theory section where you will find central concepts to our report. A tentative list of our topics are also listed in the table of contents.
+\\
+(testing algorithms)
+\\
+Studying many-body problems, we are mainly going to use data from NASA (see \citep{NASA}). (si mer her)
+\\
+(study different gravitational forces)
+\\
+Like we mentioned above, knowing the velocity needed to escape a gravitational potential is important. We are going to study a situation where we have a theoretical value. Namely an object, one astronomical unit away from our sun. The theoretical calculations are covered in our theory section. In our studies we are going to test for initial velocities, and try to find the lowest velocity that escapes the gravitational potential of our sun. Then compare it to the theoretical value we calculated.
+\\
+As we will cover in the theory section, Newton's force of gravitation cannot explain the observed precession of Mercury's orbit. Implementing a general relativistic correction into our force, we can simulate Mercury's orbit for 100 years, and study the precession. Our hope is to predict this observed precession in our simulations.
+\\
 For our studies we have used c++ for heavy computation, python for visualization and bash for automation. All the code along with instructions on how to run it, can be cloned from our GitHub repository here\footnote{github.com/sigurdru/FYS3150/tree/master/Project2}.
 
 \section{Theory}
@@ -293,6 +303,8 @@ Now how do we know if a planet has escaped? We know that to be the case analytic
 
 \subsection{Many-body problem}
 
+\subsection{Different forms of gravitational force}
+
 \subsection{General relativity}
 Like we discussed in the theory section, newtons law of gravitation is not entirely correct. For example it does not explain the precession of Mercury's orbit. Therefore we try to implement an relativistic correction into our model (see equation \eqref{eq:general_relativity}). From \citep{oppgavetekst} we know that the observed value for Mercury's perihelion precession is around $43''$. This is with all interactions from other planets accounted for. Therefore, we are going to see if we can reproduce this, with only Mercury and the sun. We neglect the gravitational interactions on the sun, because it is around seven orders of magnitude larger than Mercury. With this in mind we can place the stationary sun in origin, and from \citep{oppgavetekst} we have the initial conditions for Mercury. Starting velocity is 12.44AU/yr in the y-direction, and an initial position in its perihelion, an x-position of 0.3075AU.
 \\
@@ -310,14 +322,61 @@ Because we are running the simulation for such a long time, we use Velocity Verl
 blah
 
 \subsection{Different forms of gravitational force}
-blah
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=\linewidth]{../output/earth_sun_circ-verlet-3-5-2_75.pdf}
+	\caption{In this figure 
+		\label{fig:betha=2_75}}
+\end{figure}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=\linewidth]{../output/earth_sun_circ-verlet-3-5-3.pdf}
+	\caption{In this figure 
+		\label{fig:betha=3}}
+\end{figure}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=\linewidth]{../output/earth_sun_circ-verlet-3-5-3_energy.pdf}
+	\caption{In this figure 
+		\label{fig:betha=3_energy}}
+\end{figure}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=\linewidth]{../output/earth_sun_circ-verlet-3-5-3_ang_mom.pdf}
+	\caption{In this figure 
+		\label{fig:4}}
+\end{figure}
 
 \subsection{Escape velocity}
 The theoretical escape velocity is known to be $V_{\text{teo}} = 2\pi\sqrt{2} \approx 8.89$AU/yr (this is from equation \eqref{eq:escape_velocity}). When finding the escape velocity we had to test for different tolerances. Lower gave more precise results, however at the cost of computation time. We found that with a tolerance of $\epsilon = 0.001$M$_\odot$AU$^2$/yr$^2$ we got a escape velocity of $v_{\text{esc}} = 8.89$AU/yr, which corresponds to the theoretical value. Time step during simulation was set to $10^{-4}$yr.
 
 
 \subsection{Many-body problem}
-3-body, alle planeter
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=\linewidth]{../output/all-verlet-5-8-2.pdf}
+	\caption{In this figure 
+		\label{fig:all}}
+\end{figure}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=\linewidth]{../output/all-verlet-5-8-2_ang_mom.pdf}
+	\caption{In this figure 
+		\label{fig:all_ang_mom}}
+\end{figure}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=\linewidth]{../output/all-verlet-5-8-2_energy.pdf}
+	\caption{In this figure 
+		\label{fig:all_energy}}
+\end{figure}
 
 \subsection{General relativity}
 
