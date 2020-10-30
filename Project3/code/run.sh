@@ -82,9 +82,9 @@ produce_esc_vel ()
 {
     echo Escape velocity
     path="../output/reports"
-    output_fname="earth_sun_escape-verlet-4-6-2"
+    output_fname="earth_sun_escape-escape-4-6-2"
     output_fname="${path}/${output_fname}.txt"
-    calc_and_plot earth_sun_escape 4 6 verlet 2 > $output_fname
+    calc_and_plot earth_sun_escape 4 6 escape 2 > $output_fname
 }
 
 produce_three_body ()
@@ -142,6 +142,7 @@ produce_all_results ()
     produce_beta
     produce_three_body
     produce_esc_vel &
+    produce_solar_system &
     produce_mercury &
     wait
 }
