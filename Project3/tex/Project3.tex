@@ -60,14 +60,12 @@
 
 \begin{titlepage}
 	\begin{center}
-	\vspace*{1cm}
-
 	\textbf{FYS3150 - Project 3}
 
-	\vspace{0.5cm}
+	\vspace{0.2cm}
 	Vegard Falmår and Sigurd Sørlie Rustad
 	
-	\vspace{1cm}
+	\vspace{0.5cm}
 	\includegraphics[scale=0.5]{UIO}
 	\vspace{0.8cm}
 
@@ -90,6 +88,7 @@ Abstract om du vil
 
 In this report we will study the solar system in three dimensions.
 
+For our studies we have used c++ for heavy computation, python for visualization and bash for automation. All the code along with instructions on how to run it, can be cloned from our GitHub repository here\footnote{github.com/sigurdru/FYS3150/tree/master/Project2}.
 
 \section{Theory}
 
@@ -285,6 +284,15 @@ The last test of our algorithm will be conservation of angular momentum. In the 
 \subsection{Unit tests}
 We are going to test several widely different systems. In order to reassure ourselves everything runs correct, we are going to have unit tests during simulations. We will test for conserved quantities, namely energy and angular momentum. More tests and smaller tolerances, gives us more reassurance that our results are correct. This however, will be at the cost of computing time. We decide to test every $0.01/\Delta t$ step, giving us a total of 100 tests every simulation. The tolerance for energy and angular momentum have to depend on the simulation. For longer simulations we expect to see larger errors than for short ones.
 
+\subsection{Escape velocity}
+An interesting test to do, is to see if we can find the escape velocity. We found the analytical term in the theory section (see equation \eqref{eq:escape_velocity}), for an object 1AU away from our sun. We can test for different initial velocities, se for what velocity the planet escapes, then compare to the analytical result. There are two things we have to decide, how we test for different velocities, and how do we know whether or not we have the right velocity.
+\\
+From the analytical term we know that a speed of 8AU/yr should be bound. Therefore that will be the first velocity, and increase with 0.01AU/yr, until we have escaped. The initial velocity will always point radially away from the sun, to make the simulation easier. Because the initial velocity is pointing radially away from the sun, we know it is not bound, if the velocity ever points back towards the sun in our simulation.
+\\
+Now how do we know if a planet has escaped? We know that to be the case analytically, when the potential energy is zero. However we cannot be that precise in our simulations. Therefore we decide on a tolerance, such that if the planet has a lower potential energy than the tolerance, we say the planet has escaped.
+
+\subsection{Many-body problem}
+
 \subsection{General relativity}
 Like we discussed in the theory section, newtons law of gravitation is not entirely correct. For example it does not explain the precession of Mercury's orbit. Therefore we try to implement an relativistic correction into our model (see equation \eqref{eq:general_relativity}). From \citep{oppgavetekst} we know that the observed value for Mercury's perihelion precession is around $43''$. This is with all interactions from other planets accounted for. Therefore, we are going to see if we can reproduce this, with only Mercury and the sun. We neglect the gravitational interactions on the sun, because it is around seven orders of magnitude larger than Mercury. With this in mind we can place the stationary sun in origin, and from \citep{oppgavetekst} we have the initial conditions for Mercury. Starting velocity is 12.44AU/yr in the y-direction, and an initial position in its perihelion, an x-position of 0.3075AU.
 \\
@@ -305,7 +313,8 @@ blah
 blah
 
 \subsection{Escape velocity}
-blah
+The theoretical escape velocity is known to be $V_{\text{teo}} = 2\pi\sqrt{2} \approx 8.89$AU/yr (this is from equation \eqref{eq:escape_velocity}). When finding the escape velocity we had to test for different tolerances. Lower gave more precise results, however at the cost of computation time. We found that with a tolerance of $\epsilon = 0.001$M$_\odot$AU$^2$/yr$^2$ we got a escape velocity of $v_{\text{esc}} = 8.89$AU/yr, which corresponds to the theoretical value. Time step during simulation was set to $10^{-4}$yr.
+
 
 \subsection{Many-body problem}
 3-body, alle planeter

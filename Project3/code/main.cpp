@@ -81,8 +81,8 @@ int main(int argc, char* argv[]) {
         }
     } else if (solver_method == "escape") {
         Verlet solver(dt, our_system);
-        double dv = 0.001;
-        double tol_pot_energy = 1e-5;
+        double dv = 0.01;
+        double tol_pot_energy = 1e-3;
         double v0;
         double pot_energy;
         CelestialBody& sun = our_system.bodies()[0];
