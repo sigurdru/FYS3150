@@ -97,7 +97,7 @@ int main(int argc, char* argv[]) {
                 pot_energy = 4*M_PI*M_PI/earth.position.length();
                 if (pot_energy < tol_pot_energy) {
                     std::cout << "Escape velocity is: " << v0 << "AU/yr" <<std::endl; 
-                    exit(1);
+                    exit(0);
                 }
             }
             v0 += dv;

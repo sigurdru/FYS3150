@@ -35,11 +35,11 @@ The `run.sh` program can also be run with a single keyword to produce a bunch of
 bash run.sh three_body
 ```
 This will run the simulations of the three-body system with all three different masses of Jupiter and for several different values of dt. A complete list of possible keywords is
-- "all" to produce all the results in the report except a full simulation of the entire solar system
+- "all" to produce all the results in the report
 - "solar_system" to run a full simulation of the entire solar system (takes some time)
 - "circ" to run simulations of the Earth-Sun system with both euler and velocity verlet for a range of different values for dt
 - "beta" to run simulations of the Earth-Sun system with five different values of beta
-- "escape_vel" to run the code showing the Earth just escaping the gravitational pull of the Sun
+- "escape_vel" to run the code showing the Earth just escaping the gravitational pull of the Sun (takes some time)
 - "three_body" to run the simulations of the three-body system with all three different masses of Jupiter and for several different values of dt
 - "mercury" to run code that calculates the perihelion presession of Mercury
 
@@ -67,10 +67,9 @@ Ovito can be used to visualize the results. In Ovito, open a trajectory file sto
 - Read columns 3-5 as xyz-positions
 
 # Example run
-The following runs will reproduce all the results in the report:
+The following will reproduce all the results in the report:
 ```
 cd code
 make compile
 bash run.sh all
-bash run.sh solar_system
 ```
