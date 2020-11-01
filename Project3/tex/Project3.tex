@@ -71,8 +71,7 @@
 
 	University of Oslo\\
 	Norway\\
-	\today	
-		
+	\today	\\
 	\end{center}
 	\tableofcontents
 	\clearpage
@@ -86,15 +85,15 @@ Abstract om du vil
 
 \section{Introduction}
 
-In this report We will try to tackle many problems connected to planetary orbits. Everything from testing algorithms, to implementing general relativity. Planetary orbits and simulations are very relevant. An example of this is when we send probes far into space. Then we need to predict precise planetary orbits in order to do gravity assist maneuvers. Also being able to predict the initial velocity needed in order to escape the solar system is important. Therefore, in this report we are going to study different algorithms, looking at the conservation of energy and angular momentum. Using Velocity Verlet we will try to simulate many-many body problems, test for different gravitational forces, try to find the velocity needed to escape gravitational field of our sun and last but not least, study the perihelion precession of Mercury. We also have a theory section where you will find central concepts to our report. A tentative list of our topics are also listed in the table of contents.
+In this report We will try to tackle many problems connected to planetary orbits. Everything from testing algorithms, to implementing general relativity. Planetary orbits and simulations are very relevant. An example of this is when we send probes far into space. Then we need to predict precise planetary orbits in order to do gravity assist maneuvers. Also being able to predict the initial velocity needed in order to escape the solar system is important. Therefore, in this report we are going to study different algorithms, looking at the conservation of energy and angular momentum. Using Velocity Verlet we will try to simulate many-many body problems, test for different gravitational forces, try to find the velocity needed to escape the gravitational field of our Sun and last but not least, study the perihelion precession of Mercury. We also have a theory section where you will find central concepts used in our report. A tentative list of our topics are also listed in the table of contents.
 \\
-(testing algorithms)
+Before we simulate systems, it is necessary to test our algorithm. Therefore, we test predictable scenarios, where we have more intuition on what the results should be. The tests we are going to do, are a binary system, namely the earth orbiting our Sun. We test for both circular and elliptical orbits, looking for conservation of energy and angular momentum. Running the simulation using Velocity Verlet and forward Euler, we can also compare algorithms.
 \\
-Studying many-body problems, we are mainly going to use data from NASA (see \citep{NASA}). (si mer her)
+Studying many-body problems, we are mainly going to use data from NASA (see \citep{NASA}). We are mainly going to study two scenarios. First Earth, Sun and Jupiter, looking  at how different masses of Jupiter affects orbits. Then we look at all the planets in our solar system, including Pluto and Jupiter's moon Europa. For all scenarios we track the angular momentum and energy.
 \\
-(study different gravitational forces)
+We also found it interesting to explore how things would change with different gravitational forces. We know Newtons force of gravitation is proportional to one over $r$ squared ($F\propto1/r^2$). Where $r$ is the distance between two objects. We want to know how things would change if the force was proportional to ex. $1/r^3$. Thus we also look at different gravitational forces proportional to $1/r^n$, where $n\in\{2,3\}$.
 \\
-Like we mentioned above, knowing the velocity needed to escape a gravitational potential is important. We are going to study a situation where we have a theoretical value. Namely an object, one astronomical unit away from our sun. The theoretical calculations are covered in our theory section. In our studies we are going to test for initial velocities, and try to find the lowest velocity that escapes the gravitational potential of our sun. Then compare it to the theoretical value we calculated.
+Like we mentioned above, knowing the velocity needed to escape a gravitational potential is important. We are going to study a situation where we have a theoretical value. Namely an object, one astronomical unit away from our Sun. The theoretical calculations are covered in our theory section. In our studies we are going to test for initial velocities, and try to find the lowest velocity that escapes the gravitational potential of our Sun. Then compare it to the theoretical value we calculated.
 \\
 As we will cover in the theory section, Newton's force of gravitation cannot explain the observed precession of Mercury's orbit. Implementing a general relativistic correction into our force, we can simulate Mercury's orbit for 100 years, and study the precession. Our hope is to predict this observed precession in our simulations.
 \\
@@ -110,14 +109,14 @@ The well-known Newtons second law reads
   \sum \vc F = m \frac{\mathrm d^2 \vc r}{\mathrm d t^2},
 \end{equation}
 where $\sum \vc F$ is the sum of forces acting on an object, $m$ is its mass and $\vc r$ its position.
-
+\\
 Newton's law of gravity says that the total gravitational force acting on an object $i$ from all the other objects in a system is
 \begin{equation}
   \label{eq:Newton_grav}
   F_{G, i} = - G m_i \sum_{j \neq i} m_j \frac{\vc r_i - \vc r_j}{ \lvert \vc r_i - \vc r_j \rvert ^3}
 \end{equation}
 where $\vc r_i$ are the positions and $m_i$ are the masses of the objects. $G$ is the gravitational constant.
-
+\\
 For the motions of planets, on which the gravitational force is the only force acting, the two equations \ref{eq:Newton_2nd} and \ref{eq:Newton_grav} combined give us the differential equation that describes the motion of an object:
 \begin{equation}
   \label{eq:DE}
@@ -142,7 +141,7 @@ An expression can then be found for position at a time $t = t_0 \pm h$:
   \label{eq:Taylor_exp_x}
   x(t_0 \pm h) = x(t_0) \pm h v(t_0) + \frac{1}{2} h^2 a \pm O(h^3)
 \end{equation}
-
+\\
 Discretizing equation \ref{eq:Taylor_exp_x} and letting $x_i = x(t)$, $x_{i+1} = x(t + h)$, $v_i = v(t)$ and $v_{i+1} = v(t + h)$, we get
 \begin{align*}
   x_{i+1} \approx x_i + h v_i + \frac{h^2}{2} a_i \\
@@ -173,12 +172,12 @@ This is referred to as the Forward Euler method of solving differential equation
 \subsection{Conservation of angular momentum and energy}
 
 Kepler's second law states that if you draw a line from the Sun to a planet orbiting it, then that line would sweep out the same area in equal periods of time. We will use this law to derive the conservation of angular momentum.
-
+\\
 For short periods of time $\mathrm d t$ the area swept out by the line from the Sun to the planet is approximately a triangle with area
 \begin{equation*}
   A = \frac{1}{2} r v_\theta \mathrm dt
 \end{equation*}
-where $r$ is the distance from the planet to the sun and $v_\theta$ is the tangential velocity of the planet. Kepler's second law states that this area is constant for all intervalls of time of the same length. For this to be true, we must require
+where $r$ is the distance from the planet to the Sun and $v_\theta$ is the tangential velocity of the planet. Kepler's second law states that this area is constant for all intervalls of time of the same length. For this to be true, we must require
 \begin{equation*}
   r v_\theta = \text{constant}
 \end{equation*}
@@ -189,7 +188,7 @@ The angular momentum $\vc L$ of the planet around the Sun is
   &= m r v_\theta \khat, \quad \text{as } \ihat_r \times \ihat_\theta = \khat \text{ and } \ihat_r \times \ihat_r = 0 \\
   &= \text{constant}
 \end{align*}
-
+\\
 Newton's gravitational force is conservative, therefore the energy of our system should be conserved. Kinetic energy is given by
 \begin{equation}
 \label{eq:kinetic_energy}
@@ -242,7 +241,7 @@ Where $\mathbf{p}_{\text{CM}}$ and $\mathbf{v}_{\text{CM}}$ is the momentum and 
 where $\mathbf{r}_{\text{CM}}$ is the center of mass position and $r_i$ the individual planets positions. Then we can do the same as above, subtract $\mathbf{r}_{\text{CM}}$ from the positions of all the planets. Then with the center of mass placed in the origin with zero velocity, it should not move.
 
 \subsection{The perihelion precession of Mercury}
-We know, because of general relativity, that Newtons law of gravitation is not entirely correct. An example of where we see this effect is in the precession of Mercury's perihelion. Even when taking into account the gravitational force from all the other planets in the solar-system, Newtons law of gravitation cannot explain how the perihelion moves around the sun. Therefore, when we have relativistic effects, we add a correction. For binary systems this becomes (see \citep{oppgavetekst})
+We know, because of general relativity, that Newtons law of gravitation is not entirely correct. An example of where we see this effect is in the precession of Mercury's perihelion. Even when taking into account the gravitational force from all the other planets in the solar-system, Newtons law of gravitation cannot explain how the perihelion moves around the Sun. Therefore, when we have relativistic effects, we add a correction. For binary systems this becomes (see \citep{oppgavetekst})
 \begin{equation}
 	\label{eq:general_relativity}
 	F_{1 \rightarrow 2} = \frac{GM_1M_2}{r^2}\left[ 1 + \frac{3l^2}{r^2c^2} \right].
@@ -258,7 +257,7 @@ Equation \ref{eq:DE} is the equation of motion that describes the system of plan
    \frac{\mathrm d \vc r}{\mathrm d t} &= \vc v \\
    \frac{\mathrm d \vc v}{\mathrm d t} &= - G \sum_{j \neq i} m_j \frac{\vc r_i - \vc r_j}{ \lvert \vc r_i - \vc r_j \rvert ^3}
 \end{align*}
-
+\\
 The Verlet is not a self-starting algorithm.
 Mainly applicable when we are not interested in the velocity
 Velocity Verlet is energy conserving, Forward Euler is not
@@ -282,8 +281,8 @@ In units of AU, $M_\odot$ and yr the gravitational constant has a value of appro
 \subsection{The data from NASA}
 When we study orbits in our solar-system, we want them to be realistic. Therefore we use actual data from NASA (see \citep{NASA}), that provides us the real positions, velocities and masses of planets and moons in our solar system. The data shows positions and velocities from the perspective of the barycenter, which is the center of mass. In our solvers, we still adjust for , because it allows us to test for data which does not have this property. 
 
-\subsection{Testing the stability of the algorithms}
-In order to make sure our algorithms runs correctly, we want to test it. Our first test will be to simulate the simplest possible system, namely earth orbiting the sun. We place the sun in origin and with zero velocity. The earth orbits with a distance of $r=1$AU away from the sun, and makes a full orbit every year. This gives it an initial velocity of $v = 2\pi \text{ AU}/\text{yr}.$ This system however will have a center of mass that drifts. In order to counteract this we will move the origin to where the center of mass is, and zero its velocity. See the theory section on how this is done.
+\subsection{Testing and comparing algorithms}
+In order to make sure our algorithms runs correctly, we want to test it. During testing, we also use the opportunity to look at differences between forward Euler and Velocity Verlet. Therefore we do the tests with both algorithms. Our first test will be to simulate the simplest possible system, namely earth orbiting the Sun. We place the Sun in origin and with zero velocity. The earth orbits with a distance of $r=1$AU away from the Sun, and makes a full orbit every year. This gives it an initial velocity of $v = 2\pi \text{ AU}/\text{yr}.$ This system however will have a center of mass that drifts. In order to counteract this we will move the origin to where the center of mass is, and zero its velocity. See the theory section on how this is done.
 \\
 Testing for different time steps $\Delta t$, we can look at the stability of velocity Verlet and Euler's forward method. Now we have to decide on what constitutes a stable orbit. Even though we adjust the barycenters drift, this effect is neglishable and we should still expect the earths orbit to have a distance of 1AU away from the barycenter. Therefore we will test for different $\Delta t$ and see how the distance varies from our expected value. We do each test over 10 years, and calculate the difference every $0.01/\Delta t$ steps (100 times).
 \\
@@ -291,24 +290,21 @@ Another test will be conservation of kinetic and potential energy. As mentioned 
 \\
 The last test of our algorithm will be conservation of angular momentum. In the theory section, from Kepler's second law, we showed that angular momentum is conserved. Therefore we will also test whether that is the case for our Earth-Sun system. Adding some complexity, as well as testing it for the near ideal orbit over, we tested conservation of angular momentum with the initial conditions collected from NASA (see \citep{NASA}).
 
-\subsection{Unit tests}
-We are going to test several widely different systems. In order to reassure ourselves everything runs correct, we are going to have unit tests during simulations. We will test for conserved quantities, namely energy and angular momentum. More tests and smaller tolerances, gives us more reassurance that our results are correct. This however, will be at the cost of computing time. We decide to test every $0.01/\Delta t$ step, giving us a total of 100 tests every simulation. The tolerance for energy and angular momentum have to depend on the simulation. For longer simulations we expect to see larger errors than for short ones.
+\subsection{Different forms of gravitational force}
 
 \subsection{Escape velocity}
-An interesting test to do, is to see if we can find the escape velocity. We found the analytical term in the theory section (see equation \eqref{eq:escape_velocity}), for an object 1AU away from our sun. We can test for different initial velocities, se for what velocity the planet escapes, then compare to the analytical result. There are two things we have to decide, how we test for different velocities, and how do we know whether or not we have the right velocity.
+An interesting test to do, is to see if we can find the escape velocity. We found the analytical term in the theory section (see equation \eqref{eq:escape_velocity}), for an object 1AU away from our Sun. We can test for different initial velocities, se for what velocity the planet escapes, then compare to the analytical result. There are two things we have to decide, how we test for different velocities, and how do we know whether or not we have the right velocity.
 \\
-From the analytical term we know that a speed of 8AU/yr should be bound. Therefore that will be the first velocity, and increase with 0.01AU/yr, until we have escaped. The initial velocity will always point radially away from the sun, to make the simulation easier. Because the initial velocity is pointing radially away from the sun, we know it is not bound, if the velocity ever points back towards the sun in our simulation.
+From the analytical term we know that a speed of 8AU/yr should be bound. Therefore that will be the first velocity, and increase with 0.01AU/yr, until we have escaped. The initial velocity will always point radially away from the Sun, to make the simulation easier. Because the initial velocity is pointing radially away from the Sun, we know it is not bound, if the velocity ever points back towards the Sun in our simulation.
 \\
 Now how do we know if a planet has escaped? We know that to be the case analytically, when the potential energy is zero. However we cannot be that precise in our simulations. Therefore we decide on a tolerance, such that if the planet has a lower potential energy than the tolerance, we say the planet has escaped.
 
 \subsection{Many-body problem}
 
-\subsection{Different forms of gravitational force}
-
 \subsection{General relativity}
-Like we discussed in the theory section, newtons law of gravitation is not entirely correct. For example it does not explain the precession of Mercury's orbit. Therefore we try to implement an relativistic correction into our model (see equation \eqref{eq:general_relativity}). From \citep{oppgavetekst} we know that the observed value for Mercury's perihelion precession is around $43''$. This is with all interactions from other planets accounted for. Therefore, we are going to see if we can reproduce this, with only Mercury and the sun. We neglect the gravitational interactions on the sun, because it is around seven orders of magnitude larger than Mercury. With this in mind we can place the stationary sun in origin, and from \citep{oppgavetekst} we have the initial conditions for Mercury. Starting velocity is 12.44AU/yr in the y-direction, and an initial position in its perihelion, an x-position of 0.3075AU.
+Like we discussed in the theory section, newtons law of gravitation is not entirely correct. For example it does not explain the precession of Mercury's orbit. Therefore we try to implement an relativistic correction into our model (see equation \eqref{eq:general_relativity}). From \citep{oppgavetekst} we know that the observed value for Mercury's perihelion precession is around $43''$. This is with all interactions from other planets accounted for. Therefore, we are going to see if we can reproduce this, with only Mercury and the Sun. We neglect the gravitational interactions on the Sun, because it is around seven orders of magnitude larger than Mercury. With this in mind we can place the stationary Sun in origin, and from \citep{oppgavetekst} we have the initial conditions for Mercury. Starting velocity is 12.44AU/yr in the y-direction, and an initial position in its perihelion, an x-position of 0.3075AU.
 \\
-We do the simulation for 100 years, and then find the new perihelion. We cannot guarantee that Mercury is in the perihelion after 100 years, therefore we let the simulation go on for around 90 more days (reassuring us that Mercury completes another orbit), then finding the closest position to the sun (which is the perihelion). With the new position of the perihelion, we can easily calculate its precession with
+We do the simulation for 100 years, and then find the new perihelion. We cannot guarantee that Mercury is in the perihelion after 100 years, therefore we let the simulation go on for around 90 more days (reassuring us that Mercury completes another orbit), then finding the closest position to the Sun (which is the perihelion). With the new position of the perihelion, we can easily calculate its precession with
 \begin{equation*}
 	\tan(\theta_P) = \frac{y_P}{x_P}.
 \end{equation*}
@@ -318,7 +314,7 @@ Because we are running the simulation for such a long time, we use Velocity Verl
 
 \section{results}
 
-\subsection{Testing the algorithm}
+\subsection{Testing and comparing algorithms}
 
 
 
@@ -381,15 +377,15 @@ The theoretical escape velocity is known to be $V_{\text{teo}} = 2\pi\sqrt{2} \a
 
 \subsection{General relativity}
 
-We ended up doing the tests for three different time steps (see \ref{tab:general_relativity}). Notice that with a time step of around 3.16 seconds, we got a precession of 43.2592$''$ which is quite close to the theoretical value of 43$''$. Time step of 31.56 seconds was also quite close, with a value of 40.4317$''$. Our first result however, showed precession in the opposite direction.
+We ended up doing the tests for three different time steps (see \ref{tab:general_relativity}). Notice that with a time step of around 3.16 seconds, we got a precession of 43.26$''$ which is quite close to the theoretical value of 43$''$. Time step of 31.56 seconds was also quite close, with a value of 40.43$''$. Our first result however, showed precession in the opposite direction.
 \begin{table}[h]
 	\begin{tabular}{|l|l|l|}
 		\hline
 		Timestep {[}s{]} & Integration points N & Result {[}arcseconds{]} \\
 		\hline
-		315.56              & $10^7$          & -0.792203               \\
-		31.56               & $10^8$          & 40.4317                 \\
-		3.16                & $10^9$          & 43.2592	\\
+		315.56              & $10^7$          & -0.79               \\
+		31.56               & $10^8$          & 40.43                 \\
+		3.16                & $10^9$          & 43.26	\\
 		\hline                
 	\end{tabular}
 	\caption{In this table you have the different time steps we tested for, in units of seconds. The second column shows the number of integration points needed, and the last column is our results in arcseconds. 
@@ -398,10 +394,17 @@ We ended up doing the tests for three different time steps (see \ref{tab:general
 \\
 We wanted to test for smaller time steps, however we exceeded the maximum array-length. Also, because our last result were quite close to the theoretical, we opted against it.
 
-
 \section{discussion}
 
-discuss eventual differences between the verlet algorithm and the euler algorithm. Consider also the numver of flops involved and perform a timing of the two algorithm for equal final times.
+testing and comparing algorithms(discuss eventual differences between the verlet algorithm and the euler algorithm. Consider also the numver of flops involved and perform a timing of the two algorithm for equal final times.)
+
+different forms of gravitation
+
+As we mentioned, when calculating the escape velocity, we cannot be infinitely precise. There is a constant trade-off between precision and computation time. We don't believe our method and calculations are wrong, as we are studying a very simple system. What we do acknowledge however, is that we could get a more precise answer.
+
+many body problem
+
+When including a general relativistic correction, we ended up at the observed value. However it is worth discussing the fact that we only arrived at the right answer for one time step, namely 3.16 seconds. Ideally we would want to test for lower time steps, to confirm that this was not a fluke. However, seeing that we arrived very close for the time step 31.56 seconds, it seems unlikely.
 
 \section{conclusion}
 
