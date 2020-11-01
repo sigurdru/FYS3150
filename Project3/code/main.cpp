@@ -78,8 +78,8 @@ int main(int argc, char* argv[]) {
         double dv = 0.01;
         double tol_pot_energy = 1e-4;
         double tol_v = sqrt(8*M_PI*M_PI*tol_pot_energy);
-        double v0;
-        double pot_energy;
+        double v0, pot_energy;
+        double analytic = 2*sqrt(2)*M_PI;
         CelestialBody& sun = our_system.bodies()[0];
         CelestialBody& earth = our_system.bodies()[1];
         v0 = earth.velocity[0];
@@ -91,7 +91,11 @@ int main(int argc, char* argv[]) {
                 solver.integrateOneStep2();
                 pot_energy = 1/earth.position.length();
                 if (pot_energy < tol_pot_energy) {
-                    std::cout << "Escape velocity is: " << v0 << "AU/yr" <<std::endl; 
+                    std::cout 
+                        << "Computed escape velocity: " 
+                        << v0 << " AU/yr" << std::endl
+                        << "Analytic escape velocity: "
+                        << analytic << " AU/yr" << std::endl;
                     exit(0);
                 }
             }
@@ -150,5 +154,6 @@ void testPrecession(vec3* last_positions, int bonus_steps) {
     }
     double precession_calc = std::atan(perihelion_position[1]/perihelion_position[0]);
     precession_calc /= 4.848e-6;
-    std::cout << "calculated: " << precession_calc << "  expected: " << precession_ana << std::endl;
+    std::cout << "calculated: " << precession_calc 
+        << "  expected: " << precession_ana << std::endl;
 }

@@ -85,7 +85,7 @@ produce_esc_vel ()
     output_fname="earth_sun_escape-escape-4-6-2"
     output_fname="${path}/${output_fname}.txt"
     ./main.exe earth_sun_escape 4 6 escape 2 > $output_fname
-    cat $output_fname | tail -n 1
+    cat $output_fname | tail -n 2
 }
 
 produce_three_body ()
