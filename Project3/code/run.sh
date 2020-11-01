@@ -61,7 +61,7 @@ produce_beta ()
         "2.75"
         "3"
     )
-    dt="3"
+    dt="4"
     N=$(($dt + 2))
     method="verlet"
     for fname in ${fnames[@]}; do
@@ -75,6 +75,17 @@ produce_beta ()
         done
         echo
     done
+    # beta=3 deserves a few longer runs
+    fname="earth_sun_ellip"; N="7"; beta="3"
+    echo "    File: $fname longer run"
+    output_fname="${fname}-${method}-${dt}-${N}-${beta}"
+    output_fname="../output/reports/${output_fname}.txt"
+    calc_and_plot $fname $dt $N $method $beta > $output_fname &
+    fname="earth_sun_circ"
+    echo "    File: $fname longer run"
+    output_fname="${fname}-${method}-${dt}-${N}-${beta}"
+    output_fname="../output/reports/${output_fname}.txt"
+    calc_and_plot $fname $dt $N $method $beta > $output_fname &
     wait
 }
 
