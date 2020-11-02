@@ -54,19 +54,20 @@ void SolarSystem::calculateEnergyAndAngularMomentum() {
     m_angularMomentum.zeros();
     m_kineticEnergy = 0;
     m_potentialEnergy = 0;
+    double pos_dependence = 1 - distDependence;
     for (int i = 0; i < numberOfBodies(); i++) {
         CelestialBody& body1 = m_bodies[i];
         m_kineticEnergy += body1.mass * body1.velocity.lengthSquared();
-        m_angularMomentum += body1.position.cross(body1.velocity);
+        m_angularMomentum += body1.mass*body1.position.cross(body1.velocity);
         for (int j = i + 1; j < numberOfBodies(); j++){
             CelestialBody& body2 = m_bodies[j];
             deltaRVector = body2.position - body1.position;
             dr = deltaRVector.length();
-            m_potentialEnergy -= body1.mass*body2.mass/dr;
+            m_potentialEnergy += body1.mass*body2.mass*pow(dr, pos_dependence);
         }
     }
     m_kineticEnergy *= 0.5;
-    m_potentialEnergy *= 8*M_PI*M_PI;
+    m_potentialEnergy *= 8*M_PI*M_PI/pos_dependence;
 }
 
 

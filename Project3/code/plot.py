@@ -46,11 +46,14 @@ if len(sys.argv) == 3 and sys.argv[2] =='3D':
 else:
     plot3D_bool = False
 out_fname = fname.replace('.', '_')
-description, solver_method, dt, N, beta = fname.split('-')
-dt = 10**(-int(dt))
-N = 10**int(N)
+description, solver_method, dt_str, N_str, beta_str = fname.split('-')
+dt = 10**(-int(dt_str))
+N = 10**int(N_str)
 print_step = int(0.01/dt)
 N_lines = int(N/print_step)-1
+
+title = solver_method[0].upper() + solver_method[1:] + r', $dt = 10^{-' 
+title += dt_str + r'}$ yrs, $N = 10^' + N_str + r'$, $\beta =' + beta_str + r'$'
 
 position, energies, ang_momentum, num_bodies, names = read_xyz_file(fname, N_lines)
 dt = 0.01
@@ -60,8 +63,6 @@ if plot3D_bool:
     fig = plt.figure
     ax = plt.axes(projection='3d')
 
-    title = "Orbit"
-    ax.set_title(title, fontsize=20)
     ax.set_xlabel('Position x [AU]', fontsize=20)
     ax.set_ylabel('Position y [AU]', fontsize=20)
     ax.set_zlabel('Position z [AU]', fontsize=20)
@@ -84,8 +85,7 @@ else:
         ax.plot(position[i, 0, 0], position[i, 0, 1], 'o')
         ax.plot(position[i, 1:, 0], position[i, 1:, 1], label = names[i])
     ax.axis('equal')
-    title = "Orbit"
-    ax.set_title(title, fontsize=20)
+    ax.set_title('Positions\n' + title, fontsize=20)
     ax.set_xlabel(r'Position $x$, [AU]', fontsize=20)
     ax.set_ylabel(r'Position $y$, [AU]', fontsize=20)
     ax.legend(fontsize=15)
@@ -99,8 +99,7 @@ fig, ax = plt.subplots()
 ax.plot(t, energies[:, 0], label='Potential')
 ax.plot(t, energies[:, 1], label='Kinetic')
 ax.plot(t, energies[:, 2], label='Total')
-title = 'Energy'
-ax.set_title(title, fontsize=20)
+ax.set_title('Energy\n' + title, fontsize=20)
 ax.set_xlabel(r'Time, [yrs]', fontsize=20)
 ax.set_ylabel(r'Energy, [$M_\odot$ AU$^2$/yr$^2$]', fontsize=20)
 ax.legend(fontsize=15)
@@ -115,7 +114,7 @@ ax.plot(t, ang_momentum[:, 0], label='$x$')
 ax.plot(t, ang_momentum[:, 1], label='$y$')
 ax.plot(t, ang_momentum[:, 2], label='$z$')
 # ax.plot(t, np.linalg.norm(ang_momentum, axis=1), ':', label='Size')
-ax.set_title('Angular momentum', fontsize=20)
+ax.set_title('Angular momentum\n' + title, fontsize=20)
 ax.set_xlabel(r'Time, [yrs]', fontsize=20)
 ax.set_ylabel(r'Angular momentum, [$M_\odot$ AU$^2$/yr]', fontsize=20)
 ax.legend(fontsize=15)
