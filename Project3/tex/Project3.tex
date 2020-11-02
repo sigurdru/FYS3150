@@ -307,11 +307,11 @@ In order to make sure our algorithms runs correctly, we want to test it. During 
 
 Testing for different time steps $\Delta t$, we can look at the stability of velocity Verlet and Euler's forward method. Now we have to decide on what constitutes a stable orbit. Even though we adjust the barycenter's drift, this effect is negligible and we should still expect the Earth's orbit to have a distance of 1 AU away from the barycenter. As we mentioned above, energy and angular momentum should be conserved. Hence we will look at the conservation of energy and angular momentum as well. Adding some complexity, we are also doing the test, looking at real initial conditions collected from NASA (see \citep{NASA}).
 
-The last run, we time the algorithms. Counting the number of floating point operations (FLOPS) in both algorithms, we should have an idea of which one is the fastest. FLOPS are covered in the theory section of our report Project 1\footnote{github.com/sigurdru/FYS3150/tree/master/Project1/tex/Project1.pdf}. Looking at equations \eqref{eq:euler} we count 4$N$ FLOPS (two each), and for equations \eqref{eq:Taylor_exp_x} we count 7$N$ FLOPS (four for the first and )
+The last run (the one with smallest time step), we time the algorithms. Counting the number of floating point operations (FLOPS) in both algorithms, we should have an idea of which one is the fastest. FLOPS are covered in the theory section of our report Project 1\footnote{github.com/sigurdru/FYS3150/tree/master/Project1/tex/Project1.pdf}. Looking at equations \eqref{eq:euler} we count 4$N$ FLOPS (where $N$ is number of time steps), two for each equation. Counting for equations \eqref{eq:Taylor_exp_x} we get 7$N$ FLOPS, four for the first and three for the second. Since Forward Euler has around 40\% fewer FLOPS, we expect it to be faster.
 
 \subsection{Different forms of gravitational force}
 
-Energy conservation and stability are major themes throughout this project. In order to explore further these properties we would like to simulate the Earth-Sun system with different forms of the gravitational force. Equation \eqref{eq:Newton_grav} describing Newton's inverse square law of gravity states that the gravitational force acting on the Earth in this system is
+Like we mentioned in the introduction, we want to explore the Earth-Sun system with different forms of the gravitational force. Equation \eqref{eq:Newton_grav} describing Newton's inverse square law of gravity states that the gravitational force acting on the Earth in this system is
 \begin{equation*}
   F_G = G \frac{M_\odot M_{\text{Earth}}}{r^2}
 \end{equation*}
@@ -320,8 +320,7 @@ We would like to replace this force with
   F_G = G \frac{M_\odot M_{\text{Earth}}}{r^\beta}
   \label{eq:Newton_grav_beta}
 \end{equation}
-with the adjustable parameter $\beta \in [2, 3]$. We will discuss energy conservation for different values of $\beta$.
-
+with the adjustable parameter $\beta \in [2, 3]$. We can't test for every $\beta$ so we decided on $\beta \in \{2.25,2.5,2.75,3\}$. Because the force still is conservative (only a function of position), we expect energy to be conserved. Maybe a bit more surprising is the fact that angular momentum is conserved. In the theory section we showed, using Kepler's laws, that angular momentum is conserved. This was not reliant on the exponent of $r$, therefore we know that angular momentum also should be conserved.
 
 \subsection{Escape velocity}
 
