@@ -13,7 +13,7 @@ void testPrecession(vec3* last_positions, int bonus_steps);
 
 int main(int argc, char* argv[]) {
     std::string input_file, output_file, solver_method;
-    
+
     double dt, distDependence;  // Time between each step and parameter beta
     int N, print_step;          // Number of integration points
     bool shouldPrint;
@@ -22,7 +22,7 @@ int main(int argc, char* argv[]) {
 
     if (argc < 6) {
         std::cout << "Please include input file, dt, number of time steps, "
-            << "solver method and distance dependence parameter beta" 
+            << "solver method and distance dependence parameter beta"
             << std::endl;
         exit(1);
     } else {
@@ -100,8 +100,8 @@ int main(int argc, char* argv[]) {
                 solver.integrateOneStep2();
                 pot_energy = 1/earth.position.length();
                 if (pot_energy < tol_pot_energy) {
-                    std::cout 
-                        << "Computed escape velocity: " 
+                    std::cout
+                        << "Computed escape velocity: "
                         << v0 << " AU/yr" << std::endl
                         << "Analytic escape velocity: "
                         << analytic << " AU/yr" << std::endl;
@@ -163,6 +163,6 @@ void testPrecession(vec3* last_positions, int bonus_steps) {
     }
     double precession_calc = std::atan(perihelion_position[1]/perihelion_position[0]);
     precession_calc /= 4.848e-6;
-    std::cout << "calculated: " << precession_calc 
+    std::cout << "calculated: " << precession_calc
         << "  expected: " << precession_ana << std::endl;
 }
