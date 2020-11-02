@@ -326,7 +326,7 @@ with the adjustable parameter $\beta \in [2, 3]$. We can't test for every $\beta
 
 An interesting test to do, is to see if we can find the escape velocity. We found the analytical term in the theory section (see equation \eqref{eq:escape_velocity}), for an object 1AU away from our Sun. We can test for different initial velocities, se for what velocity the planet escapes, then compare to the analytical result. There are two things we have to decide, how we test for different velocities, and how do we know whether or not we have the right velocity.
 
-From the analytical solution \eqref{eq:escape_velocity} we know that an object starting at a distance of 1 AU from the sun and moving with a speed of 8.5 AU/yr should be bound. We will choose this to be our first test velocity, and increment it by 0.01AU/yr, until we reach a velocity which allows the object to escape the Sun's gravitational pull. The initial velocity will always point radially away from the Sun, to make the simulation easier. Because the initial velocity is pointing radially away from the Sun, we know it is not bound if the velocity ever points back towards the Sun in our simulation.
+From the analytical solution \eqref{eq:escape_velocity} we know that an object starting at a distance of 1 AU from the sun and moving with a speed of 8.5 AU/yr should be bound. We will choose this to be our first test velocity, and increment it by 0.01AU/yr, until we reach a velocity which allows the object to escape the Sun's gravitational pull. The initial velocity will always point radially away from the Sun, to make the simulation easier.
 
 Now how do we know if a planet has escaped? Theoretically, the potential is never zero the way it is defined here. It goes to zero (from below) infinitely far away from the Sun. For all practical purposes, however, we may say that the object has escaped when the potential goes above a certain threshold. Therefore we decide on a tolerance $\epsilon$ for the potential energy, such that if the planet has a higher potential energy than the tolerance, we say the planet has escaped.
 
@@ -493,10 +493,6 @@ We ended up doing the tests for three different time steps (see \ref{tab:general
 \\
 We wanted to test for smaller time steps, however we exceeded the maximum array-length. Also, because our last result were quite close to the theoretical, we opted against it.
 
-\clearpage
-\clearpage
-\clearpage
-\clearpage
 \section{Discussion}
 
 When comparing algorithms Velocity Verlet gives better results compared to our expected value. Forward Euler needs lower time steps to get better results. On the other hand Forward Euler is faster. We predicted this when we counted the FLOPS, but also measured it five times in a row (table \ref{tab:timing}) when testing the algorithms. The difference however is not far from two seconds, making it difficult to justify using Forward Euler over Velocity Verlet.
@@ -526,7 +522,6 @@ When studying escape velocity and Mercury's perihelion precession we got close t
 
 \onecolumngrid
 \vspace{1cm} % some extra space
-\newpage
 
 \begin{thebibliography}{}
 \bibitem[]{oppgavetekst} Department of Physics, Univeristy of Oslo, Fall semester 2020, Computational Physics I FYS3150/FYS4150, Project 3.
