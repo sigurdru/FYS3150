@@ -66,7 +66,7 @@
 	Vegard Falmår and Sigurd Sørlie Rustad
 
 	\vspace{0.5cm}
-	\includegraphics[scale=0.5]{UIO}
+	\includegraphics[scale=0.5]{../../pictures/UIO}
 	\vspace{0.8cm}
 
 	University of Oslo\\
@@ -334,7 +334,7 @@ Now how do we know if a planet has escaped? Theoretically, the potential is neve
 
 \subsection{Many-body problem}
 
-The equations of motion \eqref{eq:eq_of_motion} apply individually to all the bodies in a many-body system. We can thus use the theory presented so far to run a simulation of a system consisting of more than two bodies. We have simulated the three-body system of the Earth, the Sun and Jupiter 
+The equations of motion \eqref{eq:eq_of_motion} apply individually to all the bodies in a many-body system. We can thus use the theory presented so far to run a simulation of a system consisting of more than two bodies. We have simulated the three-body system of the Earth, the Sun and Jupiter with the real mass of Jupiter as well as with the mass of Jupiter multiplied by factors of 10 and $10^3$. We have also done a full simulation of the Sun and all the planets in the Solar System, including Pluto and Jupiter's moon Europa. Real-world values for the initial positions and velocities are collected from NASA as discussed, and the masses are obtained from the University of Oslo\citep{oppgavetekst}.
 
 
 \subsection{General relativity}
@@ -354,6 +354,8 @@ Because we are running the simulation for such a long time, we use Velocity Verl
 \section{Results}
 
 \subsection{Testing and comparing algorithms}
+
+Table \ref{tab:timing} shows the results of timing the two algorithms we have implemented.
 
 \begin{table}[]
 \begin{tabular}{|l|l|l|}
