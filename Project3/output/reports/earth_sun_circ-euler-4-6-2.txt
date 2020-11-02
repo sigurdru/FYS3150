@@ -9,11 +9,11 @@ earth      pos:  [1, 0, 0];
            mass: 3.01659e-06
 
 Vel. and pos. of center of mass subtracted:
-sun        pos:  [0, 0, 0];
-           vel:  [0, 0, 0];
+sun        pos:  [-3.01658e-06, 0, 0];
+           vel:  [0, -1.89537e-05, 0];
            mass: 1
 
-earth      pos:  [1, 0, 0];
-           vel:  [0, 6.28319, 0];
+earth      pos:  [0.999997, 0, 0];
+           vel:  [0, 6.28317, 0];
            mass: 3.01659e-06
-Duration of solve: 851988 microseconds
+Duration of solve: 1138729 microseconds
