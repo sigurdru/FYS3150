@@ -412,7 +412,8 @@ Figures \ref{fig:earth_sun_circ_beta=2_75} and \ref{fig:earth_sun_circ_beta=3} s
 	\centering
 	\includegraphics[width=\linewidth]{../output/earth_sun_circ-verlet-4-6-2_75.pdf}
   \includegraphics[width=\linewidth]{../output/earth_sun_circ-verlet-4-6-2_75_energy.pdf}
-	\caption{In this figure we see orbits and energy of the Earth-Sun system with initial conditions that would produce a circular orbit with the normal inverse square law of gravity. The parameter $\beta = 2.75$.}
+  \includegraphics[width=\linewidth]{../output/earth_sun_circ-verlet-4-6-2_75_ang_mom.pdf}
+	\caption{In this figure we see orbits, energy and angular momentum of the Earth-Sun system with initial conditions that would produce a circular orbit with the normal inverse square law of gravity. The parameter $\beta = 2.75$.}
 	\label{fig:earth_sun_circ_beta=2_75}
 \end{figure}
 
@@ -433,6 +434,34 @@ The theoretical escape velocity is known to be $V_{\text{theo}} = 2\pi\sqrt{2} \
 
 \subsection{Many-body problem}
 
+Figures \ref{fig:three_body}, \ref{fig:three_body10} and \ref{fig:three_body1000} shows the orbits of Earth, Jupiter (with ordinary, ten times and thousand times the mass) and the sun. Also we plot the total kinetic and potential energy and the angular momentum of the systems.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=\linewidth]{../output/three_body-verlet-5-6-2.pdf}
+	\includegraphics[width=\linewidth]{../output/three_body-verlet-5-6-2_energy.pdf}
+	\includegraphics[width=\linewidth]{../output/three_body-verlet-5-6-2_ang_mom.pdf}
+	\caption{The figures show the orbit, energy and angular momentum of the Earth, Jupiter (with ordinary mass) and Sun system.}
+	\label{fig:three_body}
+\end{figure}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=\linewidth]{../output/three_body10-verlet-5-6-2.pdf}
+	\includegraphics[width=\linewidth]{../output/three_body10-verlet-5-6-2_energy.pdf}
+	\includegraphics[width=\linewidth]{../output/three_body10-verlet-5-6-2_ang_mom.pdf}
+	\caption{The figures show the orbit, energy and angular momentum of the Earth, Jupiter (with ordinary mass) and Sun system. Here we have multiplied Jupiter's mass with 10.}
+	\label{fig:three_body10}
+\end{figure}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=\linewidth]{../output/three_body1000-verlet-5-6-2.pdf}
+	\includegraphics[width=\linewidth]{../output/three_body1000-verlet-5-6-2_energy.pdf}
+	\includegraphics[width=\linewidth]{../output/three_body1000-verlet-5-6-2_ang_mom.pdf}
+	\caption{The figures show the orbit, energy and angular momentum of the Earth, Jupiter and Sun system. Here we have multiplied Jupiter's mass with $10^3$.}
+	\label{fig:three_body1000}
+\end{figure}
 Figure \ref{fig:all} shows the orbits of all the bodies during a full simulation of the Solar System, as well as the total kinetic and potential energy and the angular momentum of the system.
 
 \begin{figure}[h]
