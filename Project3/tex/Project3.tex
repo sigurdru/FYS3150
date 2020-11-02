@@ -429,7 +429,7 @@ Figures \ref{fig:earth_sun_circ_beta=2_75} and \ref{fig:earth_sun_circ_beta=3} s
 
 \subsection{Escape velocity}
 
-The theoretical escape velocity is known to be $V_{\text{theo}} = 2\pi\sqrt{2} \approx 8.89$AU/yr (this is from equation \eqref{eq:escape_velocity}). When finding the escape velocity we had to test for different tolerances. Lower gave more precise results, however at the cost of computation time. We found that with a tolerance of $\epsilon = 0.001$M$_\odot$AU$^2$/yr$^2$ we got a escape velocity of $v_{\text{esc}} = 8.89$AU/yr, which corresponds to the theoretical value. Time step during simulation was set to $10^{-4}$yr.
+The theoretical escape velocity is known to be $V_{\text{theo}} = 2\pi\sqrt{2}\text{AU/yr} \approx 8.89$AU/yr (this is from equation \eqref{eq:escape_velocity}). When finding the escape velocity we had to test for different tolerances. Lower gave more precise results, however at the cost of computation time. We found that with a tolerance of $\epsilon = 0.001$M$_\odot$AU$^2$/yr$^2$ we got a escape velocity of $v_{\text{esc}} = 8.89$AU/yr, which corresponds to the theoretical value. Time step during simulation was set to $10^{-4}$yr.
 
 
 \subsection{Many-body problem}
@@ -493,13 +493,15 @@ We ended up doing the tests for three different time steps (see \ref{tab:general
 \\
 We wanted to test for smaller time steps, however we exceeded the maximum array-length. Also, because our last result were quite close to the theoretical, we opted against it.
 
-
-
+\clearpage
+\clearpage
+\clearpage
+\clearpage
 \section{Discussion}
 
-testing and comparing algorithms(discuss eventual differences between the verlet algorithm and the euler algorithm. Consider also the numver of flops involved and perform a timing of the two algorithm for equal final times.)
+When comparing algorithms Velocity Verlet gives better results compared to our expected value. Forward Euler needs lower time steps to get better results. On the other hand Forward Euler is faster. We predicted this when we counted the FLOPS, but also measured it five times in a row (table \ref{tab:timing}) when testing the algorithms. The difference however is not far from two seconds, making it difficult to justify using Forward Euler over Velocity Verlet.
 
-The different forms of the gravitational force proved to result in very different behaviour of the Earth-Sun system.
+For different forms of gravitation we expected energy and angular momentum to be conserved for all $\beta$. This was the case for $\beta \in \{2.25,2.5,2.75\}$, also having a seemingly perfect circular orbit. However for $\beta = 3$ we notice quite a change in results. Although the energy oscillates a lot, it does not seem to change each period, which is good. However the angular momentum does not behave the same. Although we see oscillations around the initial value, they seem to increase. This could indicate numerical errors propagating. When it comes to the trajectories we didn't really have much of an expectation. We find it a bit odd however that the orbit changes that much when $\beta = 3$. It can still be true, however we are a bit more skeptical of numerical errors. Not only because of the orbit, but because of the energy and angular momentum plots as well. 
 
 As we mentioned, when calculating the escape velocity, we cannot be infinitely precise. There is a constant trade-off between precision and computation time. We don't believe our method and calculations are wrong, as we are studying a very simple system. What we do acknowledge however, is that we could get a more precise answer.
 
@@ -508,15 +510,13 @@ We simulated several many-body situations, namely the Earth, Jupiter and Sun (wh
 
 When including a general relativistic correction, we ended up at the observed value. However it is worth discussing the fact that we only arrived at the right answer for one time step, namely 3.16 seconds. Ideally we would want to test for lower time steps, to confirm that this was not a fluke. However, seeing that we arrived very close for the time step 31.56 seconds, it seems unlikely.
 
-
-
 \section{Conclusion}
 
-For some of the systems, the results step size were very different with different step sizes.
-When testing different systems and algorithms, we found that choosing the right step size can be paramount for obtaining the right results. For the Forward Euler algorithm it was clearly very important to
-When t
+When testing different systems and algorithms, we found that choosing the right step size can be paramount for obtaining the right results. For example, the Forward Euler algorithm showed a clear correlation between smaller step sizes and expected results. Although Forward Euler is faster that Velocity Verlet, we got closer results to our expectations using Velocity Verlet. 
 
+When testing different forms of gravitational force we had very similar results for $\beta \in \{2.25,2.5,2.75\}$, that were very close to the results for $\beta = 2$. On the other hand, for $\beta = 3$ we got a spiraling motion going in and out. Based on the plots for energy and angular momentum there is some numerical error, making us unsure whether or not this simulation is correct.
 
+When studying escape velocity and Mercury's perihelion precession we got close to the theoretical and observed value. For escape velocity we expected (from theoretical expressions) to be $2\pi\sqrt{2}\text{AU/yr} \approx 8.89\text{AU/yr}$. In our simulations we ended up at the same results, namely $8.89\text{AU/yr}$. For Mercury's perihelion precession we observe it to be 43$''$, and through simulations we arrived at $43.26''$.
 
 \onecolumngrid
 \vspace{1cm} % some extra space
