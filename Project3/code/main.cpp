@@ -3,6 +3,7 @@
 #include <fstream>
 #include <iostream>
 #include <string>
+#include <chrono>
 #include "euler.hpp"
 #include "verlet.hpp"
 #include "solarsystem.hpp"
@@ -50,6 +51,7 @@ int main(int argc, char* argv[]) {
 
     // Solve!
     if (solver_method == "euler") {
+        auto start = std::chrono::high_resolution_clock::now();
         Euler solver(dt);
         our_system.calculateForces();
         for (int timestep=0; timestep<N; timestep++) {
@@ -60,7 +62,11 @@ int main(int argc, char* argv[]) {
                 our_system.writeToFile(output_file);
             }
         }
+        auto stop = std::chrono::high_resolution_clock::now();
+        auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+        std::cout << "Duration of solve: " << duration.count() << " microseconds" << std::endl;
     } else if (solver_method == "verlet") {
+        auto start = std::chrono::high_resolution_clock::now();
         Verlet solver(dt, our_system);
         our_system.calculateForces();
         for (int timestep=0; timestep<N; timestep++) {
@@ -73,6 +79,9 @@ int main(int argc, char* argv[]) {
                 our_system.writeToFile(output_file);
             }
         }
+        auto stop = std::chrono::high_resolution_clock::now();
+        auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+        std::cout << "Duration of solve: " << duration.count() << " microseconds" << std::endl;
     } else if (solver_method == "escape") {
         Verlet solver(dt, our_system);
         double dv = 0.01;

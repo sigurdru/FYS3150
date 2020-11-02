@@ -16,3 +16,4 @@ sun        pos:  [0, 0, 0];
 earth      pos:  [1, 0, 0];
            vel:  [0, 6.28319, 0];
            mass: 3.01659e-06
+Duration of solve: 851988 microseconds
