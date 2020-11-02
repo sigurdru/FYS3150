@@ -55,4 +55,5 @@ Testing for initial velocity: 8.8645
 Testing for initial velocity: 8.8745
 Testing for initial velocity: 8.8845
 Testing for initial velocity: 8.8945
-Escape velocity is: 8.8945AU/yr
+Computed escape velocity: 8.8945 AU/yr
+Analytic escape velocity: 8.88577 AU/yr
