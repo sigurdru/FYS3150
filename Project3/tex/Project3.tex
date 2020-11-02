@@ -282,7 +282,7 @@ Equation \eqref{eq:DE} is the equation of motion that describes the system of pl
 
 \subsection{Units of measurement}
 
-Measuring distance in meters and time in seconds leads to very large numbers when doing calculations on the solar system. In order to do our calculations with numbers of magnitudes closer to $10^0$, we will measure time in years and distance in astronomical units AU, which is the mean distance between the Sun and the Earth. For an object in circular motion with radius $R$ and period $T$, the acceleration is given by the sentripetal acceleration
+Measuring distance in meters and time in seconds leads to very large numbers when doing calculations on the solar system. In order to do our calculations with numbers of magnitudes closer to one, we will measure time in years and distance in astronomical units AU, which is the mean distance between the Sun and the Earth. For an object in circular motion with radius $R$ and period $T$, the acceleration is given by the sentripetal acceleration
 \begin{equation*}
   a = \frac{v^2}{r} = \frac{(2 \pi R / T)^2}{R} = \frac{4 \pi^2 R}{T^2}
 \end{equation*}
@@ -352,42 +352,55 @@ Because we are running the simulation for such a long time, we use Velocity Verl
 
 \section{Results}
 
+Additional results to the ones presented here can be found in our GitHub repository\footnote{github.com/sigurdru/FYS3150/tree/master/Project3}. Here is also the code we have developed and instructions for how to produce additional results as mentioned in the introduction.
+
+In all the visualizations of planetary orbits the starting positions are marked with dots.
+
+
 \subsection{Testing and comparing algorithms}
 
 Table \ref{tab:timing} shows the results of timing the two algorithms we have implemented. We timed five different simulations of the Earth-Sun system with $10^7$ time steps using the normal inverse square law of gravity.
 
 \begin{table}[]
-\begin{tabular}{|l|l|l|}
-  \hline
-Run & Velocity Verlet {[}s{]} & Euler {[}s{]} \\
-\hline
-1   & 8.17                    & 5.89          \\
-2   & 7.65                    & 5.84          \\
-3   & 7.95                    & 6.30          \\
-4   & 8.01                    & 6.14          \\
-5   & 7.94                    & 6.27          \\
-\hline
-\end{tabular}
-\caption{The results of timing the Forward Euler and Velocity Verlet algorithms over five runs. We simulated $10^7$ time steps of the Earth-Sun system with the normal inverse square law of gravity.}
-\label{tab:timing}
+  \begin{tabular}{|l|l|l|}
+    \hline
+    Run & Velocity Verlet {[}s{]} & Euler {[}s{]} \\
+    \hline
+    1   & 8.17                    & 5.89          \\
+    2   & 7.65                    & 5.84          \\
+    3   & 7.95                    & 6.30          \\
+    4   & 8.01                    & 6.14          \\
+    5   & 7.94                    & 6.27          \\
+    \hline
+  \end{tabular}
+  \caption{The results of timing the Forward Euler and Velocity Verlet algorithms over five runs. We simulated $10^7$ time steps of the Earth-Sun system with the normal inverse square law of gravity.}
+  \label{tab:timing}
 \end{table}
 
-Figures \ref{fig:earth_sun_circ_euler} and \ref{fig:earth_sun_circ_verlet} show the Earth-Sun system simulated with the Forward Euler and Velocity Verlet algorithms respectively. The initial conditions were such that we expected the Earth to move in a circular orbit around the Sun with constant potential and kinetic energy.
+Figures \ref{fig:earth_sun_circ_euler_dt=5} and \ref{fig:earth_sun_circ_verlet} show the Earth-Sun system simulated with the Forward Euler and Velocity Verlet algorithms respectively and the same step size $10^{-5}$. The initial conditions were such that we expected the Earth to move in a circular orbit around the Sun with constant potential and kinetic energy. For Velocity Verlet, the results were indistinguishable for all time step sizes from $10^{-2}$ to $10^{-5}$. Figure \ref{fig:earth_sun_circ_euler_dt=3} shows the results of simulating the same system with Forward Euler and step size $10^{-3}$.
 
 \begin{figure}
   \includegraphics[width=\linewidth]{../output/earth_sun_circ-euler-5-7-2.pdf}
   \includegraphics[width=\linewidth]{../output/earth_sun_circ-euler-5-7-2_energy.pdf}
   \includegraphics[width=\linewidth]{../output/earth_sun_circ-euler-5-7-2_ang_mom.pdf}
-  \caption{}
-  \label{fig:earth_sun_circ_euler}
+  \caption{The Earth-Sun system with initial conditions that should result in a circular orbit of the Earth around the sun. The simulation is run with a time step of $10^{-5}$ using the normal inverse square law of gravity and the Forward Euler algorithm.}
+  \label{fig:earth_sun_circ_euler_dt=5}
 \end{figure}
 
 \begin{figure}
   \includegraphics[width=\linewidth]{../output/earth_sun_circ-verlet-5-7-2.pdf}
   \includegraphics[width=\linewidth]{../output/earth_sun_circ-verlet-5-7-2_energy.pdf}
   \includegraphics[width=\linewidth]{../output/earth_sun_circ-verlet-5-7-2_ang_mom.pdf}
-  \caption{}
+  \caption{The Earth-Sun system with initial conditions that should result in a circular orbit of the Earth around the sun. The simulation is run with a time step of $10^{-5}$ using the normal inverse square law of gravity and the Velocity Verlet algorithm.}
   \label{fig:earth_sun_circ_verlet}
+\end{figure}
+
+\begin{figure}
+  \includegraphics[width=\linewidth]{../output/earth_sun_circ-euler-3-5-2.pdf}
+  \includegraphics[width=\linewidth]{../output/earth_sun_circ-euler-3-5-2_energy.pdf}
+  \includegraphics[width=\linewidth]{../output/earth_sun_circ-euler-3-5-2_ang_mom.pdf}
+  \caption{The Earth-Sun system with initial conditions that should result in a circular orbit of the Earth around the sun. The simulation is run with a time step of $10^{-3}$ using the normal inverse square law of gravity and the Forward Euler algorithm.}
+  \label{fig:earth_sun_circ_euler_dt=3}
 \end{figure}
 
 
@@ -461,13 +474,16 @@ The different forms of the gravitational force proved to result in very differen
 
 As we mentioned, when calculating the escape velocity, we cannot be infinitely precise. There is a constant trade-off between precision and computation time. We don't believe our method and calculations are wrong, as we are studying a very simple system. What we do acknowledge however, is that we could get a more precise answer.
 
-many body problem
+% Many body
+We simulated several many-body situations, namely the Earth, Jupiter and Sun (where Jupiter has different masses), and the entire solar system. When Simulating different masses of Jupiter we got quite different results. The real-world mass of Jupiter clearly affected the orbits of both the Earth and the Sun, but
 
 When including a general relativistic correction, we ended up at the observed value. However it is worth discussing the fact that we only arrived at the right answer for one time step, namely 3.16 seconds. Ideally we would want to test for lower time steps, to confirm that this was not a fluke. However, seeing that we arrived very close for the time step 31.56 seconds, it seems unlikely.
 
 
 
 \section{Conclusion}
+
+For some of the systems, the results step size were very different with different step sizes. 
 
 
 
