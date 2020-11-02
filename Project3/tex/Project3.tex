@@ -66,7 +66,7 @@
 	Vegard Falmår and Sigurd Sørlie Rustad
 
 	\vspace{0.5cm}
-	\includegraphics[scale=0.5]{UIO}
+	\includegraphics[scale=0.5]{../../pictures/UIO}
 	\vspace{0.8cm}
 
 	University of Oslo\\
@@ -155,10 +155,13 @@ Similarly to the case of Forward Euler (described below), doing a Taylor expansi
   \frac{\mathrm d a_i}{\mathrm d t} \approx \frac{a_{i+1} - a_i}{h}
 \end{align*}
 Insering this into the expressions we have for $x_{i+1}$ and $v_{i+1}$ gives us the equations that describe the Velocity Verlet method:
-\begin{align*}
+\begin{align}
+\begin{split}
+\label{eq:euler}
   x_{i+1} \approx x_i + h v_i + \frac{h^2}{2} a_i \\
   v_{i+1} \approx v_i + \frac{h}{2} (a_{i+1} + a_i)
-\end{align*}
+\end{split}
+\end{align}
 From equation \eqref{eq:Taylor_exp_x} we see that the mathematical error in this approximation goes like $O(h^3)$. The Velocity Verlet algorithm is symplectic, meaning it conserves energy.
 
 
@@ -302,12 +305,9 @@ When we study orbits in our solar-system, we want them to be realistic. Therefor
 
 In order to make sure our algorithms runs correctly, we want to test it. During testing, we also use the opportunity to look at differences between forward Euler and Velocity Verlet. Therefore we do the tests with both algorithms. Our first test will be to simulate the simplest possible system, namely the Earth orbiting the Sun. We place the Sun in origin and with zero velocity. The Earth orbits with a distance of $r=1$AU away from the Sun, and makes a full orbit every year. This gives it an initial velocity of $v = 2\pi \text{ AU}/\text{yr}.$ This system however will have a center of mass that drifts. In order to counteract this we will move the origin to where the center of mass is, and zero its velocity. See the theory section on how this is done.
 
-Testing for different time steps $\Delta t$, we can look at the stability of velocity Verlet and Euler's forward method. Now we have to decide on what constitutes a stable orbit. Even though we adjust the barycenter's drift, this effect is negligible and we should still expect the Earth's orbit to have a distance of 1 AU away from the barycenter. Therefore we will test for different $\Delta t$ and see how the distance varies from our expected value. We do each test over 10 years, and calculate the difference every $0.01/\Delta t$ steps (100 times).
+Testing for different time steps $\Delta t$, we can look at the stability of velocity Verlet and Euler's forward method. Now we have to decide on what constitutes a stable orbit. Even though we adjust the barycenter's drift, this effect is negligible and we should still expect the Earth's orbit to have a distance of 1 AU away from the barycenter. As we mentioned above, energy and angular momentum should be conserved. Hence we will look at the conservation of energy and angular momentum as well. Adding some complexity, we are also doing the test, looking at real initial conditions collected from NASA (see \citep{NASA}).
 
-Another test will be conservation of kinetic and potential energy. As mentioned above, the Earth should have a constant distance away from the barycenter, meaning potential energy is conserved. Earth's speed should also be the same, meaning kinetic energy stays the same. Therefore, we will test for this as well.
-
-The last test of our algorithm will be conservation of angular momentum. In the theory section, from Kepler's second law, we showed that angular momentum is conserved. Therefore we will also test whether that is the case for our Earth-Sun system. Adding some complexity, as well as testing it for the near ideal orbit over, we tested conservation of angular momentum with the initial conditions collected from NASA (see \citep{NASA}).
-
+The last run, we time the algorithms. Counting the number of floating point operations (FLOPS) in both algorithms, we should have an idea of which one is the fastest. FLOPS are covered in the theory section of our report Project 1\footnote{github.com/sigurdru/FYS3150/tree/master/Project1/tex/Project1.pdf}. Looking at equations \eqref{eq:euler} we count 4$N$ FLOPS (two each), and for equations \eqref{eq:Taylor_exp_x} we count 7$N$ FLOPS (four for the first and )
 
 \subsection{Different forms of gravitational force}
 
