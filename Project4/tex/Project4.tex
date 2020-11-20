@@ -54,6 +54,9 @@
 \newcommand{\svar}[1]{\underline{\underline{{#1}}}}
 \newcommand{\vc}[1]{\mathbf{#1}}
 
+\graphicspath{{../output/}} % search for figures in this dir
+
+
 
 \begin{document}
 
@@ -85,12 +88,37 @@
 
 \section{Introduction}
 
+
+
 \section{Theory}
 
-\subsection*{Analytical expressions for 2x2 lattice}
+\subsection*{Analytical expressions for 2x2 lattice} \label{sect:2by2Lattice}
+
+Table \ref{tab:E_and_M_2D_lattice} shows the energy and magnetization of the 2D lattice for different spin configurations, as well as the multiplicity of each configuration. From this table we see that there are only five possible values for the energy differences $\Delta E$:
+\begin{itemize}
+  \item $\Delta E = \pm 16$ J for the difference between 8 J and -8 J (both ways)
+  \item $\Delta E = \pm 8$ J for the difference between $\pm 8$ J and 0 J (both ways)
+  \item $\Delta E = 0$ J
+\end{itemize}
+
+\begin{table}
+  \input{tables/tab_E_and_M_2D_tex.txt}
+  \caption{Table showing the energy, multiplicity and magnetization of different configurations of spins in a $2 \times 2$ 2D-lattice with periodic boundary conditions.}
+  \label{tab:E_and_M_2D_lattice}
+\end{table}
+
 
 
 \section{Methods}
+
+As presented in the Theory section (section \ref{sect:2by2Lattice}), we already know the energy differences in the lattice before we start the simulation. We can thus compute and store the different values of $e^{- \beta \Delta E}$ beforehand to avoid making these computations every time we update the energy.
+
+
+\subsection{Boundary conditions}
+
+We are going to simulate a 2D lattice with periodic boundary conditions. This means that the neighbour to the right of $s_N$ takes the value of $s_0$ and the neighbour to the left of $s_0$ takes the value of $s_N$.
+
+
 
 \section{Results}
 

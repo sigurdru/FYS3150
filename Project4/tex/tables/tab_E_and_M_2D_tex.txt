@@ -1,0 +1,10 @@
+\begin{tabular}{||c | c | c | c||}
+\hline
+Number spins up & Degeneracy & Energy, [J] & Magnetization    \\ \hline
+4 & 1 & -8 & 4    \\ \hline
+3 & 4 & 0 & 2    \\ \hline
+2 & 4 & 0 & 0    \\ \hline
+2 & 2 & 8 & 0    \\ \hline
+1 & 4 & 0 & -2    \\ \hline
+0 & 1 & -8 & -4    \\ \hline
+\end{tabular}

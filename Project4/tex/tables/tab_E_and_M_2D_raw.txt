@@ -1,0 +1,7 @@
+Number spins up_Degeneracy_Energy, [J]_Magnetization
+4_1_-8_4
+3_4_0_2
+2_4_0_0
+2_2_8_0
+1_4_0_-2
+0_1_-8_-4
