@@ -92,20 +92,93 @@
 
 \section{Theory}
 
+\subsection*{Statistical terms}
+In this report we are going to use some basic statistical terms and expressions. For those not familiar with terms like standard deviation and mean value, they are covered below.
+
+The expectation value or mean value, often written as $\left<A\right>$, is the sum of all values $A_i$, divided by the total number $N$ of values it can have:
+\begin{equation*}
+	\left< A \right> = \frac{1}{N}\sum_{i}^{N}A_i
+\end{equation*}
+However, when given a probability distribution $P_i$, which describes the probability of having outcome $A_i$, one can also find the expectation value through
+\begin{equation*}
+	\left<A\right> = \sum_{i}^{N}A_iP_i.
+\end{equation*} 
+
+Variance or standard deviation ($\sigma_A$), is a measurement of the variation in a set of data $A_i$. The mathematical expression is given as
+\begin{equation*}
+	\sigma_A = \sqrt{\frac{1}{N-1} \sum_{i}^{N} (A_i - \left<A\right>)^2} = \sqrt{\left<A^2\right> - \left<A\right>^2},
+\end{equation*} 
+where $N$ is the total number of outcomes and $\left<A\right>$ is the expectation value of $A_i$.
+
+\subsection*{Canonical ensemble}
+The probability of finding a system in a given microstate is found through the canonical ensemble, given by equation \eqref{eq:canonical_ensemble} (see \cite{lectures2015} chapter 13.2.2).
+\begin{equation}
+	\label{eq:canonical_ensemble}
+	P_i(\beta) = \frac{\exp(-\beta E_i)}{Z},\ \ \beta = \frac{1}{k_BT}
+\end{equation}
+Here $P_i(\beta)$ is the probability of finding the system with energy $E_i$ and temperature $T$ in Kelvin. $k_B$ is Boltzmann constant and $Z$ the partition function given by
+\begin{equation}
+	\label{eq:partition_function}
+	Z = \sum_{i = 1}^{M}\exp(-\beta E_i).
+\end{equation}
+Here $M$ is the total number of microstates.
+
+The canonical ensemble and partition function is usually hard to find, however, when obtained we can use them to find many useful relations. Below we list the expressions (without derivation) we need in the report. Everything is from \cite{lectures2015} chapter 13.2.2.
+
+Mean energy $\left<E\right>$ given as
+\begin{equation}
+	\label{eq:expected_energy}
+	\left<E\right> = \frac{1}{Z} \sum_{i=1}^{M}E_i\exp(-\beta E_i).
+\end{equation}
+
+Mean absolute value of the magnetic moment $\left<M\right>$:
+\begin{equation}
+	\label{eq:expected_magnetic_moment}
+	\left<M\right> = \frac{1}{Z} \sum_{i=1}^{M}M_i\exp(-\beta E_i).
+\end{equation}
+With this we can also find the susceptibility $\chi$
+\begin{equation}
+	\label{eq:magnetic_susceptibility}
+	\chi = \beta \sigma_M
+\end{equation}
+
+Specific heat capacity at constant volume $C_V$ is given by
+\begin{equation}
+	\label{eq:specific_heat_capacity}
+	C_V = \frac{\beta}{T}\sigma_E
+\end{equation}
+
 \subsection*{Analytical expressions for 2x2 lattice} \label{sect:2by2Lattice}
 
-Table \ref{tab:E_and_M_2D_lattice} shows the energy and magnetization of the 2D lattice for different spin configurations, as well as the multiplicity of each configuration. From this table we see that there are only five possible values for the energy differences $\Delta E$:
+From \cite{oppgavetekst} the energy in a 2D lattice with no external magnetic field is given by
+\begin{equation}
+	\label{eq:2D_energy}
+	E = -J \sum_{<kl>}^{N}s_ks_l,
+\end{equation}
+where $s_k = \pm 1$ (representing the spin direction), $N$ the total number of spins and $J$ a coupling constant indicating the strength of the interaction between neighboring spins. $<kl>$ means that we sum over the nearest neighbors. In this report we are only going to use periodic boundary conditions, meaning the edges are neighbors. For a square peace of (stretchy) paper, this would look like first folding it into a cylinder and then into a donut-shape.
+
+Table \ref{tab:E_and_M_2D_lattice} (from \cite{lectures2015} table 13.4) shows the energy and magnetization of the 2D lattice for different spin configurations, as well as the multiplicity of each configuration. This can easily be derived with equation \eqref{eq:2D_energy}, and trying for all possible combinations. From this table we see that there are only five possible values for the energy differences $\Delta E$:
 \begin{itemize}
   \item $\Delta E = \pm 16$ J for the difference between 8 J and -8 J (both ways)
   \item $\Delta E = \pm 8$ J for the difference between $\pm 8$ J and 0 J (both ways)
   \item $\Delta E = 0$ J
 \end{itemize}
 
-\begin{table}
+\begin{table}[h]
   \input{tables/tab_E_and_M_2D_tex.txt}
   \caption{Table showing the energy, multiplicity and magnetization of different configurations of spins in a $2 \times 2$ 2D-lattice with periodic boundary conditions.}
   \label{tab:E_and_M_2D_lattice}
 \end{table}
+With this we can find the canonical ensemble and partition function. Reading the values from \ref{tab:E_and_M_2D_lattice} and using equation \eqref{eq:canonical_ensemble}, we find the canonical ensemble to be
+\begin{equation}
+	\label{eq:2D_can_ens}
+	asdf.
+\end{equation}
+From equation \eqref{eq:partition_function} we also find the partition function to be
+\begin{equation}
+	\label{eq:2D_part_func}
+	Z = \sum_{i = 1}^{16} \exp(-\beta E_i) = 8 + 2\exp(8\beta) + 2\exp(-8\beta)
+\end{equation}
 
 
 
@@ -128,8 +201,8 @@ We are going to simulate a 2D lattice with periodic boundary conditions. This me
 \vspace{1cm} % some extra space
 
 \begin{thebibliography}{}
-\bibitem[]{oppgavetekst} Department of Physics, Univeristy of Oslo, Fall semester 2020, Computational Physics I FYS3150/FYS4150, Project 3.
-\bibitem[]{NASA} Ryan S. Park, Alan B. Chamberlin, NASA, 27. October 2020, https://ssd.jpl.nasa.gov/horizons.cgi\#top.
+\bibitem[]{oppgavetekst} Department of Physics, Univeristy of Oslo, Fall semester 2020, Computational Physics I FYS3150/FYS4150, Project 4.
+\bibitem[]{lectures2015} Morten Hjorth-Jensen, Computational Physics, Lecture Notes Fall 2015, August 2015, https://github.com/CompPhysics/ComputationalPhysics/blob/master/doc/Lectures/lectures2015.pdf.
 
 \end{thebibliography}
 
