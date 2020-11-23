@@ -40,5 +40,5 @@ void Analytical_2D::find_theoretical_values(double betha) {
     m_E_exp /= Z;
     m_M_exp /= Z;
     m_chi = betha*sqrt(M2_exp - m_M_exp*m_E_exp);
-    m_C_V = betha*Boltzmann_constant*sqrt(E2_exp - m_E_exp*m_E_exp);
+    m_C_V = betha*betha*Boltzmann_constant*sqrt(E2_exp - m_E_exp*m_E_exp);
 }
