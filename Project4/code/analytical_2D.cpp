@@ -28,7 +28,7 @@ void Analytical_2D::find_theoretical_values(double T) {
     int magnetic_list[] = {
         4, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0, -2, -2, -2, -2, -4};
     for (int i=0; i<M; i++) {
-        Pi = exp(-energy_list[i])/T;
+        Pi = exp(-energy_list[i]/T);
         m_E_exp += energy_list[i]*Pi;
         E2_exp += pow(energy_list[i], 2)*Pi;
         m_M_exp += abs(magnetic_list[i])*Pi;
@@ -38,13 +38,10 @@ void Analytical_2D::find_theoretical_values(double T) {
     M2_exp /= Z;
     m_E_exp /= Z;
     m_M_exp /= Z;
-    m_chi = sqrt(M2_exp - m_M_exp*m_E_exp)/T;
-    m_C_V = sqrt(E2_exp - m_E_exp*m_E_exp)/(T*Boltzmann_constant);
-    std::cout << 
-    E2_exp << std::endl
-    << M2_exp  << std::endl
-    << m_E_exp  << std::endl
-    << m_M_exp  << std::endl
-    << m_chi << std::endl
-    << m_C_V << std::endl;
+    m_chi = M2_exp - m_M_exp*m_E_exp/T;
+    m_C_V = E2_exp - m_E_exp*m_E_exp/(T*T);
+    std::cout << "expected kinetic energy: " << m_E_exp
+              << std::endl << "expected mag: " << m_M_exp << std::endl
+              << "permeability: " << m_chi << std::endl
+              << "heat capacity: " << m_C_V << std::endl;
 }

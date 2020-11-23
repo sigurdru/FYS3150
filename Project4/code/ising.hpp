@@ -17,7 +17,7 @@ class Analytical_2D {
 class MetropolisSampling {
     private:
         int **SpinMatrix;
-        int *EnergyDifference;
+        double *EnergyDifference;
         double *ExpectationValues;
         int NumSpins;
         double Energy, MagneticMoment;
@@ -27,9 +27,9 @@ class MetropolisSampling {
 
     public:
         MetropolisSampling(int);
-        ~MetropolisSampling();
         void InitializeLattice();
         void Solve(int, double, std::string);
+        ~MetropolisSampling();
 };
 
 #endif //ISING_HPP

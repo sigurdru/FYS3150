@@ -18,7 +18,7 @@ MetropolisSampling::MetropolisSampling(int NSpins)
         SpinMatrix[i] = new int[NSpins];
     }
     ExpectationValues = new double[5];
-    EnergyDifference = new int[17];
+    EnergyDifference = new double[17]; //denne skal vel være double, ikke int?
     NumSpins = NSpins;      // store number of spins in a class variable
     InitializeLattice();
 }
@@ -29,36 +29,22 @@ void MetropolisSampling::InitializeLattice()
 {
     Energy = 0.;
     MagneticMoment = 0.;
-    // setup spin matrix using cold start, all spins pointing up or down
+    // reset expectation values and energy differences
+    for (int i=0; i<5; i++) ExpectationValues[i] = 0.0;
+    for (int de=-8; de<=8; de++) EnergyDifference[de+8] = 0;
+    // setup spin matrix using cold start, all spins pointing up
     for (int x=0; x < NumSpins; x++) {
         for (int y=0; y < NumSpins; y++){
             SpinMatrix[x][y] = 1; // spin orientation for the ground state
-            MagneticMoment += (double) SpinMatrix[x][y];
-            Energy -= (double) SpinMatrix[x][y]*(
-                SpinMatrix[PeriodicBoundary(x, -1)][y]
-                + SpinMatrix[x][PeriodicBoundary(y, -1)]
-            );
+            MagneticMoment += 1;
+            Energy -= 4;
         }
     }
 }
 
-
-// deallocate memory
-MetropolisSampling::~MetropolisSampling()
-{
-    for (int i=0; i<NumSpins; i++) delete[] SpinMatrix[i];
-    delete[] SpinMatrix;
-}
-
-
 // The Monte Carlo part with the Metropolis algo with sweeps over the lattice
 void MetropolisSampling::Solve(
-        int MonteCarloCycles,
-        double Temperature,
-        std::string fname)
-{
-    // reset expectation values
-    for (int i=0; i<5; i++) ExpectationValues[i] = 0.0;
+    int MonteCarloCycles, double Temperature, std::string fname){
     // initialize the seed and call the Mersienne algo
     std::random_device rd;
     std::mt19937_64 gen(rd());
@@ -83,11 +69,12 @@ void MetropolisSampling::Solve(
             if ( RandomNumberGenerator(gen) <= EnergyDifference[deltaE+8] ){
                 // flip one spin and accept new spin config
                 SpinMatrix[ix][iy] *= -1;
-                MagneticMoment += 2.0*SpinMatrix[ix][iy];
+                MagneticMoment += (double) 2.0*SpinMatrix[ix][iy];
                 Energy += (double) deltaE;
             }
         }
         // update expectation values for local node after a sweep through the lattice
+        // std::cout << Energy << std::endl;
         ExpectationValues[0] += Energy;
         ExpectationValues[1] += Energy*Energy;
         ExpectationValues[2] += MagneticMoment;
@@ -125,4 +112,10 @@ void MetropolisSampling::WriteResultstoFile(
     ofile << setw(15) << setprecision(8) << MagneticSusceptibility;
     ofile << setw(15) << setprecision(8) << Mabs*AllSpins << std::endl;
     ofile.close();
+}
+
+MetropolisSampling::~MetropolisSampling() {
+    // deallocate memory
+    for (int i=0; i<NumSpins; i++) delete[] SpinMatrix[i];
+    delete[] SpinMatrix;
 }
