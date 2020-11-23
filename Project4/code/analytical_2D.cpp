@@ -7,7 +7,6 @@ double Analytical_2D::partition_function(double betha) {
     /*
     Finds the analytical partition function for a 2D lattice,
     without an external magnetic field.
-    T have units Boltzmann constant per joule
     */
     double Z = 12 + 4*cosh(8*betha);
     return Z;
