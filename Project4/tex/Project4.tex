@@ -131,10 +131,10 @@ Mean energy $\left<E\right>$ given as
 	\left<E\right> = \frac{1}{Z} \sum_{i=1}^{M}E_i\exp(-\beta E_i).
 \end{equation}
 
-Mean absolute value of the magnetic moment $\left<M\right>$:
+Mean absolute value of the magnetic moment $\left<|M|\right>$:
 \begin{equation}
 	\label{eq:expected_magnetic_moment}
-	\left<M\right> = \frac{1}{Z} \sum_{i=1}^{M}M_i\exp(-\beta E_i).
+	\left<|M|\right> = \frac{1}{Z} \sum_{i=1}^{M}|M_i|\exp(-\beta E_i).
 \end{equation}
 With this we can also find the susceptibility $\chi$
 \begin{equation}
@@ -155,7 +155,7 @@ From \cite{oppgavetekst} the energy in a 2D lattice with no external magnetic fi
 	\label{eq:2D_energy}
 	E = -J \sum_{<kl>}^{N}s_ks_l,
 \end{equation}
-where $s_k = \pm 1$ (representing the spin direction), $N$ the total number of spins and $J$ a coupling constant indicating the strength of the interaction between neighboring spins. $<kl>$ means that we sum over the nearest neighbors. In this report we are only going to use periodic boundary conditions, meaning the edges are neighbors. For a square peace of (stretchy) paper, this would look like first folding it into a cylinder and then into a donut-shape.
+where $s_k = \pm 1$ (representing the spin direction), $N$ the total number of spins and $J$ a coupling constant indicating the strength of the interaction between neighboring spins. The $<kl>$ means that we sum over the nearest neighbors. In this report we are only going to use periodic boundary conditions, meaning the edges are neighbors. For a square peace of (stretchy) paper, this would look like first folding it into a cylinder and then into a donut-shape.
 
 Table \ref{tab:E_and_M_2D_lattice} (from \cite{lectures2015} table 13.4) shows the energy and magnetization of the 2D lattice for different spin configurations, as well as the multiplicity of each configuration. This can easily be derived with equation \eqref{eq:2D_energy}, and trying for all possible combinations. From this table we see that there are only five possible values for the energy differences $\Delta E$:
 \begin{itemize}
@@ -169,22 +169,19 @@ Table \ref{tab:E_and_M_2D_lattice} (from \cite{lectures2015} table 13.4) shows t
   \caption{Table showing the energy, multiplicity and magnetization of different configurations of spins in a $2 \times 2$ 2D-lattice with periodic boundary conditions.}
   \label{tab:E_and_M_2D_lattice}
 \end{table}
-With this we can find the canonical ensemble and partition function. Reading the values from \ref{tab:E_and_M_2D_lattice} and using equation \eqref{eq:canonical_ensemble}, we find the canonical ensemble to be
-\begin{equation}
-	\label{eq:2D_can_ens}
-	asdf.
-\end{equation}
-From equation \eqref{eq:partition_function} we also find the partition function to be
-\begin{equation}
-	\label{eq:2D_part_func}
-	Z = \sum_{i = 1}^{16} \exp(-\beta E_i) = 8 + 2\exp(8\beta) + 2\exp(-8\beta)
-\end{equation}
-
+With this we can find the partition function. Reading the values from table \ref{tab:E_and_M_2D_lattice} and using equation \eqref{eq:partition_function} we find the partition function $Z$ to be
+\begin{align*}
+	Z &= \sum_{i = 1}^{16} \exp(-\beta E_i) \\
+	&= 12 + 2\exp(8\beta) + 2\exp(-8\beta) \\
+	&= 12 + 4\cosh(8\beta). \numberthis \label{eq:2Dpartition_function}
+\end{align*}
+Now that we have the partition function and the canonical ensemble through equation \eqref{eq:canonical_ensemble}, we can find a lot of useful values. With equations (\ref{eq:expected_energy}-\ref{eq:specific_heat_capacity}) we can find expected energy $\left<E\right	>$, mean absolute value of the magnetic moment $\left<|M|\right>$, susceptibility $\chi$ and specific heat capacity at constant volume $C_V$.
 
 
 \section{Methods}
 
 As presented in the Theory section (section \ref{sect:2by2Lattice}), we already know the energy differences in the lattice before we start the simulation. We can thus compute and store the different values of $e^{- \beta \Delta E}$ beforehand to avoid making these computations every time we update the energy.
+\subsection{Testing of algorithm}
 
 
 \subsection{Boundary conditions}
