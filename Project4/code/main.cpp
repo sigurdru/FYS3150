@@ -7,17 +7,13 @@
 int main(int argc, char* argv[]) {
     std::string fname = "test.txt";
 
-    // MetropolisSampling inst(10);
-    // inst.InitializeLattice();
-    // inst.Solve(1000, 1.0, fname);
-    double a = 2.3;
-    std::cout << a  << std::endl;
-    a += 1;
-    std::cout << a  << std::endl;
+    MetropolisSampling inst(2);
+    inst.InitializeLattice();
+    inst.Solve(10000, 1.0, fname);
 
-    int b = 1;
-    a += b;
-    std::cout << a  << std::endl;
+    Analytical_2D ana;
+    ana.find_theoretical_values(1.0);
+
 
 
     return 0;
