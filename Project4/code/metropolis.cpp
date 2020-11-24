@@ -76,7 +76,12 @@ void MetropolisSampling::InitializeLattice(bool random_init)
 // The Monte Carlo part with the Metropolis algo with sweeps over the lattice
 void MetropolisSampling::Solve(
         int MonteCarloCycles, double Temperature,
-        bool ShouldPrintLattice){
+        bool ShouldPrintLattice)
+{
+    // call write functions once to open the files
+    int cycle = 0;
+    WriteResultstoFile(MonteCarloCycles, Temperature, cycle);
+    WriteLattice(cycle);
     // initialize the seed and call the Mersienne algo
     std::random_device rd;
     std::mt19937_64 gen(rd());
@@ -142,7 +147,6 @@ void MetropolisSampling::WriteResultstoFile(
             << "Magnetization,"
             << "MagneticSusceptibility,"
             << "Magnetization_Abs" << endl;
-        WriteResultstoFile(MonteCarloCycles, temperature, cycle);
     }
 
     // normalization constant, divide by number of cycles
@@ -190,7 +194,6 @@ void MetropolisSampling::WriteLattice(int cycle)
             cout << "Error opening file " << LatticeFname << ". Aborting!" << endl;
             terminate();
         }
-        WriteLattice(cycle);
     }
 
     LatticeOutfile << cycle << ",";
