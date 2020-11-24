@@ -1,6 +1,7 @@
 #ifndef ISING_HPP
 #define ISING_HPP
 #include <string>
+#include <fstream>      // write to file
 
 class Analytical_2D {
     protected:
@@ -21,14 +22,17 @@ class MetropolisSampling {
         double *ExpectationValues;
         int NumSpins;
         double Energy, MagneticMoment;
+        std::string ExpValsFname, LatticeFname;
+        std::ofstream ExpValsOutfile, LatticeOutfile;
 
         inline int PeriodicBoundary(int, int);
-        void WriteResultstoFile(int, double, std::string);
+        void WriteResultstoFile(int, double);
+        void WriteLattice();
 
     public:
-        MetropolisSampling(int);
+        MetropolisSampling(int, bool);
         void InitializeLattice();
-        void Solve(int, double, std::string);
+        void Solve(int, double, bool);
         ~MetropolisSampling();
 };
 
