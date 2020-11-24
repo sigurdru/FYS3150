@@ -5,10 +5,11 @@
 class Analytical_2D {
     protected:
         double Boltzmann_constant = 1.38064852e-23;
-        double m_E_exp;
-        double m_M_exp;
+        double m_E;
+        double m_M;
+        double m_Mabs;
         double m_chi;
-        double m_C_V;
+        double m_Cv;
         double partition_function(double betha);
     public:
         void find_theoretical_values(double betha);
@@ -27,7 +28,7 @@ class MetropolisSampling {
 
     public:
         MetropolisSampling(int);
-        void InitializeLattice();
+        void InitializeLattice(bool);
         void Solve(int, double, std::string);
         ~MetropolisSampling();
 };
