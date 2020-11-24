@@ -130,6 +130,7 @@ void MetropolisSampling::WriteResultstoFile(
             terminate();
         }
         ExpValsOutfile
+            << "Cycle,"
             << "Temperature,"
             << "Energy,"
             << "HeatCapacity,"
