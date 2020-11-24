@@ -35,8 +35,9 @@ def read_lattice_file(fname, num_spins):
 
     """
     lattice = np.loadtxt(fname, delimiter=',')
-    lattice = lattice.reshape(-1, num_spins, num_spins)
-    return lattice
+    cycles = lattice[:, 0]
+    lattice = lattice[:, 1:].reshape(-1, num_spins, num_spins)
+    return cycles, lattice
 
 def plot_exp_val(fname):
     data = read_exp_val_file(fname)

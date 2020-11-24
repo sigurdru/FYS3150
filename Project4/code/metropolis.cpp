@@ -1,7 +1,6 @@
 #include <cmath>        // exp, fabs
 #include <random>       // random number generator
 #include <iostream>     // input and output
-#include <string>
 #include <iomanip>      // setw, setprecision
 #include "ising.hpp"
 
@@ -25,10 +24,11 @@ MetropolisSampling::MetropolisSampling(int NSpins, bool random_init)
     if (random_init) config = "random";
     else config = "up";
     std::string fname = "../output/";
-    fname = fname.append(NSpins_str).append("_")
+    fname.append(NSpins_str).append("_")
         .append(config).append("_");
-    LatticeFname = fname.append("Lattice.csv");
-    ExpValsFname = fname.append("ExpVals.csv");
+    LatticeFname = ExpValsFname = fname;
+    LatticeFname.append("Lattice.csv");
+    ExpValsFname.append("ExpVals.csv");
 }
 
 
@@ -76,7 +76,7 @@ void MetropolisSampling::InitializeLattice(bool random_init)
 // The Monte Carlo part with the Metropolis algo with sweeps over the lattice
 void MetropolisSampling::Solve(
         int MonteCarloCycles, double Temperature,
-        bool PrintLattice){
+        bool ShouldPrintLattice){
     // initialize the seed and call the Mersienne algo
     std::random_device rd;
     std::mt19937_64 gen(rd());
@@ -87,7 +87,8 @@ void MetropolisSampling::Solve(
     // start Monte Carlo experiments
     int AllSpins = NumSpins*NumSpins;
     int ix, iy, deltaE;
-    for (int cycles = 1; cycles <= MonteCarloCycles; cycles++){
+    bool should_print;
+    for (int cycle = 1; cycle <= MonteCarloCycles; cycle++){
         // the sweep over the lattice, looping over all spin sites
         for (int Spins=0; Spins<AllSpins; Spins++) {
             ix = (int) (RandomNumberGenerator(gen)*NumSpins);
@@ -106,21 +107,25 @@ void MetropolisSampling::Solve(
             }
         }
         // update expectation values for local node after a sweep through the lattice
-        // std::cout << Energy << std::endl;
         ExpectationValues[0] += Energy;
         ExpectationValues[1] += Energy*Energy;
         ExpectationValues[2] += MagneticMoment;
         ExpectationValues[3] += MagneticMoment*MagneticMoment;
         ExpectationValues[4] += fabs(MagneticMoment);
-        if (PrintLattice & (cycles % (MonteCarloCycles/100) == 1)) WriteLattice();
+        if (ShouldPrintLattice & (cycle % (MonteCarloCycles/4) == 1))
+            WriteLattice(cycle);
+        should_print = (cycle % (MonteCarloCycles/100) == 1);
+        if (should_print)
+            WriteResultstoFile(MonteCarloCycles, Temperature, cycle);
     }
-    WriteResultstoFile(MonteCarloCycles, Temperature);
+    WriteResultstoFile(MonteCarloCycles, Temperature, MonteCarloCycles);
 }
 
 
 void MetropolisSampling::WriteResultstoFile(
         int MonteCarloCycles,
-        double temperature)
+        double temperature,
+        int cycle)
 {
     using namespace std;
     if (!ExpValsOutfile.good()){
@@ -137,6 +142,7 @@ void MetropolisSampling::WriteResultstoFile(
             << "Magnetization,"
             << "MagneticSusceptibility,"
             << "Magnetization_Abs" << endl;
+        WriteResultstoFile(MonteCarloCycles, temperature, cycle);
     }
 
     // normalization constant, divide by number of cycles
@@ -151,12 +157,18 @@ void MetropolisSampling::WriteResultstoFile(
     double HeatCapacity = (E2 - E*E)*AllSpins/(temperature*temperature);
     double MagneticSusceptibility = (M2 - M*M)*AllSpins/temperature;
     ExpValsOutfile << setiosflags(ios::showpoint | ios::uppercase);
-    ExpValsOutfile << setw(15) << setprecision(8) << temperature;
-    ExpValsOutfile << setw(15) << setprecision(8) << E*AllSpins;
-    ExpValsOutfile << setw(15) << setprecision(8) << HeatCapacity;
-    ExpValsOutfile << setw(15) << setprecision(8) << M*AllSpins;
-    ExpValsOutfile << setw(15) << setprecision(8) << MagneticSusceptibility;
-    ExpValsOutfile << setw(15) << setprecision(8) << Mabs*AllSpins << endl;
+    ExpValsOutfile << cycle << ",";
+    ExpValsOutfile << setprecision(8) << temperature;
+    ExpValsOutfile << ",";
+    ExpValsOutfile << setprecision(8) << E*AllSpins;
+    ExpValsOutfile << ",";
+    ExpValsOutfile << setprecision(8) << HeatCapacity;
+    ExpValsOutfile << ",";
+    ExpValsOutfile << setprecision(8) << M*AllSpins;
+    ExpValsOutfile << ",";
+    ExpValsOutfile << setprecision(8) << MagneticSusceptibility;
+    ExpValsOutfile << ",";
+    ExpValsOutfile << setprecision(8) << Mabs*AllSpins << endl;
 }
 
 MetropolisSampling::~MetropolisSampling()
@@ -169,7 +181,7 @@ MetropolisSampling::~MetropolisSampling()
     LatticeOutfile.close();
 }
 
-void MetropolisSampling::WriteLattice()
+void MetropolisSampling::WriteLattice(int cycle)
 {
     using namespace std;
     if (!LatticeOutfile.good()){
@@ -178,11 +190,15 @@ void MetropolisSampling::WriteLattice()
             cout << "Error opening file " << LatticeFname << ". Aborting!" << endl;
             terminate();
         }
+        WriteLattice(cycle);
     }
 
+    LatticeOutfile << cycle << ",";
     for (int i=0; i<NumSpins; i++) {
         for (int j=0; j<NumSpins; j++) {
-            LatticeOutfile << SpinMatrix[i][j] << ",";
+            LatticeOutfile << SpinMatrix[i][j];
+            if ((i < NumSpins-1) || (j < NumSpins-1))
+                LatticeOutfile << ",";
         }
     }
     LatticeOutfile << "\n";
