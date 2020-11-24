@@ -19,7 +19,7 @@ MetropolisSampling::MetropolisSampling(int NSpins, bool random_init)
     ExpectationValues = new double[5];
     EnergyDifference = new double[17];
     NumSpins = NSpins;      // store number of spins in a class variable
-    InitializeLattice();
+    InitializeLattice(random_init);
     std::string NSpins_str = std::to_string(NSpins);
     std::string config;
     if (random_init) config = "random";
