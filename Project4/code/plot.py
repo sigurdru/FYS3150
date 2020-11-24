@@ -32,8 +32,9 @@ def read_lattice_file(fname, num_spins):
 
     """
     lattice = np.loadtxt(fname, delimiter=',')
-    lattice = lattice.reshape(-1, num_spins, num_spins)
-    return lattice
+    cycles = lattice[:, 0]
+    lattice = lattice[:, 1:].reshape(-1, num_spins, num_spins)
+    return cycles, lattice
 
-lattice = read_lattice_file('test_lattice.csv', 2)
+lattice = read_lattice_file('../output/10_random_Lattice.csv', 10)
 print(lattice)

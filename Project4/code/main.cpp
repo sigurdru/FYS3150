@@ -36,8 +36,6 @@ int main(int argc, char* argv[]) {
             spin_plot = false;
     }
 
-    std::string fname = "test.txt";
-
     MetropolisSampling inst(L, random_init);
     inst.Solve(N_carl, T_start, spin_plot);
 
