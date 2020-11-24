@@ -40,7 +40,7 @@ int main(int argc, char* argv[]) {
     inst.Solve(N_carl, T_start, spin_plot);
 
     Analytical_2D ana;
-    ana.find_theoretical_values(2.0);
+    ana.find_theoretical_values(T_start);
 
 
 

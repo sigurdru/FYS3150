@@ -1,8 +1,8 @@
 
 L="10"
 T_start="1"
-dT="1.5"
-N_T="3"
+dT="0"
+N_T="0"
 N_carl="1000"
 random_init="true"
 spin_plot="true"
