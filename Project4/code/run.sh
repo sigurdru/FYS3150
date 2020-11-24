@@ -1,6 +1,6 @@
 
-L="10"
-T_start="1"
+L="1"
+T_start="4"
 dT="0"
 N_T="0"
 N_carl="1000"
