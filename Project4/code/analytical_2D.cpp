@@ -20,28 +20,34 @@ void Analytical_2D::find_theoretical_values(double T) {
     - magnetic susceptibility: chi
     - specitfic heat capacity with constant volume: C_V
     */
-    double Pi, E2_exp, M2_exp;
+    double Probability, E2, M2;
     int M = 16;
     double Z = partition_function(T);
+    double num_spins = 4;
     int energy_list[] = {
-        -8, 0, 0, 0, 0, 0, 0, 0, 0, 8, 8, 0, 0, 0, 0, -8, -8};
+        -8, 0, 0, 0, 0, 0, 0, 0, 0, 8, 8, 0, 0, 0, 0, -8};
     int magnetic_list[] = {
         4, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0, -2, -2, -2, -2, -4};
     for (int i=0; i<M; i++) {
-        Pi = exp(-energy_list[i]/T);
-        m_E_exp += energy_list[i]*Pi;
-        E2_exp += pow(energy_list[i], 2)*Pi;
-        m_M_exp += abs(magnetic_list[i])*Pi;
-        M2_exp += pow(magnetic_list[i], 2)*Pi;
+        Probability = exp(-energy_list[i]/T);
+        m_E += energy_list[i]*Probability;
+        E2 += pow(energy_list[i], 2)*Probability;
+        m_M += magnetic_list[i]*Probability;
+        m_Mabs += abs(magnetic_list[i])*Probability;
+        M2 += pow(magnetic_list[i], 2)*Probability;
     }
-    E2_exp /= Z;
-    M2_exp /= Z;
-    m_E_exp /= Z;
-    m_M_exp /= Z;
-    m_chi = M2_exp - m_M_exp*m_E_exp/T;
-    m_C_V = E2_exp - m_E_exp*m_E_exp/(T*T);
-    std::cout << "expected kinetic energy: " << m_E_exp
-              << std::endl << "expected mag: " << m_M_exp << std::endl
-              << "permeability: " << m_chi << std::endl
-              << "heat capacity: " << m_C_V << std::endl;
+    E2 /= (Z * num_spins * num_spins);
+    M2 /= (Z * num_spins * num_spins);
+    m_E /= (Z * num_spins);
+    m_M /= (Z * num_spins);
+    m_Mabs /= (Z * num_spins);
+    m_chi = (M2 - m_M*m_M)*num_spins/T;
+    m_Cv = (E2 - m_E*m_E)*num_spins/(T*T);
+    std::cout 
+              << "Temperature: " << 1.0000 << std::endl
+              << "expected kinetic energy: " << m_E << std::endl
+              << "heat capacity: " << m_Cv << std::endl
+              << "expected mag: " << m_M << std::endl
+              << "Susceptibility: " << m_chi << std::endl
+              << "expected abs mag: " << m_Mabs << std::endl;
 }
