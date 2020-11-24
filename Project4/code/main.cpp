@@ -32,12 +32,16 @@ int main(int argc, char* argv[]) {
         }
         if (spin_plot_arg == "true")
             spin_plot = true;
-        else 
+        else
             spin_plot = false;
     }
 
-    MetropolisSampling inst(L, random_init);
-    inst.Solve(N_carl, T_start, spin_plot);
+    double T;
+    for (int i=0; i<=N_T; i++) {
+        T = T_start + i*dT
+        MetropolisSampling inst(L, random_init);
+        inst.Solve(N_carl, T, spin_plot);
+    }
 
     Analytical_2D ana;
     ana.find_theoretical_values(T_start);
