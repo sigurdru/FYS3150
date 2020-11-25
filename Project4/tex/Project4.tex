@@ -150,7 +150,7 @@ With this we can also find the susceptibility $\chi$
 	\label{eq:magnetic_susceptibility}
 	\chi = \beta \sigma_M, \ \ \sigma_M = \sqrt{\left<M^2\right> - \left<|M|\right>}
 \end{equation}
-Where $\sigma_M$ is the variance of $|M|$. Specific heat capacity at constant volume $C_V$ is given by
+Where $\sigma_M$ is the variance of $|M|$. We evaluate the absolute value of $M$ because that gives nicer plots. Specific heat capacity at constant volume $C_V$ is given by
 \begin{equation}
 	\label{eq:specific_heat_capacity}
 	C_V = \frac{\beta}{T}\sigma_E, \ \ \sigma_E = \sqrt{\left<E^2\right> - \left<E\right>}
@@ -178,7 +178,7 @@ We scale our units in order to have easier numbers to work with. We scale our un
 
 \subsection{Testing of algorithm}
 
-In order to make sure our algorithm is running correctly, we want to test it. In order to do this, we are going to compare it with analytical results, namely a 2x2 lattice.
+In order to make sure our algorithm is running correctly, we want to test it. We do this by comparing it to analytical results, namely a 2x2 lattice.
 
 By using equation \eqref{eq:2D_energy} and testing all 16 different combinations for a 2D lattice, we have made a table (see \ref{tab:E_and_M_2D_lattice}) that shows all the possible energies and magnetizations, as well as the multiplicity of each configuration (marked as degeneracy).
 \begin{table}[h]

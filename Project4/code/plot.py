@@ -148,7 +148,7 @@ def plot_lattice(fname, num_spins):
         plt.contourf(X,Y,lattice[i], colors = ['k', 'w'])
         plt.show()
 
-plot_comparison("../output/10_random_ExpVals.csv")
+plot_comparison("../output/2_random_ExpVals.csv")
 plt.tight_layout()
 plt.show()
 
