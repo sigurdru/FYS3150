@@ -66,9 +66,9 @@ void MetropolisSampling::InitializeLattice(bool random_init)
     for(int x =0; x < NumSpins; x++) {
         for (int y= 0; y < NumSpins; y++){
             MagneticMoment += (double) SpinMatrix[x][y];
-            Energy -=  (double) SpinMatrix[x][y]*
-	                   (SpinMatrix[PeriodicBoundary(x, -1)][y] +
-	                   SpinMatrix[x][PeriodicBoundary(y, -1)]);
+            Energy -= (double) SpinMatrix[x][y]*(
+                    SpinMatrix[PeriodicBoundary(x, -1)][y]
+                    + SpinMatrix[x][PeriodicBoundary(y, -1)]);
     }
   }
 }

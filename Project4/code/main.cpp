@@ -12,29 +12,28 @@ int main(int argc, char* argv[]) {
 
     if (argc < 6) {
         std::cout << "Not enough arguments!" << std::endl
-                  << "I take: L(int), T_start(float), dT(float), N_T(int), N_carl(int), Random_init(bool)"
+                  << "I take: L(int), T_start(float), dT(float), "
+                  << "N_T(int), N_carl(int), Random_init(bool)"
                   << std::endl;
         exit(1);
     }
-    else {
-        L = atoi(argv[1]);
-        T_start = atof(argv[2]);
-        dT = atof(argv[3]);
-        N_T = atoi(argv[4]);
-        N_carl = atoi(argv[5]);
-        init_argument = argv[6];
-        spin_plot_arg = argv[7];
-        if (init_argument == "true") {
-            random_init = true;
-        }
-        else {
-            random_init = false;
-        }
-        if (spin_plot_arg == "true")
-            spin_plot = true;
-        else
-            spin_plot = false;
-    }
+    L = atoi(argv[1]);
+    T_start = atof(argv[2]);
+    dT = atof(argv[3]);
+    N_T = atoi(argv[4]);
+    N_carl = atoi(argv[5]);
+    init_argument = argv[6];
+    spin_plot_arg = argv[7];
+
+    if (init_argument == "true")
+        random_init = true;
+    else
+        random_init = false;
+
+    if (spin_plot_arg == "true")
+        spin_plot = true;
+    else
+        spin_plot = false;
 
     double T;
     for (int i=0; i<=N_T; i++) {
@@ -42,11 +41,6 @@ int main(int argc, char* argv[]) {
         MetropolisSampling inst(L, random_init);
         inst.Solve(N_carl, T, spin_plot);
     }
-
-    Analytical_2D ana;
-    ana.find_theoretical_values(T_start);
-
-
 
     return 0;
 }

@@ -3,7 +3,7 @@ L="2"
 T_start="1"
 dT="0"
 N_T="0"
-N_carl="100000"
+N_carl="10000"
 random_init="true"
 spin_plot="true"
 
