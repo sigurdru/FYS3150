@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 import sys, os
-from analytical_2D import analytical_values
+from analytical_2D import theoretical_values
 plt.style.use('seaborn')
 plt.rc('text', usetex=True)
 plt.rc('font', family='DejaVu Sans')
@@ -51,7 +51,7 @@ def plot_comparison(fname):
     chi = data[keys[4]]
     Mabs = data[keys[5]]
     Last_index = len(Cycle)-1
-    E_teo, M_teo, chi_teo, C_V = analytical_values(T)
+    E_teo, Mabs_teo, chi_teo, Cv_teo = theoretical_values(T)
     fig, axs = plt.subplots(2, 2)
     fig.suptitle('Analytical and computed results for 2x2 lattice (T=%i)' %(T))
     axs[0][0].plot(Cycle, E, label="Computed")
