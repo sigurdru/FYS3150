@@ -19,7 +19,7 @@ class MetropolisSampling {
         void InitializeLattice(bool);
 
     public:
-        MetropolisSampling(int, bool);
+        MetropolisSampling(int, bool, std::string);
         void Solve(int, double, bool);
         ~MetropolisSampling();
 };

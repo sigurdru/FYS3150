@@ -43,7 +43,7 @@ def read_lattice_file(fname, num_spins):
 def plot_comparison(fname):
     data = read_exp_val_file(fname)
     Cycle = data['Cycle']
-    T = data['Temperature']
+    T = data['Temperature'][0]
     E = data['MeanEnergy']
     Cv = data['HeatCapacity']
     chi = data['MagneticSusceptibility']
@@ -81,7 +81,7 @@ def plot_comparison(fname):
 def plot_expectation_values(fname):
     data = read_exp_val_file(fname)
     Cycle = data['Cycle']
-    T = data['Temperature']
+    T = data['Temperature'][0]
     E = data['MeanEnergy']
     Cv = data['HeatCapacity']
     chi = data['MagneticSusceptibility']
@@ -149,17 +149,18 @@ def plot_lattice(fname, num_spins):
 in_path = '../output'
 out_path = '../output/plots'
 
-data = read_exp_val_file()
-data.group_by('SystemEnergy').count()
+# data = read_exp_val_file()
+# data.group_by('SystemEnergy').count()
 
-fname = sys.argv[1]
-num_spins = sys.argv[2]
-method = sys.argv[3]
-if method == 'plot_comparison':
-    plot_comparison(fname)
-elif method == 'plot_expectation_values':
-    plot_expectation_values(fname)
-elif method == 'plot_expectation_vs_temp':
-    plot_expectation_vs_temp(fname)
-elif method == 'plot_lattice':
-    plot_lattice(fname, num_spins)
+if __name__ == '__main__':
+    fname = sys.argv[1]
+    num_spins = sys.argv[2]
+    method = sys.argv[3]
+    if method == 'plot_comparison':
+        plot_comparison(fname)
+    elif method == 'plot_expectation_values':
+        plot_expectation_values(fname)
+    elif method == 'plot_expectation_vs_temp':
+        plot_expectation_vs_temp(fname)
+    elif method == 'plot_lattice':
+        plot_lattice(fname, num_spins)

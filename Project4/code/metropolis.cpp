@@ -9,7 +9,10 @@ inline int MetropolisSampling::PeriodicBoundary(int index, int add) {
 }
 
 
-MetropolisSampling::MetropolisSampling(int NSpins, bool random_init)
+MetropolisSampling::MetropolisSampling(
+        int NSpins,
+        bool random_init,
+        std::string InFileName)
 {
     SpinMatrix = new int*[NSpins];
     for (int i=0; i<NSpins; i++) {
@@ -24,11 +27,9 @@ MetropolisSampling::MetropolisSampling(int NSpins, bool random_init)
     if (random_init) config = "random";
     else config = "up";
     std::string fname = "../output/";
-    fname.append(NSpins_str).append("_")
-        .append(config).append("_");
-    LatticeFname = ExpValsFname = fname;
-    LatticeFname.append("Lattice.csv");
-    ExpValsFname.append("ExpVals.csv");
+    LatticeFname = ExpValsFname = fname.append(InFileName);
+    LatticeFname.append("_Lattice.csv");
+    ExpValsFname.append("_ExpVals.csv");
 }
 
 
@@ -90,10 +91,9 @@ void MetropolisSampling::Solve(
     // start Monte Carlo experiments
     int AllSpins = NumSpins*NumSpins;
     int ix, iy, deltaE;
-    bool should_print;
+    bool ShouldPrintStep;
     for (int cycle = 1; cycle <= MonteCarloCycles; cycle++){
         NumberOfFlips = 0;
-        NumberOfFlipsCounter
         // the sweep over the lattice, looping over all spin sites
         for (int Spins=0; Spins<AllSpins; Spins++) {
             ix = (int) (RandomNumberGenerator(gen)*NumSpins);
@@ -157,12 +157,15 @@ void MetropolisSampling::WriteResultstoFile(
     double M2 = ExpectationValues[3]*norm;
     // all expectation values are per spin, divide by 1/NSpins/NSpins
     double OneOverTotNumSpins = 1.0/((double) NumSpins*NumSpins);
-    double HeatCapacity = (E2 - E*E)*AllSpins/(temperature*temperature);
-    double MagneticSusceptibility = (M2 - Mabs*Mabs)*AllSpins/temperature;
+    double HeatCapacity =
+        (E2 - E*E)*OneOverTotNumSpins/(temperature*temperature);
+    double MagneticSusceptibility
+        = (M2 - Mabs*Mabs)*OneOverTotNumSpins/temperature;
     ExpValsOutfile << setiosflags(ios::showpoint | ios::uppercase);
     ExpValsOutfile << Cycle;
     ExpValsOutfile << "," << NumberOfFlips;
     ExpValsOutfile << "," << setprecision(3) << temperature;
+    ExpValsOutfile << "," << setprecision(3) << Energy;
     ExpValsOutfile << "," << setprecision(8) << E*OneOverTotNumSpins;
     ExpValsOutfile << "," << setprecision(8) << HeatCapacity;
     ExpValsOutfile << "," << setprecision(8) << MagneticSusceptibility;

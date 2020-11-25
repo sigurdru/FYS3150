@@ -8,7 +8,7 @@ int main(int argc, char* argv[]) {
     int L, N_T, N_carl;
     bool random_init, spin_plot;
     float T_start, dT;
-    std::string init_argument, spin_plot_arg;
+    std::string init_argument, spin_plot_arg, fname;
 
     if (argc < 6) {
         std::cout << "Not enough arguments!" << std::endl
@@ -24,15 +24,16 @@ int main(int argc, char* argv[]) {
     N_carl = atoi(argv[5]);
     init_argument = argv[6];
     spin_plot_arg = argv[7];
+    fname = argv[8];
 
     random_init = (init_argument == "true");
     spin_plot = (spin_plot_arg == "true");
 
     double T;
-    for (int i=0; i<=N_T; i++) {
+    for (int i=0; i < N_T; i++) {
         T = T_start + i*dT;
-        MetropolisSampling inst(L, random_init);
-        inst.Solve(N_carl, T, spin_plot);
+        MetropolisSampling solver(L, random_init, fname);
+        solver.Solve(N_carl, T, spin_plot);
     }
 
     return 0;
