@@ -159,7 +159,7 @@ void MetropolisSampling::WriteResultstoFile(
     // all expectation values are per spin, divide by 1/NSpins/NSpins
     double AllSpins = 1.0/((double) NumSpins*NumSpins);
     double HeatCapacity = (E2 - E*E)*AllSpins/(temperature*temperature);
-    double MagneticSusceptibility = (M2 - M*M)*AllSpins/temperature;
+    double MagneticSusceptibility = (M2 - Mabs*Mabs)*AllSpins/temperature;
     ExpValsOutfile << setiosflags(ios::showpoint | ios::uppercase);
     ExpValsOutfile << cycle << ",";
     ExpValsOutfile << setprecision(8) << temperature;

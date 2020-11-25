@@ -54,27 +54,27 @@ def plot_comparison(fname):
     Cv_teo = 0.0320823
     Mabs_teo = 0.998661
     chi_teo = 3.9933
-    fig, axs = plt.subplots(4, 1)
+    fig, axs = plt.subplots(2, 2)
     fig.suptitle('Analytical and computed results for 2x2 lattice (T=%i)' %(T))
-    axs[0].plot(Cycle, E, label="Computed")
-    axs[0].plot([Cycle[0], Cycle[Last_index]], [E_teo, E_teo], '--', label="Theoretical")
-    axs[0].set(ylabel='unitmaddafakka')
-    axs[0].set_title(r'$\left<E\right>$')
+    axs[0][0].plot(Cycle, E, label="Computed")
+    axs[0][0].plot([Cycle[0], Cycle[Last_index]], [E_teo, E_teo], '--', label="Theoretical")
+    axs[0][0].set(ylabel='unitmaddafakka')
+    axs[0][0].set_title(r'$\left<E\right>$')
 
-    axs[1].plot(Cycle, Cv, label="Computed")
-    axs[1].plot([Cycle[0], Cycle[Last_index]], [Cv_teo, Cv_teo], '--', label="Theoretical")
-    axs[1].set_title(r'$\left<C_V\right>$')
-    axs[1].set(ylabel='unitmaddafakka')
+    axs[1][0].plot(Cycle, Cv, label="Computed")
+    axs[1][0].plot([Cycle[0], Cycle[Last_index]], [Cv_teo, Cv_teo], '--', label="Theoretical")
+    axs[1][0].set_title(r'$\left<C_V\right>$')
+    axs[1][0].set(ylabel='unitmaddafakka')
 
-    axs[2].plot(Cycle, chi, label="Computed")
-    axs[2].plot([Cycle[0], Cycle[Last_index]], [chi_teo, chi_teo], '--', label="Theoretical")
-    axs[2].set_title(r'$\chi$')
-    axs[2].set(ylabel='unitmaddafakka')
+    axs[0][1].plot(Cycle, chi, label="Computed")
+    axs[0][1].plot([Cycle[0], Cycle[Last_index]], [chi_teo, chi_teo], '--', label="Theoretical")
+    axs[0][1].set_title(r'$\chi$')
+    axs[0][1].set(ylabel='unitmaddafakka')
 
-    axs[3].plot(Cycle, Mabs, label="Computed")
-    axs[3].plot([Cycle[0], Cycle[Last_index]], [Mabs_teo, Mabs_teo], '--', label="Theoretical")
-    axs[3].set_title(r'$\left<|M|\right>$')
-    axs[3].set(ylabel='unitmaddafakka')
+    axs[1][1].plot(Cycle, Mabs, label="Computed")
+    axs[1][1].plot([Cycle[0], Cycle[Last_index]], [Mabs_teo, Mabs_teo], '--', label="Theoretical")
+    axs[1][1].set_title(r'$\left<|M|\right>$')
+    axs[1][1].set(ylabel='unitmaddafakka')
 
     for ax in axs.flat:
         ax.set(xlabel='Number of Monte Carlo cycles')
@@ -148,20 +148,20 @@ def plot_lattice(fname, num_spins):
         plt.contourf(X,Y,lattice[i], colors = ['k', 'w'])
         plt.show()
 
-# plot_comparison("../output/10_random_ExpVals.csv")
-# plt.tight_layout()
-# plt.show()
+plot_comparison("../output/10_random_ExpVals.csv")
+plt.tight_layout()
+plt.show()
 
 
 # plot_expectation_values("../output/10_random_ExpVals.csv")
 # plt.tight_layout()
 # plt.show()
 
-# plot_expectation_vs_temp("../output/10_random_ExpVals.csv")
+# plot_expectation_vs_temp("../output/2_random_ExpVals.csv")
 # plt.tight_layout()
 # plt.show()
 
 # plot_lattice("../output/10_random_Lattice.csv", 10)
 # plt.tight_layout()
-
+# plt.plot()
 
