@@ -1,5 +1,5 @@
 compile:
-	g++ -o main.exe -Wall main.cpp analytical_2D.cpp metropolis.cpp
+	g++ -o main.exe -Wall main.cpp metropolis.cpp
 
 run:
 	./main.exe 1 1
