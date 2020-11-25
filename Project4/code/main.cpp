@@ -38,7 +38,7 @@ int main(int argc, char* argv[]) {
 
     double T;
     for (int i=0; i<=N_T; i++) {
-        T = T_start + i*dT
+        T = T_start + i*dT;
         MetropolisSampling inst(L, random_init);
         inst.Solve(N_carl, T, spin_plot);
     }

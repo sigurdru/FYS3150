@@ -27,7 +27,7 @@ class MetropolisSampling {
         std::ofstream ExpValsOutfile, LatticeOutfile;
 
         inline int PeriodicBoundary(int, int);
-        void WriteResultstoFile(int, double, int);
+        void WriteResultstoFile(int, double);
         void WriteLattice(int);
         void InitializeLattice(bool);
 

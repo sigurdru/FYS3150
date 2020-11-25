@@ -80,7 +80,7 @@ void MetropolisSampling::Solve(
 {
     // call write functions once to open the files
     int cycle = 0;
-    WriteResultstoFile(MonteCarloCycles, Temperature, cycle);
+    WriteResultstoFile(cycle, Temperature);
     WriteLattice(cycle);
     // initialize the seed and call the Mersienne algo
     std::random_device rd;
@@ -98,7 +98,7 @@ void MetropolisSampling::Solve(
         for (int Spins=0; Spins<AllSpins; Spins++) {
             ix = (int) (RandomNumberGenerator(gen)*NumSpins);
             iy = (int) (RandomNumberGenerator(gen)*NumSpins);
-            deltaE =  2*SpinMatrix[ix][iy]*(
+            deltaE = 2*SpinMatrix[ix][iy]*(
                 SpinMatrix[ix][PeriodicBoundary(iy, -1)]
                 + SpinMatrix[PeriodicBoundary(ix, -1)][iy]
                 + SpinMatrix[ix][PeriodicBoundary(iy, 1)]
@@ -121,16 +121,15 @@ void MetropolisSampling::Solve(
             WriteLattice(cycle);
         should_print = (cycle % (MonteCarloCycles/100) == 1);
         if (should_print)
-            WriteResultstoFile(MonteCarloCycles, Temperature, cycle);
+            WriteResultstoFile(cycle, Temperature);
     }
-    WriteResultstoFile(MonteCarloCycles, Temperature, MonteCarloCycles);
+    WriteResultstoFile(MonteCarloCycles, Temperature);
 }
 
 
 void MetropolisSampling::WriteResultstoFile(
-        int MonteCarloCycles,
-        double temperature,
-        int cycle)
+        int Cycle,
+        double temperature)
 {
     using namespace std;
     if (!ExpValsOutfile.good()){
@@ -150,7 +149,7 @@ void MetropolisSampling::WriteResultstoFile(
     }
 
     // normalization constant, divide by number of cycles
-    double norm = 1.0/MonteCarloCycles;
+    double norm = 1.0/Cycle;
     double E = ExpectationValues[0]*norm;
     double E2 = ExpectationValues[1]*norm;
     double M = ExpectationValues[2]*norm;
@@ -161,7 +160,7 @@ void MetropolisSampling::WriteResultstoFile(
     double HeatCapacity = (E2 - E*E)*AllSpins/(temperature*temperature);
     double MagneticSusceptibility = (M2 - Mabs*Mabs)*AllSpins/temperature;
     ExpValsOutfile << setiosflags(ios::showpoint | ios::uppercase);
-    ExpValsOutfile << cycle << ",";
+    ExpValsOutfile << Cycle << ",";
     ExpValsOutfile << setprecision(8) << temperature;
     ExpValsOutfile << ",";
     ExpValsOutfile << setprecision(8) << E*AllSpins;
