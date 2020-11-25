@@ -42,14 +42,12 @@ def read_lattice_file(fname, num_spins):
 
 def plot_comparison(fname):
     data = read_exp_val_file(fname)
-    keys = ['Cycle', 'Temperature', 'Energy', 'HeatCapacity',
-            'MagneticSusceptibility', 'Magnetization_Abs']
-    Cycle = data[keys[0]]
-    T = data[keys[1]][0]
-    E = data[keys[2]]
-    Cv = data[keys[3]]
-    chi = data[keys[4]]
-    Mabs = data[keys[5]]
+    Cycle = data['Cycle']
+    T = data['Temperature']
+    E = data['MeanEnergy']
+    Cv = data['HeatCapacity']
+    chi = data['MagneticSusceptibility']
+    Mabs = data['Magnetization_Abs']
     Last_index = len(Cycle)-1
     E_teo, Mabs_teo, chi_teo, Cv_teo = theoretical_values(T)
     fig, axs = plt.subplots(2, 2)
@@ -82,14 +80,12 @@ def plot_comparison(fname):
 
 def plot_expectation_values(fname):
     data = read_exp_val_file(fname)
-    keys = ['Cycle', 'Temperature', 'Energy', 'HeatCapacity',
-            'MagneticSusceptibility', 'Magnetization_Abs']
-    Cycle = data[keys[0]]
-    T = data[keys[1]][0]
-    E = data[keys[2]]
-    Cv = data[keys[3]]
-    chi = data[keys[4]]
-    Mabs = data[keys[5]]
+    Cycle = data['Cycle']
+    T = data['Temperature']
+    E = data['MeanEnergy']
+    Cv = data['HeatCapacity']
+    chi = data['MagneticSusceptibility']
+    Mabs = data['Magnetization_Abs']
 
     fig, axs = plt.subplots(4, 1)
     fig.suptitle('Computed results (T=%i)' %(T))
@@ -113,14 +109,12 @@ def plot_expectation_values(fname):
 
 def plot_expectation_vs_temp(fname):
     data = read_exp_val_file(fname)
-    keys = ['Cycle', 'Temperature', 'Energy', 'HeatCapacity',
-            'MagneticSusceptibility', 'Magnetization_Abs']
-    Cycle = data[keys[0]][0]
-    T = data[keys[1]]
-    E = data[keys[2]]
-    Cv = data[keys[3]]
-    chi = data[keys[4]]
-    Mabs = data[keys[5]]
+    Cycle = data['Cycle']
+    T = data['Temperature']
+    E = data['MeanEnergy']
+    Cv = data['HeatCapacity']
+    chi = data['MagneticSusceptibility']
+    Mabs = data['Magnetization_Abs']
 
     fig, axs = plt.subplots(4, 1)
     fig.suptitle('Computed results (iteration=%i)' % (Cycle))
@@ -154,6 +148,10 @@ def plot_lattice(fname, num_spins):
 
 in_path = '../output'
 out_path = '../output/plots'
+
+data = read_exp_val_file()
+data.group_by('SystemEnergy').count()
+
 fname = sys.argv[1]
 num_spins = sys.argv[2]
 method = sys.argv[3]

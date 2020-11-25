@@ -25,15 +25,8 @@ int main(int argc, char* argv[]) {
     init_argument = argv[6];
     spin_plot_arg = argv[7];
 
-    if (init_argument == "true")
-        random_init = true;
-    else
-        random_init = false;
-
-    if (spin_plot_arg == "true")
-        spin_plot = true;
-    else
-        spin_plot = false;
+    random_init = (init_argument == "true");
+    spin_plot = (spin_plot_arg == "true");
 
     double T;
     for (int i=0; i<=N_T; i++) {

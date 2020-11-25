@@ -3,25 +3,12 @@
 #include <string>
 #include <fstream>      // write to file
 
-class Analytical_2D {
-    protected:
-        double Boltzmann_constant = 1.38064852e-23;
-        double m_E;
-        double m_M;
-        double m_Mabs;
-        double m_chi;
-        double m_Cv;
-        double partition_function(double betha);
-    public:
-        void find_theoretical_values(double betha);
-};
-
 class MetropolisSampling {
     private:
         int **SpinMatrix;
         double *EnergyDifference;
         double *ExpectationValues;
-        int NumSpins;
+        int NumSpins, NumberOfFlips;
         double Energy, MagneticMoment;
         std::string ExpValsFname, LatticeFname;
         std::ofstream ExpValsOutfile, LatticeOutfile;
