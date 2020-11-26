@@ -7,9 +7,10 @@ parser = argparse.ArgumentParser(
     formatter_class=argparse.ArgumentDefaultsHelpFormatter
 )
 parser.add_argument('-t', '--task',
-    choices=['all', 'c', 'd', 'e', 'f', 'g'],
+    choices=['all', 'c', 'de', 'f', 'g'],
     type=str,
-    help='Select the results for which task to produce'
+    help='Select task for which to produce results. '\
+            + 'Tasks d and e are combined to one flag de'
 )
 params = parser.add_argument_group('simulation parameters')
 params.add_argument('-L', type=int, default=20,

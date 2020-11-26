@@ -28,10 +28,8 @@ def task_results(task):
         results_g()
     elif task == 'c':
         results_c()
-    elif task == 'd':
-        results_d()
-    elif task == 'e':
-        results_e()
+    elif task == 'de':
+        results_d_and_e()
     elif task == 'f':
         results_f()
     elif task == 'g':
@@ -56,33 +54,37 @@ def results_c():
         fname = 'c/' + params.create_filename()
         run_simulation(params, fname)
         results = plot.read_exp_val_file(fname)
-        plot.plot_comparison(fname, results)
+        plot.plot_comparison(params, fname, results)
 
-def results_d():
+def results_d_and_e():
     """Simulate a square lattice with L=20 spins and plot mean energy and
     magnetization as functions of the number of Monte Carlo cycles. Do this
-    both for T=1.0 and T=2.4 with ordered and random start configurations
+    both for T=1.0 and T=2.4 with ordered and random start configurations. Plot
+    also a histogram showing the probability of finding the system in a state
+    with total energy E.
 
     """
     L = 20
     Ts = [1, 2.4]
     dT = 0.0
     NT = 1
-    N_carl = 100_000
+    N_carl = 200_000
     random_inits = [True, False]
     plot_spin = False
-    for random_init in random_inits:
+    for T in Ts:
         dfs = []
         params_list = []
-        for T in Ts:
+        for random_init in random_inits:
             params = Parameters(L, T, dT, NT, N_carl, random_init, plot_spin)
             params_list.append(params)
-            fname = 'd/' + params.create_filename()
+            fname = 'de/' + params.create_filename()
             run_simulation(params, fname)
             results = plot.read_exp_val_file(fname)
             dfs.append(results)
-            plot.plot_expectation_values(fname, results)
-        plot.plot_number_of_spins(params_list, fname, dfs)
+        plot.plot_expectation_values(params_list, fname, dfs)
+        plot.plot_number_of_flips(params_list, fname, dfs)
+        plot.plot_probability_of_energy(params_list, fname, dfs)
+
 
 class Parameters:
     def __init__(self, L, T, dT, NT, N_carl, random_init, plot_spin):
@@ -101,11 +103,12 @@ class Parameters:
             fname (str): the filename (without filetype)
 
         """
+        import math
         L = self.L
         T = self.T
         dT = self.dT
         NT = self.NT
-        N_carl = self.N_carl
+        N_carl = int(math.log10(self.N_carl))
         random_init = self.random_init
         fname = f'L{L}-T{T}-dT{dT}-NT{NT}-N{N_carl}-Random{random_init}'
         fname = fname.replace('.', '_')
@@ -121,6 +124,12 @@ class Parameters:
         return [s.L, s.T, s.dT, s.NT, s.N_carl, s.random_init, s.plot_spin]
 
 if __name__ == '__main__':
-    # run_simulation(2, 1, 0.1, 1, 10000, True, True)
-    # print(create_filename(2, 1, 0.1, 1, 10000, True))
-    results_d()
+    L = 2
+    T = 1
+    dT = 0.1
+    NT = 5
+    N_carl = 10_000
+    random_init = True
+    plot_spin = True
+    params = Parameters(L, T, dT, NT, N_carl, random_init, plot_spin)
+    print(params.create_filename())

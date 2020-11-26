@@ -38,6 +38,7 @@ void MetropolisSampling::InitializeLattice(bool random_init)
 {
     Energy = 0.;
     MagneticMoment = 0.;
+    NumberOfFlips = 0;
     // reset expectation values and energy differences
     for (int i=0; i<5; i++) ExpectationValues[i] = 0.0;
     for (int de=-8; de<=8; de++) EnergyDifference[de+8] = 0;
@@ -162,10 +163,10 @@ void MetropolisSampling::WriteResultstoFile(
     ExpValsOutfile << "," << NumberOfFlips;
     ExpValsOutfile << "," << setprecision(3) << temperature;
     ExpValsOutfile << "," << setprecision(3) << Energy;
-    ExpValsOutfile << "," << setprecision(3) << E*OneOverTotNumSpins;
-    ExpValsOutfile << "," << setprecision(3) << HeatCapacity;
-    ExpValsOutfile << "," << setprecision(3) << MagneticSusceptibility;
-    ExpValsOutfile << "," << setprecision(3) << Mabs*OneOverTotNumSpins << endl;
+    ExpValsOutfile << "," << setprecision(5) << E*OneOverTotNumSpins;
+    ExpValsOutfile << "," << setprecision(5) << HeatCapacity;
+    ExpValsOutfile << "," << setprecision(5) << MagneticSusceptibility;
+    ExpValsOutfile << "," << setprecision(5) << Mabs*OneOverTotNumSpins << endl;
 }
 
 MetropolisSampling::~MetropolisSampling()

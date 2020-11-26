@@ -1,5 +1,6 @@
 # Project specific large files
 Project1/output/fast_7.txt
+Project4/output/*/*.csv
 
 # Vim temp file
 *.swp

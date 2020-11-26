@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
+import scipy.stats as stats
 import sys, os
 from analytical_2D import theoretical_values
 plt.style.use('seaborn')
@@ -80,35 +81,47 @@ def plot_comparison(params, fname, data=None):
     fig.tight_layout()
     fig.savefig(os.path.join(path, fname + '_comp.pdf'))
 
-def plot_expectation_values(fname, data=None):
-    if data is None:
-        data = read_exp_val_file(fname)
-    Cycle = data['Cycle'].to_numpy()
-    T = data['Temperature'][0]
-    E = data['MeanEnergy'].to_numpy()
-    Cv = data['HeatCapacity'].to_numpy()
-    chi = data['MagneticSusceptibility'].to_numpy()
-    Mabs = data['Magnetization_Abs'].to_numpy()
-
+def plot_expectation_values(params_list, fname, dfs):
+    assert (len(params_list) == len(dfs) == 2)
     fig, axs = plt.subplots(2, 2)
-    fig.suptitle('Computed results (T=%i)' %(T))
-    axs[0][0].plot(Cycle, E, label=r'$\left<E\right>$')
-    axs[0][0].set(ylabel='unitmaddafakka')
+    # loop through, first random, then ordered
+    for i, data in enumerate(dfs):
+        params = params_list[i]
+        Cycle = data['Cycle'].to_numpy()
+        T = data['Temperature'][0]
+        E = data['MeanEnergy'].to_numpy()
+        Cv = data['HeatCapacity'].to_numpy()
+        chi = data['MagneticSusceptibility'].to_numpy()
+        Mabs = data['Magnetization_Abs'].to_numpy()
 
-    axs[1][0].plot(Cycle, Cv, label=r'$\left<C_V\right>$')
-    axs[1][0].set(ylabel='unitmaddafakka')
+        label = 'Random' if params.random_init else 'Ordered'
+        color = blue if params.random_init else red
+        style = '--'
 
-    axs[0][1].plot(Cycle, chi, label=r'$\chi$')
-    axs[0][1].set(ylabel='unitmaddafakka')
+        fig.suptitle(f'{params.L}x{params.L} spins, $T = {params.T}$')
+        axs[0][0].set_title(r'$\left<E\right>$')
+        axs[0][0].plot(Cycle, E, style, color=color, label=label)
+        axs[0][0].set(ylabel='unitmaddafakka')
 
-    axs[1][1].plot(Cycle, Mabs, label=r'$\left<|M|\right>$')
-    axs[1][1].set(ylabel='unitmaddafakka')
+        axs[1][0].set_title(r'$\left<C_V\right>$')
+        axs[1][0].plot(Cycle, Cv, style, color=color, label=label)
+        axs[1][0].set(ylabel='unitmaddafakka')
+
+        axs[0][1].set_title(r'$\chi$')
+        axs[0][1].plot(Cycle, chi, style, color=color, label=label)
+        axs[0][1].set(ylabel='unitmaddafakka')
+
+        axs[1][1].set_title(r'$\left<|M|\right>$')
+        axs[1][1].plot(Cycle, Mabs, style, color=color, label=label)
+        axs[1][1].set(ylabel='unitmaddafakka')
 
     for ax in axs.flat:
         ax.set(xlabel='Number of Monte Carlo cycles')
         ax.legend()
+        ax.grid(True)
     fig.tight_layout()
-    fig.savefig(os.path.join(path, fname + '_ExpVals.pdf'))
+    fname = '-'.join(fname.split('-')[:-1])
+    fig.savefig(os.path.join(path, fname + '-ExpVals.pdf'))
 
 def plot_expectation_vs_temp(fname, data=None):
     if data is None:
@@ -150,21 +163,68 @@ def plot_lattice(fname, num_spins):
     fig.tight_layout()
     fig.savefig(os.path.join(path, fname + '_Lattice.pdf'))
 
-def plot_number_of_spins(params_list, fname, dfs):
+def plot_number_of_flips(params_list, fname, dfs):
+    """Plot the number of accepted flips during the simulation. The input
+    arguments are lists of length 2, where one of the simulations was ordered
+    and one was random.
+
+    Args:
+        params_list (list of Parameters)
+        fname (str)
+        dfs (list of pandas dataframes)
+
+    """
     assert len(params_list) == len(dfs) == 2
     fig, axes = plt.subplots(1, 2)
     for i in range(len(dfs)):
         ax = axes[i]
-        df = dfs[i].loc[:, ['Cycle', 'NumberOfFlips']]
+        df = dfs[i].iloc[:100_000]
         params = params_list[i]
-        df.plot(ax=ax, x='Cycle', y='NumberOfFlips', logx=True, logy=True)
         config = 'random' if params.random_init else 'ordered'
-        fig.suptitle(f'{params.L}x{params.L} spins, {config} configuration')
-        ax.set_title(f'$T$ = {params.T}')
-    fig.savefig(os.path.join(path, fname + '_NumSpins.pdf'))
+        color = blue if params.random_init else red
+        fig.suptitle(f'{params.L}x{params.L} spins, $T$ = {params.T}')
+        df.plot(ax=ax, x='Cycle', y='NumberOfFlips',
+            legend=False, color=color)
+        ax.set_title(f'{config} configuration'.capitalize())
+        ax.set_ylabel('Number of flips, cumulative')
+    fname = '-'.join(fname.split('-')[:-1])
+    fig.tight_layout()
+    fig.savefig(os.path.join(path, fname + '-NumSpins.pdf'))
+
+def plot_probability_of_energy(params_list, fname, dfs):
+    """Plot the number of accepted flips during the simulation. The input
+    arguments are lists of length 2, where one of the simulations was ordered
+    and one was random.
+
+    Args:
+        params_list (list of Parameters)
+        fname (str)
+        dfs (list of pandas dataframes)
+
+    """
+    assert len(params_list) == len(dfs) == 2
+    fig, axes = plt.subplots(1, 2)
+    for i in range(len(dfs)):
+        ax = axes[i]
+        df = dfs[i].iloc[100_000:]
+        params = params_list[i]
+        config = 'random' if params.random_init else 'ordered'
+        color = blue if params.random_init else red
+        fig.suptitle(f'{params.L}x{params.L} spins, $T$ = {params.T}')
+        energy = df['SystemEnergy'].to_numpy()
+        std_dev = np.std(energy)
+        fit = stats.norm.pdf(np.sort(energy), np.mean(energy), std_dev)
+        ax.hist(energy, density=True, bins=20)
+        ax.set_title(f'{config} configuration'.capitalize())
+        ax.set_ylabel('Number of flips, cumulative')
+    fname = '-'.join(fname.split('-')[:-1])
+    fig.tight_layout()
+    fig.savefig(os.path.join(path, fname + '-ProbE.pdf'))
 
 
 path = '../output'
+blue = '#1c518a'
+red = '#f51b26'
 
 # data = read_exp_val_file()
 # data.group_by('SystemEnergy').count()
