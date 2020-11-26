@@ -90,19 +90,19 @@ def plot_expectation_values(fname, data=None):
     chi = data['MagneticSusceptibility'].to_numpy()
     Mabs = data['Magnetization_Abs'].to_numpy()
 
-    fig, axs = plt.subplots(4, 1)
+    fig, axs = plt.subplots(2, 2)
     fig.suptitle('Computed results (T=%i)' %(T))
-    axs[0].plot(Cycle, E, label=r'$\left<E\right>$')
-    axs[0].set(ylabel='unitmaddafakka')
+    axs[0][0].plot(Cycle, E, label=r'$\left<E\right>$')
+    axs[0][0].set(ylabel='unitmaddafakka')
 
-    axs[1].plot(Cycle, Cv, label=r'$\left<C_V\right>$')
-    axs[1].set(ylabel='unitmaddafakka')
+    axs[1][0].plot(Cycle, Cv, label=r'$\left<C_V\right>$')
+    axs[1][0].set(ylabel='unitmaddafakka')
 
-    axs[2].plot(Cycle, chi, label=r'$\chi$')
-    axs[2].set(ylabel='unitmaddafakka')
+    axs[0][1].plot(Cycle, chi, label=r'$\chi$')
+    axs[0][1].set(ylabel='unitmaddafakka')
 
-    axs[3].plot(Cycle, Mabs, label=r'$\left<|M|\right>$')
-    axs[3].set(ylabel='unitmaddafakka')
+    axs[1][1].plot(Cycle, Mabs, label=r'$\left<|M|\right>$')
+    axs[1][1].set(ylabel='unitmaddafakka')
 
     for ax in axs.flat:
         ax.set(xlabel='Number of Monte Carlo cycles')
