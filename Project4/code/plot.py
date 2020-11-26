@@ -155,10 +155,7 @@ def plot_number_of_spins(params_list, fname, dfs):
     fig, axes = plt.subplots(1, 2)
     for i in range(len(dfs)):
         ax = axes[i]
-        cycles = dfs[i].loc[:, 'Cycle']
-        flips = dfs[i].loc[:, 'NumberOfFlips']
-        flips = flips.cumsum()
-        df = pd.concat([cycles, flips], axis='columns')
+        df = dfs[i].loc[:, ['Cycle', 'NumberOfFlips']]
         params = params_list[i]
         df.plot(ax=ax, x='Cycle', y='NumberOfFlips', logx=True, logy=True)
         config = 'random' if params.random_init else 'ordered'

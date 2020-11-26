@@ -47,13 +47,14 @@ def results_c():
     L = 2
     T = 1
     dT = 0.0
-    N_T = 1
+    NT = 1
     N = 100_000
     random_inits = [True, False]
     plot_spin = False
     for random_init in random_inits:
-        fname = 'c/' + create_filename(L, T, dT, N_T, N, random_init)
-        run_simulation(L, T, dT, N_T, N, random_init, plot_spin, fname)
+        params = Parameters(L, T, dT, NT, N, random_init, plot_spin)
+        fname = 'c/' + params.create_filename()
+        run_simulation(params, fname)
         results = plot.read_exp_val_file(fname)
         plot.plot_comparison(fname, results)
 
@@ -80,7 +81,7 @@ def results_d():
             run_simulation(params, fname)
             results = plot.read_exp_val_file(fname)
             dfs.append(results)
-            plot.plot_comparison(params, fname, results)
+            plot.plot_expectation_values(fname, results)
         plot.plot_number_of_spins(params_list, fname, dfs)
 
 class Parameters:

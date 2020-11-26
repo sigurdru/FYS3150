@@ -91,9 +91,7 @@ void MetropolisSampling::Solve(
     // start Monte Carlo experiments
     int AllSpins = NumSpins*NumSpins;
     int ix, iy, deltaE;
-    bool ShouldPrintStep;
     for (int cycle = 1; cycle <= MonteCarloCycles; cycle++){
-        NumberOfFlips = 0;
         // the sweep over the lattice, looping over all spin sites
         for (int Spins=0; Spins<AllSpins; Spins++) {
             ix = (int) (RandomNumberGenerator(gen)*NumSpins);
@@ -119,9 +117,7 @@ void MetropolisSampling::Solve(
         ExpectationValues[3] += MagneticMoment*MagneticMoment;
         if (ShouldPrintLattice & (cycle % (MonteCarloCycles/4) == 1))
             WriteLattice(cycle);
-        ShouldPrintStep = (cycle % (MonteCarloCycles/1000) == 1);
-        if (cycle < 100 || ShouldPrintStep)
-            WriteResultstoFile(cycle, Temperature);
+        WriteResultstoFile(cycle, Temperature);
     }
     WriteResultstoFile(MonteCarloCycles, Temperature);
 }
@@ -166,10 +162,10 @@ void MetropolisSampling::WriteResultstoFile(
     ExpValsOutfile << "," << NumberOfFlips;
     ExpValsOutfile << "," << setprecision(3) << temperature;
     ExpValsOutfile << "," << setprecision(3) << Energy;
-    ExpValsOutfile << "," << setprecision(8) << E*OneOverTotNumSpins;
-    ExpValsOutfile << "," << setprecision(8) << HeatCapacity;
-    ExpValsOutfile << "," << setprecision(8) << MagneticSusceptibility;
-    ExpValsOutfile << "," << setprecision(8) << Mabs*OneOverTotNumSpins << endl;
+    ExpValsOutfile << "," << setprecision(3) << E*OneOverTotNumSpins;
+    ExpValsOutfile << "," << setprecision(3) << HeatCapacity;
+    ExpValsOutfile << "," << setprecision(3) << MagneticSusceptibility;
+    ExpValsOutfile << "," << setprecision(3) << Mabs*OneOverTotNumSpins << endl;
 }
 
 MetropolisSampling::~MetropolisSampling()

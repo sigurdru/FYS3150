@@ -45,7 +45,6 @@ params.add_argument('-PL', '--print-lattice',
 )
 
 args = parser.parse_args()
-print(args)
 
 if bool(args.task):
     produce_results.task_results(args.task)
