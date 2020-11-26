@@ -13,10 +13,12 @@ def probability(E, T):
     return value
 
 def theoretical_values(T):
+    beta = 1/T
     num_spins = 4
     Z = partition_function(T)
     E = -32*(np.sinh(8/T))/Z/num_spins
     M = 8*(2+np.exp(8/T))/Z/num_spins
-    chi = 32/Z/T*((1 + np.exp(8/T)) - 2/Z*(2+np.exp(8/T))**2)
-    Cv = (32/T * (1 + np.exp(8/T))/Z - 64/T *(2 + np.exp(8/T))**2/Z/Z)
+    chi = (32 * beta * (1 + np.exp(8 * beta)) / Z - 64 * beta * (2 + np.exp(8 * beta))**2 / Z**2) / num_spins
+    Cv = 1024/T*(3 * np.cosh(8/T) + 1)/T/Z/Z/num_spins
     return E, M, chi, Cv
+print(theoretical_values(1))
