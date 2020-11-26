@@ -1,10 +1,5 @@
 import numpy as np
 
-energy_array = np.array([-8, 0, 0, 0, 0, 0, 0, 0, 0, 8, 8, 0, 0, 0, 0, -8])
-magnetic_array = np.array([4, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0, -2, -2, -2, -2, -4])
-iters = 16
-num_spins = 4
-
 def partition_function(T):
     """
     Finds the analytical partition function for a 2D lattice,
@@ -18,24 +13,10 @@ def probability(E, T):
     return value
 
 def theoretical_values(T):
+    num_spins = 4
     Z = partition_function(T)
-    E = 0
-    M = 0
-    E2 = 0
-    M2 = 0
-    # Find expected energy as a function of temperature
-    for i in range(iters):
-        Ei = energy_array[i]
-        Mi = magnetic_array[i]
-        Pi = probability(Ei, T)
-        E += Ei*Pi
-        E2 += Ei**2*Pi
-        M += abs(Mi)*Pi
-        M2 += Mi**2*Pi
-    E /= (Z * num_spins)
-    M /= (Z * num_spins)
-    E2 /= (Z * num_spins**2)
-    M2 /= (Z * num_spins**2)
-    chi = (M2 - M**2)*num_spins/T
-    Cv = (E2 - E**2)*num_spins/(T**2)
+    E = -32*(np.sinh(8/T))/Z/num_spins
+    M = 8*(2+np.exp(8/T))/Z/num_spins
+    chi = 32/Z/T*((1 + np.exp(8/T)) - 2/Z*(2+np.exp(8/T))**2)
+    Cv = (32/T * (1 + np.exp(8/T))/Z - 64/T *(2 + np.exp(8/T))**2/Z/Z)
     return E, M, chi, Cv

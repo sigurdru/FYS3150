@@ -286,12 +286,78 @@ slette første delen av data
 
 In order to make our algorithm run faster, we do some optimization. We list the optimizations we implemented here, to make our code easier to understand and as a guide for anyone who wants to do something similar.
 
-Through table \ref{tab:E_and_M_2D_lattice}, we already know the possible energy differences ($\Delta E$) in the lattice before we start the simulation. 
-\begin{itemize}
-	\item $\Delta E = \pm 16$ J for the difference between 8 J and -8 J (both ways)
-	\item $\Delta E = \pm 8$ J for the difference between $\pm 8$ J and 0 J (both ways)
-	\item $\Delta E = 0$ J
-\end{itemize}
+During our simulations we calculate the change in energy ($\Delta$E) many times. We want to make more efficient by exploring the possible values $\Delta E$ can have. During our simulations we only evaluate one spin at a time, meaning we only need to look at the possible values $\Delta E$ can have when flipping one spin. It turns out there are five possible situations:
+\begin{align*}
+	\text{Zero down: } &\begin{matrix}
+	& \uparrow  \\
+	\uparrow & \uparrow & \uparrow \\
+	& \uparrow
+	\end{matrix}
+	\rightarrow	
+	\begin{matrix}
+	& \uparrow  \\
+	\uparrow & \downarrow & \uparrow \\
+	& \uparrow
+	\end{matrix}
+	\implies
+	\Delta E = 8J \\
+	\text{One down: }
+		&\begin{matrix}
+	& \downarrow  \\
+	\uparrow & \uparrow & \uparrow \\
+	& \uparrow
+	\end{matrix}
+	\rightarrow	
+	\begin{matrix}
+	& \downarrow  \\
+	\uparrow & \downarrow & \uparrow \\
+	& \uparrow
+	\end{matrix}
+	\implies
+	\Delta E = 4J \\
+	\text{Two down: }
+		&\begin{matrix}
+	& \downarrow  \\
+	\downarrow & \uparrow & \uparrow \\
+	& \uparrow
+	\end{matrix}
+	\rightarrow	
+	\begin{matrix}
+	& \downarrow  \\
+	\downarrow & \downarrow & \uparrow \\
+	& \uparrow
+	\end{matrix}
+	\implies
+	\Delta E = 0J \\
+	\text{Three down: }
+		&\begin{matrix}
+	& \downarrow  \\
+	\downarrow & \uparrow & \downarrow \\
+	& \uparrow
+	\end{matrix}
+	\rightarrow	
+	\begin{matrix}
+	& \downarrow  \\
+	\downarrow & \downarrow & \downarrow \\
+	& \uparrow
+	\end{matrix}
+	\implies
+	\Delta E = -4J \\
+	\text{Four down: }
+		&\begin{matrix}
+	& \downarrow  \\
+	\downarrow & \uparrow & \downarrow \\
+	& \downarrow
+	\end{matrix}
+	\rightarrow	
+	\begin{matrix}
+	& \downarrow  \\
+	\downarrow & \downarrow & \downarrow \\
+	& \downarrow
+	\end{matrix}
+	\implies
+	\Delta E = -8J \\
+\end{align*}
 We can thus compute and store the different values of $e^{- \beta \Delta E}$ beforehand to avoid making these computations every time we update the energy.
 
 As mentioned above, we are going to use periodic boundary conditions. The easiest, but slow way of implementing this, is with if-tests. However we did it with a simple function (in c++),
