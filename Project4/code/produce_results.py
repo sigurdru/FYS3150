@@ -1,29 +1,17 @@
 import subprocess
 import plot
 
-def create_filename(L, T, dT, NT, N_carl, random_init):
-    """Create a filename based on the parameters to the simulation.
-
-    """
-    fname = f'L{L}-T{T}-dT{dT}-NT{NT}-N{N_carl}-Random{random_init}'
-    fname = fname.replace('.', '_')
-    return fname
-
-def run_simulation(*args):
+def run_simulation(params, fname):
     """Run the c++ simultion with the input given as argument to this function.
 
     Args:
-        L (int): the number of spins in each direction
-        T (float): the starting temperature
-        dT (float): the step size for temperature
-        N_T (int): the number of temperatures with which to run the simulation
-        N_carl (int): the number of Monte Carlo cycles
-        random_init (bool): initialize the spins randomly
-        plot_spin (bool): write and plot the lattice configuration
+        params (Parameters): an instance containing the parameters for this simulation
         fname (str): the filename used for saving data and plots
 
     """
-    subprocess.call(['./main.exe'] + [str(arg).lower() for arg in args[:-1]] + args[-1])
+    print(f'Simulating...\n    Result file: {fname}')
+    command = ['./main.exe'] + [str(arg).lower() for arg in params.params()] + [fname]
+    subprocess.call(command)
 
 def task_results(task):
     """Produce the results for a given task, optionally all of them.
@@ -56,7 +44,18 @@ def results_c():
     T=1.0 (in units of kT/J)
 
     """
-    pass
+    L = 2
+    T = 1
+    dT = 0.0
+    N_T = 1
+    N = 100_000
+    random_inits = [True, False]
+    plot_spin = False
+    for random_init in random_inits:
+        fname = 'c/' + create_filename(L, T, dT, N_T, N, random_init)
+        run_simulation(L, T, dT, N_T, N, random_init, plot_spin, fname)
+        results = plot.read_exp_val_file(fname)
+        plot.plot_comparison(fname, results)
 
 def results_d():
     """Simulate a square lattice with L=20 spins and plot mean energy and
@@ -65,15 +64,60 @@ def results_d():
 
     """
     L = 20
-    T = 1
-    dT = 1.4
-    N_T = 2
-    N = 100_000
+    Ts = [1, 2.4]
+    dT = 0.0
+    NT = 1
+    N_carl = 100_000
     random_inits = [True, False]
     plot_spin = False
     for random_init in random_inits:
-        fname = create_filename(L, T, dT, N_T, N, random_init)
-        run_simulation(L, T, dT, N_T, N, random_init, plot_spin, fname)
+        dfs = []
+        params_list = []
+        for T in Ts:
+            params = Parameters(L, T, dT, NT, N_carl, random_init, plot_spin)
+            params_list.append(params)
+            fname = 'd/' + params.create_filename()
+            run_simulation(params, fname)
+            results = plot.read_exp_val_file(fname)
+            dfs.append(results)
+            plot.plot_comparison(params, fname, results)
+        plot.plot_number_of_spins(params_list, fname, dfs)
+
+class Parameters:
+    def __init__(self, L, T, dT, NT, N_carl, random_init, plot_spin):
+        self.L = L
+        self.T = T
+        self.dT = dT
+        self.NT = NT
+        self.N_carl = N_carl
+        self.random_init = random_init
+        self.plot_spin = plot_spin
+
+    def create_filename(self):
+        """Create a filename based on the parameters to the simulation.
+
+        Returns:
+            fname (str): the filename (without filetype)
+
+        """
+        L = self.L
+        T = self.T
+        dT = self.dT
+        NT = self.NT
+        N_carl = self.N_carl
+        random_init = self.random_init
+        fname = f'L{L}-T{T}-dT{dT}-NT{NT}-N{N_carl}-Random{random_init}'
+        fname = fname.replace('.', '_')
+        return fname
+
+    def params(s):
+        """Return a list of the parameters for the simulation.
+
+        Returns:
+            parameter (list): a list of all the parameters
+
+        """
+        return [s.L, s.T, s.dT, s.NT, s.N_carl, s.random_init, s.plot_spin]
 
 if __name__ == '__main__':
     # run_simulation(2, 1, 0.1, 1, 10000, True, True)

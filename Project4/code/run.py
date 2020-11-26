@@ -1,4 +1,5 @@
 import argparse
+import produce_results
 
 parser = argparse.ArgumentParser(
     description='Run a simulation with the ising model using the'\
@@ -26,7 +27,7 @@ params.add_argument('-dT',
 )
 params.add_argument('-NT',
     type=int,
-    default=0,
+    default=1,
     help='The number of different temperatures to run for'
 )
 params.add_argument('-N',
@@ -38,8 +39,24 @@ params.add_argument('-R', '--random',
     action='store_true',
     help='Randomly initialize the spins'
 )
+params.add_argument('-PL', '--print-lattice',
+    action='store_true',
+    help='Write and plot the lattice configuration during different stages of the simulation'
+)
+
 args = parser.parse_args()
+print(args)
 
 if bool(args.task):
     produce_results.task_results(args.task)
-
+else:
+    params = produce_results.Parameters(
+        args.L,
+        args.T,
+        args.dT,
+        args.NT,
+        args.N,
+        args.random,
+        args.print_lattice
+    )
+    produce_results.run_simulation(params, params.create_filename())

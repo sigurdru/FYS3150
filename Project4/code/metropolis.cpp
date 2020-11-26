@@ -29,7 +29,7 @@ MetropolisSampling::MetropolisSampling(
     std::string fname = "../output/";
     LatticeFname = ExpValsFname = fname.append(InFileName);
     LatticeFname.append("_Lattice.csv");
-    ExpValsFname.append("_ExpVals.csv");
+    ExpValsFname.append(".csv");
 }
 
 
@@ -120,7 +120,7 @@ void MetropolisSampling::Solve(
         if (ShouldPrintLattice & (cycle % (MonteCarloCycles/4) == 1))
             WriteLattice(cycle);
         ShouldPrintStep = (cycle % (MonteCarloCycles/1000) == 1);
-        if (ShouldPrintStep)
+        if (cycle < 100 || ShouldPrintStep)
             WriteResultstoFile(cycle, Temperature);
     }
     WriteResultstoFile(MonteCarloCycles, Temperature);
