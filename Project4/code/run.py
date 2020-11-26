@@ -40,9 +40,10 @@ params.add_argument('-R', '--random',
     action='store_true',
     help='Randomly initialize the spins'
 )
-params.add_argument('-PL', '--print-lattice',
+params.add_argument('-W', '--write',
     action='store_true',
-    help='Write and plot the lattice configuration during different stages of the simulation'
+    help='Write results to file during the simulation. Irrespective, the end '\
+            + 'result will be written to file after the simulation'
 )
 
 args = parser.parse_args()
@@ -57,6 +58,6 @@ else:
         args.NT,
         args.N,
         args.random,
-        args.print_lattice
+        args.write
     )
     produce_results.run_simulation(params, params.create_filename())

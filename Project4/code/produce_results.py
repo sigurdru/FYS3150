@@ -22,8 +22,7 @@ def task_results(task):
     """
     if task == 'all':
         results_c()
-        results_d()
-        results_e()
+        results_d_and_e()
         results_f()
         results_g()
     elif task == 'c':
@@ -48,9 +47,9 @@ def results_c():
     NT = 1
     N = 100_000
     random_inits = [True, False]
-    plot_spin = False
+    write_during = True
     for random_init in random_inits:
-        params = Parameters(L, T, dT, NT, N, random_init, plot_spin)
+        params = Parameters(L, T, dT, NT, N, random_init, write_during)
         fname = 'c/' + params.create_filename()
         run_simulation(params, fname)
         results = plot.read_exp_val_file(fname)
@@ -70,31 +69,43 @@ def results_d_and_e():
     NT = 1
     N_carl = 200_000
     random_inits = [True, False]
-    plot_spin = False
+    write_during = True
     for T in Ts:
         dfs = []
         params_list = []
         for random_init in random_inits:
-            params = Parameters(L, T, dT, NT, N_carl, random_init, plot_spin)
+            params = Parameters(L, T, dT, NT, N_carl, random_init, write_during)
             params_list.append(params)
             fname = 'de/' + params.create_filename()
             run_simulation(params, fname)
             results = plot.read_exp_val_file(fname)
             dfs.append(results)
-        plot.plot_expectation_values(params_list, fname, dfs)
-        plot.plot_number_of_flips(params_list, fname, dfs)
-        plot.plot_probability_of_energy(params_list, fname, dfs)
+        plot.plot_expectation_values(
+            params_list,
+            fname,
+            [df.iloc[:100_000] for df in dfs]
+        )
+        plot.plot_number_of_flips(
+            params_list,
+            fname,
+            [df.iloc[:100_000] for df in dfs]
+        )
+        plot.plot_probability_of_energy(
+            params_list,
+            fname,
+            [df.iloc[100_000:] for df in dfs]
+        )
 
 
 class Parameters:
-    def __init__(self, L, T, dT, NT, N_carl, random_init, plot_spin):
+    def __init__(self, L, T, dT, NT, N_carl, random_init, write_during):
         self.L = L
         self.T = T
         self.dT = dT
         self.NT = NT
         self.N_carl = N_carl
         self.random_init = random_init
-        self.plot_spin = plot_spin
+        self.write_during = write_during
 
     def create_filename(self):
         """Create a filename based on the parameters to the simulation.
@@ -121,7 +132,7 @@ class Parameters:
             parameter (list): a list of all the parameters
 
         """
-        return [s.L, s.T, s.dT, s.NT, s.N_carl, s.random_init, s.plot_spin]
+        return [s.L, s.T, s.dT, s.NT, s.N_carl, s.random_init, s.write_during]
 
 if __name__ == '__main__':
     L = 2

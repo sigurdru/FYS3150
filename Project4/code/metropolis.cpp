@@ -76,7 +76,7 @@ void MetropolisSampling::InitializeLattice(bool random_init)
 // The Monte Carlo part with the Metropolis algo with sweeps over the lattice
 void MetropolisSampling::Solve(
         int MonteCarloCycles, double Temperature,
-        bool ShouldPrintLattice)
+        bool WriteDuringSimulation)
 {
     // call write functions once to open the files
     int cycle = 0;
@@ -116,9 +116,10 @@ void MetropolisSampling::Solve(
         ExpectationValues[1] += Energy*Energy;
         ExpectationValues[2] += fabs(MagneticMoment);
         ExpectationValues[3] += MagneticMoment*MagneticMoment;
-        if (ShouldPrintLattice & (cycle % (MonteCarloCycles/4) == 1))
+        if (cycle % (MonteCarloCycles/4) == 1)
             WriteLattice(cycle);
-        WriteResultstoFile(cycle, Temperature);
+        if (WriteDuringSimulation)
+            WriteResultstoFile(cycle, Temperature);
     }
     WriteResultstoFile(MonteCarloCycles, Temperature);
 }

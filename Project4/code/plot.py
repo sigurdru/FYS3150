@@ -41,38 +41,72 @@ def read_lattice_file(fname, num_spins):
     lattice = lattice[:, 1:].reshape(-1, num_spins, num_spins)
     return cycles, lattice
 
-def plot_comparison(params, fname, data=None):
-    if data is None:
-        data = read_exp_val_file(fname)
+def plot_comparison(params, fname, data):
     Cycle = data['Cycle'].to_numpy()
     T = data['Temperature'][0]
     E = data['MeanEnergy'].to_numpy()
     Cv = data['HeatCapacity'].to_numpy()
     chi = data['MagneticSusceptibility'].to_numpy()
     Mabs = data['Magnetization_Abs'].to_numpy()
-    Last_index = len(Cycle)-1
     E_teo, Mabs_teo, chi_teo, Cv_teo = theoretical_values(T)
+
+    if params.random_init:
+        title = 'Random'
+        lim = 100
+        color = colors['blue']
+    else:
+        title = 'Ordered'
+        lim = len(Cycle)-1
+        color = colors['red']
+
+    Last_index = len(Cycle) - 1
     fig, axs = plt.subplots(2, 2)
-    fig.suptitle('Analytical and computed results for 2x2 lattice (T=%i)' %(T))
+    title += ' configuration\n'
+    fig.suptitle(title + f'{params.L}x{params.L} spins, $T = {params.T}$')
+    color = colors['blue'] if params.random_init else colors['red']
 
-    axs[0][0].plot(Cycle, E, label="Computed")
-    axs[0][0].plot([Cycle[0], Cycle[Last_index]], [E_teo, E_teo], '--', label="Theoretical")
-    axs[0][0].set(ylabel='unitmaddafakka')
+    # expectation value for energy
     axs[0][0].set_title(r'$\left<E\right>$')
+    axs[0][0].plot(Cycle, E, label="Computed", color=color)
+    axs[0][0].plot(
+        [Cycle[0], Cycle[Last_index]],
+        [E_teo, E_teo],
+        '--', color=colors['green'],
+        label="Theoretical"
+    )
+    axs[0][0].set(ylabel='unitmaddafakka')
 
-    axs[1][0].plot(Cycle, Cv, label="Computed")
-    axs[1][0].plot([Cycle[0], Cycle[Last_index]], [Cv_teo, Cv_teo], '--', label="Theoretical")
+    # heat capacity
     axs[1][0].set_title(r'$\left<C_V\right>$')
+    axs[1][0].plot(Cycle, Cv, color=color, label="Computed")
+    axs[1][0].plot(
+        [Cycle[0], Cycle[Last_index]],
+        [Cv_teo, Cv_teo],
+        '--', color=colors['green'],
+        label="Theoretical"
+    )
     axs[1][0].set(ylabel='unitmaddafakka')
 
-    axs[0][1].plot(Cycle, chi, label="Computed")
-    axs[0][1].plot([Cycle[0], Cycle[Last_index]], [chi_teo, chi_teo], '--', label="Theoretical")
+    # magnetic susceptibility
     axs[0][1].set_title(r'$\chi$')
+    axs[0][1].plot(Cycle, chi, color=color, label="Computed")
+    axs[0][1].plot(
+        [Cycle[0], Cycle[Last_index]],
+        [chi_teo, chi_teo],
+        '--', color=colors['green'],
+        label="Theoretical"
+    )
     axs[0][1].set(ylabel='unitmaddafakka')
 
-    axs[1][1].plot(Cycle, Mabs, label="Computed")
-    axs[1][1].plot([Cycle[0], Cycle[Last_index]], [Mabs_teo, Mabs_teo], '--', label="Theoretical")
+    # mean magnetization
     axs[1][1].set_title(r'$\left<|M|\right>$')
+    axs[1][1].plot(Cycle, Mabs, color=color, label="Computed")
+    axs[1][1].plot(
+        [Cycle[0], Cycle[Last_index]],
+        [Mabs_teo, Mabs_teo],
+        '--', color=colors['green'],
+        label="Theoretical"
+    )
     axs[1][1].set(ylabel='unitmaddafakka')
 
     for ax in axs.flat:
@@ -94,8 +128,12 @@ def plot_expectation_values(params_list, fname, dfs):
         chi = data['MagneticSusceptibility'].to_numpy()
         Mabs = data['Magnetization_Abs'].to_numpy()
 
-        label = 'Random' if params.random_init else 'Ordered'
-        color = blue if params.random_init else red
+        if params.random_init:
+            label = 'Random'
+            color = colors['blue']
+        else:
+            label = 'Ordered'
+            color = colors['red']
         style = '--'
 
         fig.suptitle(f'{params.L}x{params.L} spins, $T = {params.T}$')
@@ -178,10 +216,10 @@ def plot_number_of_flips(params_list, fname, dfs):
     fig, axes = plt.subplots(1, 2)
     for i in range(len(dfs)):
         ax = axes[i]
-        df = dfs[i].iloc[:100_000]
+        df = dfs[i]
         params = params_list[i]
         config = 'random' if params.random_init else 'ordered'
-        color = blue if params.random_init else red
+        color = colors['blue'] if params.random_init else colors['red']
         fig.suptitle(f'{params.L}x{params.L} spins, $T$ = {params.T}')
         df.plot(ax=ax, x='Cycle', y='NumberOfFlips',
             legend=False, color=color)
@@ -189,7 +227,7 @@ def plot_number_of_flips(params_list, fname, dfs):
         ax.set_ylabel('Number of flips, cumulative')
     fname = '-'.join(fname.split('-')[:-1])
     fig.tight_layout()
-    fig.savefig(os.path.join(path, fname + '-NumSpins.pdf'))
+    fig.savefig(os.path.join(path, fname + '-NumFlips.pdf'))
 
 def plot_probability_of_energy(params_list, fname, dfs):
     """Plot the number of accepted flips during the simulation. The input
@@ -206,28 +244,36 @@ def plot_probability_of_energy(params_list, fname, dfs):
     fig, axes = plt.subplots(1, 2)
     for i in range(len(dfs)):
         ax = axes[i]
-        df = dfs[i].iloc[100_000:]
+        df = dfs[i]
         params = params_list[i]
         config = 'random' if params.random_init else 'ordered'
-        color = blue if params.random_init else red
+        color = colors['blue'] if params.random_init else colors['red']
         fig.suptitle(f'{params.L}x{params.L} spins, $T$ = {params.T}')
-        energy = df['SystemEnergy'].to_numpy()
-        std_dev = np.std(energy)
-        fit = stats.norm.pdf(np.sort(energy), np.mean(energy), std_dev)
-        ax.hist(energy, density=True, bins=20)
-        ax.set_title(f'{config} configuration'.capitalize())
-        ax.set_ylabel('Number of flips, cumulative')
+        energy = df['SystemEnergy'].sort_values().to_numpy()
+        ax.hist(energy, density=True, bins=20, label='Computed')
+        legend_loc = 'best'
+        title = f'{config} configuration'.capitalize()
+        if params.T != 1:
+            std_dev = np.std(energy)
+            fit = stats.norm.pdf(energy, np.mean(energy), std_dev)
+            ax.plot(energy, fit, ':', color=colors['red'], label='Normal distribution')
+            legend_loc = 'upper left'
+            title += '\n' + r'$\sigma_E^2 = ' + f'{std_dev**2:.0f}$'
+        ax.set_title(title)
+        ax.set_xlabel('E')
+        ax.set_ylabel('P(E)')
+        ax.legend(loc=legend_loc)
     fname = '-'.join(fname.split('-')[:-1])
     fig.tight_layout()
     fig.savefig(os.path.join(path, fname + '-ProbE.pdf'))
 
 
 path = '../output'
-blue = '#1c518a'
-red = '#f51b26'
-
-# data = read_exp_val_file()
-# data.group_by('SystemEnergy').count()
+colors = {
+    'blue': '#1c518a',  # random configuration
+    'red': '#f51b26',   # ordered configuration
+    'green': '#20fa24'  # theoretical values
+}
 
 if __name__ == '__main__':
     # plot_comparison('d/L20-T1-dT0_0-NT1-N100000-RandomTrue')
