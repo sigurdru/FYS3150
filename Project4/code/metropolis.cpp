@@ -116,10 +116,11 @@ void MetropolisSampling::Solve(
         ExpectationValues[1] += Energy*Energy;
         ExpectationValues[2] += fabs(MagneticMoment);
         ExpectationValues[3] += MagneticMoment*MagneticMoment;
-        if (cycle % (MonteCarloCycles/4) == 1)
-            WriteLattice(cycle);
-        if (WriteDuringSimulation)
+        if (WriteDuringSimulation) {
             WriteResultstoFile(cycle, Temperature);
+            if (cycle % (MonteCarloCycles/4) == 1)
+                WriteLattice(cycle);
+        }
     }
 }
 
@@ -145,28 +146,42 @@ void MetropolisSampling::WriteResultstoFile(
             << ",MagneticSusceptibility"
             << ",Magnetization_Abs" << endl;
     }
-
-    // normalization constant, divide by number of cycles
-    double norm = 1.0/Cycle;
-    double E = ExpectationValues[0]*norm;
-    double E2 = ExpectationValues[1]*norm;
-    double Mabs = ExpectationValues[2]*norm;
-    double M2 = ExpectationValues[3]*norm;
-    // all expectation values are per spin, multiply with 1/NSpins/NSpins
+    // double norm = 1.0/Cycle;
+    // double E = ExpectationValues[0]*norm;
+    // double E2 = ExpectationValues[1]*norm;
+    // double Mabs = ExpectationValues[2]*norm;
+    // double M2 = ExpectationValues[3]*norm;
     double OneOverTotNumSpins = 1.0/((double) NumSpins*NumSpins);
-    double HeatCapacity
-        = (E2 - E*E)*OneOverTotNumSpins/(temperature*temperature);
-    double MagneticSusceptibility
-        = (M2 - Mabs*Mabs)*OneOverTotNumSpins/temperature;
+    // double HeatCapacity
+    //     = (E2 - E*E)*OneOverTotNumSpins/(temperature*temperature);
+    // double MagneticSusceptibility
+    //     = (M2 - Mabs*Mabs)*OneOverTotNumSpins/temperature;
+    NormAndCalcExp(Cycle, temperature);
     ExpValsOutfile << setiosflags(ios::showpoint | ios::uppercase);
     ExpValsOutfile << Cycle;
     ExpValsOutfile << "," << NumberOfFlips;
     ExpValsOutfile << "," << setprecision(3) << temperature;
     ExpValsOutfile << "," << setprecision(5) << Energy*OneOverTotNumSpins;
-    ExpValsOutfile << "," << setprecision(5) << E*OneOverTotNumSpins;
-    ExpValsOutfile << "," << setprecision(5) << HeatCapacity;
-    ExpValsOutfile << "," << setprecision(5) << MagneticSusceptibility;
-    ExpValsOutfile << "," << setprecision(5) << Mabs*OneOverTotNumSpins << endl;
+    ExpValsOutfile << "," << setprecision(5) << m_E*OneOverTotNumSpins;
+    ExpValsOutfile << "," << setprecision(5) << m_HeatCapacity;
+    ExpValsOutfile << "," << setprecision(5) << m_MagneticSusceptibility;
+    ExpValsOutfile << "," << setprecision(5) << m_Mabs*OneOverTotNumSpins << endl;
+}
+
+void MetropolisSampling::NormAndCalcExp(int Cycle, double temperature)
+{
+    double OneOverTotNumSpins = 1.0/((double) NumSpins*NumSpins);
+    double norm = 1.0/Cycle;
+    // normalization constant, divide by number of cycles
+    m_E = ExpectationValues[0]*norm;
+    m_E2 = ExpectationValues[1]*norm;
+    m_Mabs = ExpectationValues[2]*norm;
+    m_M2 = ExpectationValues[3]*norm;
+    // all expectation values are per spin, multiply with 1/NSpins/NSpins
+    m_HeatCapacity =
+        (m_E2 - m_E * m_E) * OneOverTotNumSpins / (temperature * temperature);
+    m_MagneticSusceptibility =
+        (m_M2 - m_Mabs * m_Mabs) * OneOverTotNumSpins / temperature;
 }
 
 MetropolisSampling::~MetropolisSampling()

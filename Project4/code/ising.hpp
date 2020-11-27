@@ -7,6 +7,7 @@ class MetropolisSampling {
     private:
         int **SpinMatrix;
         double *EnergyDifference;
+        double m_E2, m_M2;
         double Energy, MagneticMoment;
         int NumSpins, NumberOfFlips;
         std::string ExpValsFname, LatticeFname;
@@ -18,9 +19,11 @@ class MetropolisSampling {
         void InitializeLattice(bool);
 
     public:
+        double m_E, m_Mabs, m_HeatCapacity, m_MagneticSusceptibility;
         double *ExpectationValues;
         MetropolisSampling(int, bool, std::string);
         void Solve(int, double, bool);
+        void NormAndCalcExp(int, double);
         ~MetropolisSampling();
 };
 
