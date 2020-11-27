@@ -174,6 +174,7 @@ MetropolisSampling::~MetropolisSampling()
     // deallocate memory
     for (int i=0; i<NumSpins; i++) delete[] SpinMatrix[i];
     delete[] SpinMatrix;
+    delete[] ExpectationValues;
     // close output files
     ExpValsOutfile.close();
     LatticeOutfile.close();

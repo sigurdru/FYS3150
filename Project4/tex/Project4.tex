@@ -88,43 +88,47 @@ Hei jeg heter abstract
 
 \section{Introduction}
 
-A phase transition is when a substance changes macroscopic property because of a change in for example temperature. This can have dramatic effects, like the Meissner effect, where at a certain critical temperature superconductors become very diamagnetic (susceptibility in the order of  negative $10^5$). In this report, we are going to study the phase transition of two dimensional lattices using the Icing model and Monte Carlo simulations. In the theory section you will find a short description of the theory needed in the report. We also list some calculations and ways we have optimized our code in the appendix.
+A phase transition is a change of the macroscopic properties of a substance due to a change in for example temperature or pressure. This can have dramatic effects, like the Meissner effect, where at a certain critical temperature superconductors become very diamagnetic (susceptibility in the order of  negative $10^5$). In this report, we are going to study the phase transition of two dimensional lattices using the Icing model and Monte Carlo simulations. In the theory section you will find a short description of the theory needed in the report. We also list some calculations and ways in which we have optimized our code in the appendix.
 
-In order to make sure our code runs correctly, we test it. For a 2x2 lattice we can find analytical terms for susceptibility, heat capacity for constant volume, mean energy and mean absolute magnetization. Using this, we can compare our algorithm with analytical results, for different temperatures. We can also get an idea of how many iterations we need to get a decent result.
+We test our code against analytical results to make sure it runs correctly. For a 2x2 lattice we can derive analytical expressions for susceptibility, heat capacity for constant volume, mean energy and mean absolute magnetization. Using this, we can compare our algorithm with analytical results for different temperatures. This way we also get an idea of how many iterations are needed for the code to produce reliable results.
 
-Next we do a more careful study of how many Monte Carlo iterations we need, before we reach equilibrium. Using a 20x20 lattice and temperatures $T = 1.0, 2.4 \rm{J}/k_B$, we plot mean energy and magnetization as a function of cycles. Then we can eyeball how many iterations we need to reach the most likely state. We also make a plot of the total number of accepted configurations, hopefully getting an idea of when most flips happens.
+Next we do a more careful study of how many Monte Carlo iterations we need, before we reach equilibrium. Using a 20x20 lattice and temperatures $T = 1.0$, 2.4 J/$\rm k_B$, we plot mean energy and magnetization as a function of cycles. Then we can eyeball how many iterations we need to reach the most likely state. We also make a plot of the total number of accepted configurations, hopefully getting an idea of when most flips happens.
 
-We also get an idea of the probability distribution for different energies. For the same conditions as above, we also plot the number of times a certain energy appears. Then we can plot it in a histogram and compare it to the computed variance in energy ($\sigma_E$).
+From the results of these simulations we can also approximate the probability distribution for energy. This is done by counting the number of times each possible value for the system's total energy occurs during the simulation. We visualize this using a histogram plot and compare it to the computed variance in energy $\sigma_E^2$.
 
-Last but not least we do a numerical study of phase transitions. Testing for $L$x$L$, $L\in[40,60,80, 100]$ lattices, and temperatures (in units of J/$k_B$) $T\in[2.0,2.3]$. We then plot the computed mean energy $\left<E\right>$, mean absolute magnetization $\left<|M|\right>$, heat capacity $C_V$ and susceptibility $\chi$, as a function of temperature. Hopefully we can notice a sign of phase transition and use our results to reproduce Lars Onsager's critical temperature (see \cite{larsonsager}) of $kT_C/\rm{J}=2/\ln(1+\sqrt{2})\approx2.269$.
+Lastly, we do a numerical study of phase transitions. We simulate $L \times L$ lattices with $L = \{40, 60, 80, 100\}$ for a range of temperatures $T\in[2.0,2.3]$ (in units of J/$k_B$). We then plot the computed mean energy $\left<E\right>$, mean absolute magnetization $\left<|M|\right>$, heat capacity $C_V$ and susceptibility $\chi$, as functions of temperature. Hopefully we can then identify signs of phase transition and use our results to reproduce Lars Onsager's critical temperature (see \cite{larsonsager}) of $kT_C/\rm{J}=2/\ln(1+\sqrt{2})\approx2.269$.
 
-For our studies we have used c++ for heavy computation, python for visualization and automation. All the code along with instructions on how to run it, can be cloned from our GitHub repository here\footnote{github.com/sigurdru/FYS3150/tree/master/Project3}.
+For our studies we have used c++ for heavy computation, python for visualization and automation. All the code along with instructions on how to run it, can be cloned from our GitHub repository\footnote{github.com/sigurdru/FYS3150/tree/master/Project4}.
 
 \section{Theory}
 
 \subsection*{Statistical terms}
-In this report we are going to use some basic statistical terms and expressions. For those not familiar with terms like standard deviation and mean value, they are covered below.
+Here follow definitions and short explanations of some basic statistical terms used in this report.
 
-The expectation value or mean value, often written as $\left<A\right>$, is the sum of all values $A_i$, divided by the total number $N$ of values it can have:
+The expectation value or mean value, here denoted as $\left<A\right>$, is the sum of all values $A_i$, divided by the total number $N$ of values it can have:
 \begin{equation*}
 	\left< A \right> = \frac{1}{N}\sum_{i}^{N}A_i
 \end{equation*}
 However, when given a probability distribution $P_i$, which describes the probability of having outcome $A_i$, one can also find the expectation value through
 \begin{equation*}
 	\left<A\right> = \sum_{i}^{N}A_iP_i.
-\end{equation*} 
+\end{equation*}
 
-Variance or standard deviation ($\sigma_A$), is a measurement of the variation in a set of data $A_i$. The mathematical expression is given as
+Variance is a measure of the spread in a set of data $A_i$. The mathematical definition is
 \begin{equation*}
-	\sigma_A = \sqrt{\frac{1}{N-1} \sum_{i}^{N} (A_i - \left<A\right>)^2} = \sqrt{\left<A^2\right> - \left<A\right>^2},
-\end{equation*} 
+	\mathrm{Var}(A) = \frac{1}{N-1} \sum_{i}^{N} (A_i - \left<A\right>)^2 = \left<A^2\right> - \left<A\right>^2,
+\end{equation*}
 where $N$ is the total number of outcomes and $\left<A\right>$ is the expectation value of $A_i$.
+The often used standard deviation $\sigma_A$ is the square root of the variance:
+\begin{equation*}
+	\sigma_A = \sqrt{\left<A^2\right> - \left<A\right>^2},
+\end{equation*}
 
 \subsection*{Monte Carlo}
 
-Monte Carlo simulations is a broad term for algorithms that rely on random sampling. An example of this is using Monte Carlo simulations to approach the value of pi\footnote{https://academo.org/demos/estimating-pi-monte-carlo/}. We are going to use it to chose and flip spins in our lattice.
+Monte Carlo simulations is a broad term for algorithms that rely on random sampling. These algorithms have a wide range of applications, one example of which is approximating the value of pi\footnote{https://academo.org/demos/estimating-pi-monte-carlo/}. We will be using random number generators to select spins in our lattice and then to determine whether they should be flipped.
 
-Lets say we have a $L$x$L$ lattice, with $L^2$ spins. One Monte Carlo cycle entails choosing $L^2$ spins at random and flipping it based on the probability described by equation \eqref{eq:prob_flip}. Each cycle we can calculate the energy and magnetization. The idea is that after a large $N$ number of cycles, we have reached a state with properties like that of a physical one. The challenge here is having the right probability distribution and completing enough cycles $N$.
+We will be simulating $L \times L$ lattices, each consisting of $L^2$ spins. One Monte Carlo cycle entails choosing $L^2$ spins at random and flipping it based on the probability described by equation \eqref{eq:prob_flip}. Each cycle we can calculate the energy and magnetization. The idea is that after a large number of cycles $N$, we have reached a state with properties like that of a real physical system. The challenge here is having the right probability distribution and completing enough cycles $N$.
 
 \subsection*{Canonical ensemble}
 The probability of finding a system in a given microstate is found through the canonical ensemble, given by equation \eqref{eq:canonical_ensemble} (see \cite{lectures2015} chapter 13.2.2).
@@ -266,11 +270,11 @@ With the partition function and the canonical ensemble through equation \eqref{e
 With this we can compare our simulations to expected theoretical values. Plotting expectation values (for $T=1$J/$k_B$) as a function of Monte Carlo iterations we can get an idea of how many we need to reach equilibrium. Then we can plot simulated and theoretical expectation values as a function of temperature, to see how well they correspond. Ideally we want them to overlap completely.
 
 \subsection{Reaching the most likely state (denne må finskrives)}
-From looking at an 2x2 lattice, we will get an idea of how many Monte Carlo cycles we will need to reach equilibrium. However we want to study this more carefully, testing for $L=20$ spins. First with a temperature of $T = 1 $J$/k_B$, then $T = 2.4 $J$/k_B$, we will plot the expectation value of energy ($\left<E\right>$) and absolute magnetization ($\left<|M|\right>$) as a function of iterations. After testing with random initial conditions, we also do the same looking spin starting in the same direction. 
+From looking at an 2x2 lattice, we will get an idea of how many Monte Carlo cycles we will need to reach equilibrium. However we want to study this more carefully, testing for $L=20$ spins. First with a temperature of $T = 1 $J$/k_B$, then $T = 2.4 $J$/k_B$, we will plot the expectation value of energy ($\left<E\right>$) and absolute magnetization ($\left<|M|\right>$) as a function of iterations. After testing with random initial conditions, we also do the same looking spin starting in the same direction.
 
 We also want to study the number of accepted configurations. This means we want to count the number of times we flip a spin. We therefore make a plot of the total number of accepted configurations as a function of iterations. We also look at how this varies with temperature.
 
-It is interesting what the probability of obtaining an energy $E$ is (like a numerical partition function). The way we do this, is by finding out how many times a given energy $E$ appears and then divide it by the total number of energies tested for. Then we will get an estimate of the probability one energy appears. Then compare it to the computed variance in energy ($\sigma_E$). 
+It is interesting what the probability of obtaining an energy $E$ is (like a numerical partition function). The way we do this, is by finding out how many times a given energy $E$ appears and then divide it by the total number of energies tested for. Then we will get an estimate of the probability one energy appears. Then compare it to the computed variance in energy ($\sigma_E$).
 
 \subsection{Study of phase transition}
 
@@ -280,14 +284,14 @@ First we look at how our system behaves for different lattice sizes, around crit
 
 In figure \ref{fig:L2_T1_Random_and_not} you find theoretical and computed values for $\left<E\right>$, $\left<|M|\right>$, $C_V$ and $\chi$, in a 2x2 lattice. Both with random (top four plots) initial values, and ordered (all spins starting in the same direction) initial conditions (bottom four plots).
 
-Similar plots can be found for the 20x20 lattice in figure \ref{fig:L20_T1_and_T2_4}. There we have plotted the computed values of $\left<E\right>$, $\left<|M|\right>$, $C_V$ and $\chi$, where the top four are for the temperature $T=1$ and the bottom four are for $T=2.4J/k_B$. 
+Similar plots can be found for the 20x20 lattice in figure \ref{fig:L20_T1_and_T2_4}. There we have plotted the computed values of $\left<E\right>$, $\left<|M|\right>$, $C_V$ and $\chi$, where the top four are for the temperature $T=1$ and the bottom four are for $T=2.4J/k_B$.
 
 We also plotted the number of accepted configurations as a function of Monte Carlo Cycles in figure \ref{fig:Num_flips_T1_and_T2_4}. The top two plots are for temperature $T=1J/k_B$, with both random and ordered initial configuration, and the bottom two are with temperature $T=2.4J/k_B$.
 
 \begin{figure*}[!htb]
 	\includegraphics[width=16cm]{../output/c/L2-T1-dT0_0-NT1-N5-RandomTrue_comp.pdf}
 	\includegraphics[width=16cm]{../output/c/L2-T1-dT0_0-NT1-N5-RandomTrue_comp.pdf}
-	\caption{In this figure you see the theoretical and computed values of $\left<E\right>$, $\left<|M|\right>$, $C_V$ and $\chi$, for a 2x2 lattice and temperature $T=1J/k_B$. The top four plots are from random initial values, and the bottom four are from all pointing in the same direction.} 
+	\caption{In this figure you see the theoretical and computed values of $\left<E\right>$, $\left<|M|\right>$, $C_V$ and $\chi$, for a 2x2 lattice and temperature $T=1J/k_B$. The top four plots are from random initial values, and the bottom four are from all pointing in the same direction.}
 	\label{fig:L2_T1_Random_and_not}
 \end{figure*}
 \begin{figure*}[!htb]
@@ -319,7 +323,7 @@ During our simulations we calculate the change in energy ($\Delta$E) many times.
 	\uparrow & \uparrow & \uparrow \\
 	& \uparrow
 	\end{matrix}
-	\rightarrow	
+	\rightarrow
 	\begin{matrix}
 	& \uparrow  \\
 	\uparrow & \downarrow & \uparrow \\
@@ -333,7 +337,7 @@ During our simulations we calculate the change in energy ($\Delta$E) many times.
 	\uparrow & \uparrow & \uparrow \\
 	& \uparrow
 	\end{matrix}
-	\rightarrow	
+	\rightarrow
 	\begin{matrix}
 	& \downarrow  \\
 	\uparrow & \downarrow & \uparrow \\
@@ -347,7 +351,7 @@ During our simulations we calculate the change in energy ($\Delta$E) many times.
 	\downarrow & \uparrow & \uparrow \\
 	& \uparrow
 	\end{matrix}
-	\rightarrow	
+	\rightarrow
 	\begin{matrix}
 	& \downarrow  \\
 	\downarrow & \downarrow & \uparrow \\
@@ -361,7 +365,7 @@ During our simulations we calculate the change in energy ($\Delta$E) many times.
 	\downarrow & \uparrow & \downarrow \\
 	& \uparrow
 	\end{matrix}
-	\rightarrow	
+	\rightarrow
 	\begin{matrix}
 	& \downarrow  \\
 	\downarrow & \downarrow & \downarrow \\
@@ -375,7 +379,7 @@ During our simulations we calculate the change in energy ($\Delta$E) many times.
 	\downarrow & \uparrow & \downarrow \\
 	& \downarrow
 	\end{matrix}
-	\rightarrow	
+	\rightarrow
 	\begin{matrix}
 	& \downarrow  \\
 	\downarrow & \downarrow & \downarrow \\
@@ -388,7 +392,7 @@ We can thus compute and store the different values of $e^{- \frac{\Delta E}{k_BT
 
 As mentioned previously, we are going to use periodic boundary conditions. The easiest, but slow way of implementing this, is with if-tests. However we did it with a simple function (in c++),
 \begin{lstlisting}
-int PeriodicBoundary(int i, int limit, int add) { 
+int PeriodicBoundary(int i, int limit, int add) {
 	return (i+limit+add) % (limit);
 }
 \end{lstlisting}
