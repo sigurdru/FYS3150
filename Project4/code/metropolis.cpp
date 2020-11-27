@@ -121,7 +121,6 @@ void MetropolisSampling::Solve(
         if (WriteDuringSimulation)
             WriteResultstoFile(cycle, Temperature);
     }
-    WriteResultstoFile(MonteCarloCycles, Temperature);
 }
 
 

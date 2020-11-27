@@ -1,8 +1,9 @@
-#include "ising.hpp"
+#include <omp.h>  //parallelization
+#include <unistd.h>
 #include <cmath>
-#include <string>
 #include <iostream>
-
+#include <string>
+#include "ising.hpp"
 
 int main(int argc, char* argv[]) {
     int L, N_T, N_carl;
@@ -31,12 +32,23 @@ int main(int argc, char* argv[]) {
     random_init = (init_argument == "true");
     WriteDuringSimulation = (WriteDuringArg == "true");
 
-    double T;
-    for (int i=0; i < N_T; i++) {
-        T = T_start + i*dT;
-        MetropolisSampling solver(L, random_init, fname);
-        solver.Solve(N_carl, T, WriteDuringSimulation);
+    if (N_T > 1) {
+        omp_set_num_threads(8); //set number of threads in parallel
+            #pragma omp parallel for
+            for (int i=0; i < N_T; i++) {
+                usleep(5000 * omp_get_thread_num());
+                double T = T_start + i*dT;
+                MetropolisSampling solver(L, random_init, fname);
+                solver.Solve(N_carl, T, WriteDuringSimulation);
+                std::cout 
+                          << " Temperature: " << T
+                          << " Thread: "<< omp_get_thread_num()
+                          << std::endl;
+            }
+    } else {
+        double T = T_start;
+        MetropolisSampling solve(L, random_init, fname);
+        solve.Solve(N_carl, T, WriteDuringSimulation);
     }
-
     return 0;
 }

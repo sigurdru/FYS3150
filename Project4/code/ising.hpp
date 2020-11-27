@@ -7,9 +7,8 @@ class MetropolisSampling {
     private:
         int **SpinMatrix;
         double *EnergyDifference;
-        double *ExpectationValues;
-        int NumSpins, NumberOfFlips;
         double Energy, MagneticMoment;
+        int NumSpins, NumberOfFlips;
         std::string ExpValsFname, LatticeFname;
         std::ofstream ExpValsOutfile, LatticeOutfile;
 
@@ -19,6 +18,7 @@ class MetropolisSampling {
         void InitializeLattice(bool);
 
     public:
+        double *ExpectationValues;
         MetropolisSampling(int, bool, std::string);
         void Solve(int, double, bool);
         ~MetropolisSampling();
