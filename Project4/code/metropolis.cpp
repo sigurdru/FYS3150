@@ -140,7 +140,7 @@ void MetropolisSampling::WriteResultstoFile(
             << "Cycle"
             << ",NumberOfFlips"
             << ",Temperature"
-            << ",SystemEnergy"
+            << ",EnergyPerSpin"
             << ",MeanEnergy"
             << ",HeatCapacity"
             << ",MagneticSusceptibility"
@@ -153,17 +153,17 @@ void MetropolisSampling::WriteResultstoFile(
     double E2 = ExpectationValues[1]*norm;
     double Mabs = ExpectationValues[2]*norm;
     double M2 = ExpectationValues[3]*norm;
-    // all expectation values are per spin, divide by 1/NSpins/NSpins
+    // all expectation values are per spin, multiply with 1/NSpins/NSpins
     double OneOverTotNumSpins = 1.0/((double) NumSpins*NumSpins);
-    double HeatCapacity =
-        (E2 - E*E)*OneOverTotNumSpins/(temperature*temperature);
+    double HeatCapacity
+        = (E2 - E*E)*OneOverTotNumSpins/(temperature*temperature);
     double MagneticSusceptibility
         = (M2 - Mabs*Mabs)*OneOverTotNumSpins/temperature;
     ExpValsOutfile << setiosflags(ios::showpoint | ios::uppercase);
     ExpValsOutfile << Cycle;
     ExpValsOutfile << "," << NumberOfFlips;
     ExpValsOutfile << "," << setprecision(3) << temperature;
-    ExpValsOutfile << "," << setprecision(3) << Energy;
+    ExpValsOutfile << "," << setprecision(5) << Energy*OneOverTotNumSpins;
     ExpValsOutfile << "," << setprecision(5) << E*OneOverTotNumSpins;
     ExpValsOutfile << "," << setprecision(5) << HeatCapacity;
     ExpValsOutfile << "," << setprecision(5) << MagneticSusceptibility;

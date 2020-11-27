@@ -249,16 +249,24 @@ def plot_probability_of_energy(params_list, fname, dfs):
         config = 'random' if params.random_init else 'ordered'
         color = colors['blue'] if params.random_init else colors['red']
         fig.suptitle(f'{params.L}x{params.L} spins, $T$ = {params.T}')
-        energy = df['SystemEnergy'].sort_values().to_numpy()
+        energy = df['EnergyPerSpin'].sort_values().to_numpy()
         ax.hist(energy, density=True, bins=20, label='Computed')
         legend_loc = 'best'
         title = f'{config} configuration'.capitalize()
         if params.T != 1:
+            T = params.T
+            num_spins = params.L**2
+            comp_var = df['HeatCapacity'].iloc[-1]*T*T/num_spins
             std_dev = np.std(energy)
             fit = stats.norm.pdf(energy, np.mean(energy), std_dev)
-            ax.plot(energy, fit, ':', color=colors['red'], label='Normal distribution')
+            ax.plot(
+                energy, fit,
+                ':', color=colors['red'],
+                label='Normal distribution'
+            )
             legend_loc = 'upper left'
-            title += '\n' + r'$\sigma_E^2 = ' + f'{std_dev**2:.0f}$'
+            title += '\n' + r'$\sigma_E^2 = ' + f'{std_dev**2:.3f}$'
+            title += '\n' + r'Computed $\sigma_E^2 = ' + f'{comp_var:.3f}$'
         ax.set_title(title)
         ax.set_xlabel('E')
         ax.set_ylabel('P(E)')
