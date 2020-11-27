@@ -96,6 +96,23 @@ def results_d_and_e():
             [df.iloc[100_000:] for df in dfs]
         )
 
+def results_f():
+    """Run the simulation for various values of L and a range of temperatures
+    and plot the various expectation values as functions of T.
+
+    """
+    Ls = [40, 60, 80, 100]
+    T = 2.0
+    dT = 0.05
+    NT = 7
+    N_carl = 100_000
+    random_init = True
+    write_during = False
+    for L in Ls:
+        params = Parameters(L, T, dT, NT, N_carl, random_init, write_during)
+        fname = params.create_filename()
+        run_simulation(params, fname)
+        # then plot some results
 
 class Parameters:
     def __init__(self, L, T, dT, NT, N_carl, random_init, write_during):
