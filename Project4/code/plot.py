@@ -62,7 +62,9 @@ def plot_comparison(params, fname, data):
     Last_index = len(Cycle) - 1
     fig, axs = plt.subplots(2, 2)
     title += ' configuration\n'
-    fig.suptitle(title + f'{params.L}x{params.L} spins, $T = {params.T}$')
+    title += f'${params.L}' + r'\times' + f'{params.L}$ spins, '
+    title += f'$T$ = {params.T}'
+    fig.suptitle(title)
     color = colors['blue'] if params.random_init else colors['red']
 
     # expectation value for energy
@@ -136,7 +138,9 @@ def plot_expectation_values(params_list, fname, dfs):
             color = colors['red']
         style = '--'
 
-        fig.suptitle(f'{params.L}x{params.L} spins, $T = {params.T}$')
+        title = f'${params.L}' + r'\times' + f'{params.L}$ spins, '
+        title += f'$T$ = {params.T}'
+        fig.suptitle(title)
         axs[0][0].set_title(r'$\left<E\right>$')
         axs[0][0].plot(Cycle, E, style, color=color, label=label)
         axs[0][0].set(ylabel='unitmaddafakka')
@@ -161,35 +165,45 @@ def plot_expectation_values(params_list, fname, dfs):
     fname = '-'.join(fname.split('-')[:-1])
     fig.savefig(os.path.join(path, fname + '-ExpVals.pdf'))
 
-def plot_expectation_vs_temp(fname, data=None):
-    if data is None:
-        data = read_exp_val_file(fname)
+def plot_expectation_vs_temp(params, fname, data):
     Cycle = data['Cycle'].to_numpy()
     T = data['Temperature'].to_numpy()
     E = data['MeanEnergy'].to_numpy()
     Cv = data['HeatCapacity'].to_numpy()
     chi = data['MagneticSusceptibility'].to_numpy()
     Mabs = data['Magnetization_Abs'].to_numpy()
+    assert params.random_init, 'Not random initialization'
 
-    fig, axs = plt.subplots(4, 1)
-    fig.suptitle('Computed results (iteration=%i)' % (Cycle))
-    axs[0].plot(T, E, label=r'$\left<E\right>$')
-    axs[0].set(ylabel='unitmaddafakka')
+    fig, axs = plt.subplots(2, 2)
+    title = f'${params.L}' + r'\times' + f'{params.L}$ spins, '
+    title += 'random initialization\n'
+    title += f'{params.N_carl:,} Monte Carlo cycles'.replace(',', ' ')
+    fig.suptitle(title)
+    ax = axs[0][0]
+    ax.set_title('Energy')
+    ax.plot(T, E, color=colors['blue'])
+    ax.set(ylabel=r'$\left<E\right>$, unitmaddafakka')
 
-    axs[1].plot(T, Cv, label=r'$\left<C_V\right>$')
-    axs[1].set(ylabel='unitmaddafakka')
+    ax = axs[1][0]
+    ax.set_title('Heat capacity')
+    ax.plot(T, Cv, color=colors['blue'])
+    ax.set(ylabel=r'$\left<C_V\right>$, unitmaddafakka')
 
-    axs[2].plot(T, chi, label=r'$\chi$')
-    axs[2].set(ylabel='unitmaddafakka')
+    ax = axs[0][1]
+    ax.set_title('Magnetic susceptibility')
+    ax.plot(T, chi, color=colors['blue'])
+    ax.set(ylabel=r'$\chi$, unitmaddafakka')
 
-    axs[3].plot(T, Mabs, label=r'$\left<|M|\right>$')
-    axs[3].set(ylabel='unitmaddafakka')
+    ax = axs[1][1]
+    ax.set_title('Absolute magnetization')
+    ax.plot(T, Mabs, color=colors['blue'])
+    ax.set(ylabel=r'$\left<|M|\right>$, unitmaddafakka')
 
     for ax in axs.flat:
         ax.set(xlabel='Temperature')
-        ax.legend()
+        # ax.legend()
     fig.tight_layout()
-    fig.savefig(os.path.join(path, fname + '_TempExp.pdf'))
+    fig.savefig(os.path.join(path, fname + '-TempExp.pdf'))
 
 def plot_lattice(fname, num_spins):
     cycles, lattice = read_lattice_file(fname, num_spins)
@@ -220,7 +234,9 @@ def plot_number_of_flips(params_list, fname, dfs):
         params = params_list[i]
         config = 'random' if params.random_init else 'ordered'
         color = colors['blue'] if params.random_init else colors['red']
-        fig.suptitle(f'{params.L}x{params.L} spins, $T$ = {params.T}')
+        title = f'${params.L}' + r'\times' + f'{params.L}$ spins, '
+        title += f'$T$ = {params.T}'
+        fig.suptitle(title)
         df.plot(ax=ax, x='Cycle', y='NumberOfFlips',
             legend=False, color=color)
         ax.set_title(f'{config} configuration'.capitalize())
@@ -248,7 +264,9 @@ def plot_probability_of_energy(params_list, fname, dfs):
         params = params_list[i]
         config = 'random' if params.random_init else 'ordered'
         color = colors['blue'] if params.random_init else colors['red']
-        fig.suptitle(f'{params.L}x{params.L} spins, $T$ = {params.T}')
+        title = f'${params.L}' + r'\times' + f'{params.L}$ spins, '
+        title += f'$T$ = {params.T}'
+        fig.suptitle(title)
         energy = df['EnergyPerSpin'].sort_values().to_numpy()
         ax.hist(energy, density=True, bins=20, label='Computed')
         legend_loc = 'best'

@@ -23,9 +23,6 @@ MetropolisSampling::MetropolisSampling(
     NumSpins = NSpins;      // store number of spins in a class variable
     InitializeLattice(random_init);
     std::string NSpins_str = std::to_string(NSpins);
-    std::string config;
-    if (random_init) config = "random";
-    else config = "up";
     std::string fname = "../output/";
     LatticeFname = ExpValsFname = fname.append(InFileName);
     LatticeFname.append("_Lattice.csv");
@@ -162,10 +159,10 @@ void MetropolisSampling::WriteResultstoFile(
     ExpValsOutfile << "," << NumberOfFlips;
     ExpValsOutfile << "," << setprecision(3) << temperature;
     ExpValsOutfile << "," << setprecision(5) << Energy*OneOverTotNumSpins;
-    ExpValsOutfile << "," << setprecision(5) << m_E*OneOverTotNumSpins;
+    ExpValsOutfile << "," << setprecision(5) << m_E;
     ExpValsOutfile << "," << setprecision(5) << m_HeatCapacity;
     ExpValsOutfile << "," << setprecision(5) << m_MagneticSusceptibility;
-    ExpValsOutfile << "," << setprecision(5) << m_Mabs*OneOverTotNumSpins << endl;
+    ExpValsOutfile << "," << setprecision(5) << m_Mabs << endl;
 }
 
 void MetropolisSampling::NormAndCalcExp(int Cycle, double temperature)
@@ -182,6 +179,8 @@ void MetropolisSampling::NormAndCalcExp(int Cycle, double temperature)
         (m_E2 - m_E * m_E) * OneOverTotNumSpins / (temperature * temperature);
     m_MagneticSusceptibility =
         (m_M2 - m_Mabs * m_Mabs) * OneOverTotNumSpins / temperature;
+    m_E *= OneOverTotNumSpins;
+    m_Mabs *= OneOverTotNumSpins;
 }
 
 MetropolisSampling::~MetropolisSampling()

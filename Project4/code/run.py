@@ -45,6 +45,11 @@ params.add_argument('-W', '--write',
     help='Write results to file during the simulation. Irrespective, the end '\
             + 'result will be written to file after the simulation'
 )
+params.add_argument('-NC', '--num-cores',
+    type=int,
+    default=8,
+    help='The number of cores to use if number of temperatures is greater than 1'
+)
 
 args = parser.parse_args()
 
@@ -58,6 +63,7 @@ else:
         args.NT,
         args.N,
         args.random,
-        args.write
+        args.write,
+        args.num_cores
     )
     produce_results.run_simulation(params, params.create_filename())

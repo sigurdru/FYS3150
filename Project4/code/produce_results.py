@@ -10,7 +10,8 @@ def run_simulation(params, fname):
 
     """
     print(f'Simulating...\n    Result file: {fname}')
-    command = ['./main.exe'] + [str(arg).lower() for arg in params.params()] + [fname]
+    command = ['./main.exe']
+    command += [str(arg).lower() for arg in params.params()] + [fname]
     subprocess.call(command)
 
 def task_results(task):
@@ -31,8 +32,6 @@ def task_results(task):
         results_d_and_e()
     elif task == 'f':
         results_f()
-    elif task == 'g':
-        results_g()
 
 def results_c():
     """Compute and plot the mean energy, mean magnetization, the specific heat
@@ -103,19 +102,26 @@ def results_f():
     """
     Ls = [40, 60, 80, 100]
     T = 2.0
-    dT = 0.05
-    NT = 7
+    dT = 0.04
+    NT = 16
     N_carl = 100_000
     random_init = True
     write_during = False
+    num_cores = 8
     for L in Ls:
-        params = Parameters(L, T, dT, NT, N_carl, random_init, write_during)
-        fname = params.create_filename()
+        params = Parameters(
+            L, T, dT, NT, N_carl,
+            random_init, write_during, num_cores
+        )
+        fname = 'f/' + params.create_filename()
         run_simulation(params, fname)
-        # then plot some results
+        results = plot.read_exp_val_file(fname)
+        plot.plot_expectation_vs_temp(params, fname, results)
 
 class Parameters:
-    def __init__(self, L, T, dT, NT, N_carl, random_init, write_during):
+    def __init__(self, L, T, dT, NT, N_carl, random_init, write_during,
+            num_cores=1
+        ):
         self.L = L
         self.T = T
         self.dT = dT
@@ -123,6 +129,7 @@ class Parameters:
         self.N_carl = N_carl
         self.random_init = random_init
         self.write_during = write_during
+        self.num_cores = num_cores
 
     def create_filename(self):
         """Create a filename based on the parameters to the simulation.
@@ -149,7 +156,8 @@ class Parameters:
             parameter (list): a list of all the parameters
 
         """
-        return [s.L, s.T, s.dT, s.NT, s.N_carl, s.random_init, s.write_during]
+        return [s.L, s.T, s.dT, s.NT, s.N_carl,
+                s.random_init, s.write_during, s.num_cores]
 
 if __name__ == '__main__':
     L = 2
