@@ -117,6 +117,54 @@ def plot_comparison(params, fname, data):
     fig.tight_layout(rect=[0, 0.03, 1, 0.95])
     fig.savefig(os.path.join(path, fname + '_comp.pdf'))
 
+def plot_comparison2(params, fname, data):
+    Cycle = data['Cycle'][0]
+    T = data['Temperature'].to_numpy()
+    E = data['MeanEnergy'].to_numpy()
+    Cv = data['HeatCapacity'].to_numpy()
+    chi = data['MagneticSusceptibility'].to_numpy()
+    Mabs = data['Magnetization_Abs'].to_numpy()
+    E_teo, Mabs_teo, chi_teo, Cv_teo = theoretical_values(T)
+
+    title = 'Random'
+    color = colors['blue']
+
+    Last_index = len(T) - 1
+    fig, axs = plt.subplots(2, 2)
+    title += ' configuration\n'
+    title += f'${params.L}' + r'\times' + f'{params.L}$ spins'
+    fig.suptitle(title)
+
+    # expectation value for energy
+    axs[0][0].set_title('Expectation value for energy')
+    axs[0][0].plot(T, E, label="Computed", color=color)
+    axs[0][0].plot(T, E_teo, '--', color = colors['green'], label="Theoretical")
+    axs[0][0].set(ylabel=r'$\left < E\right >$ [J]')
+
+    # heat capacity
+    axs[1][0].set_title('Heat capacity for constant volume')
+    axs[1][0].plot(T, Cv, color=color, label="Computed")
+    axs[1][0].plot(T, Cv_teo, '--', color = colors['green'], label="Theoretical")
+    axs[1][0].set(ylabel=r'$\left<C_V\right>$ [J/K]')
+
+    # magnetic susceptibility
+    axs[0][1].set_title('Susceptibility')
+    axs[0][1].plot(T, chi, color=color, label="Computed")
+    axs[0][1].plot(T, chi_teo, '--', color=colors['green'], label="Theoretical")
+    axs[0][1].set(ylabel=r'$\chi$ [1/J]')
+
+    # mean magnetization
+    axs[1][1].set_title('Mean absolute magnetization')
+    axs[1][1].plot(T, Mabs, color=color, label="Computed")
+    axs[1][1].plot(T, Mabs_teo, '--', color=colors['green'], label="Theoretical")
+    axs[1][1].set(ylabel=r'$\left<|M|\right>$')
+
+    for ax in axs.flat:
+        ax.set(xlabel=r'Temperature [J/$k_B$]')
+        ax.legend()
+    fig.tight_layout(rect=[0, 0.03, 1, 0.95])
+    fig.savefig(os.path.join(path, fname + '_comp.pdf'))
+
 def plot_expectation_values(params_list, fname, dfs):
     assert (len(params_list) == len(dfs) == 2)
     fig, axs = plt.subplots(2, 2)

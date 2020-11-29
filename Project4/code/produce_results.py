@@ -44,7 +44,7 @@ def results_c():
     T = 1
     dT = 0.0
     NT = 1
-    N = 100_000
+    N = 1_000_000
     random_inits = [True, False]
     write_during = True
     for random_init in random_inits:
@@ -53,6 +53,16 @@ def results_c():
         run_simulation(params, fname)
         results = plot.read_exp_val_file(fname)
         plot.plot_comparison(params, fname, results)
+    # Run comparison as a function of temperature    
+    dT = 0.01
+    NT = 240
+    random_inits = True
+    write_during = False
+    params = Parameters(L, T, dT, NT, N, random_init, write_during, num_cores=8)
+    fname = 'c/' + params.create_filename()
+    run_simulation(params, fname)
+    results = plot.read_exp_val_file(fname)
+    plot.plot_comparison2(params, fname, results)
 
 def results_d_and_e():
     """Simulate a square lattice with L=20 spins and plot mean energy and
