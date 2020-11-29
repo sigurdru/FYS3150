@@ -103,11 +103,11 @@ def results_f():
     Ls = [40, 60, 80, 100]
     T = 2.0
     dT = 0.04
-    NT = 16
-    N_carl = 100_000
+    NT = 14
+    N_carl = 1_000_000
     random_init = True
     write_during = False
-    num_cores = 8
+    num_cores = 7
     for L in Ls:
         params = Parameters(
             L, T, dT, NT, N_carl,

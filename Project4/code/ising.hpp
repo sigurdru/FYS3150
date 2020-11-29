@@ -9,7 +9,7 @@ class MetropolisSampling {
         double *EnergyDifference;
         double m_E2, m_M2;
         double Energy, MagneticMoment;
-        int NumSpins, NumberOfFlips;
+        int NumSpins;
         std::string ExpValsFname, LatticeFname;
         std::ofstream ExpValsOutfile, LatticeOutfile;
 
@@ -19,6 +19,7 @@ class MetropolisSampling {
         void InitializeLattice(bool);
 
     public:
+        int NumberOfFlips;
         double m_E, m_Mabs, m_HeatCapacity, m_MagneticSusceptibility;
         double *ExpectationValues;
         MetropolisSampling(int, bool, std::string);

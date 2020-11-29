@@ -36,6 +36,7 @@ int main(int argc, char* argv[]) {
     WriteDuringSimulation = (WriteDuringArg == "true");
 
     int cycles[N_T];
+    int NumberOfFlips[N_T];
     double t_list[N_T];
     double E_values[N_T];
     double Mabs_values[N_T];
@@ -53,6 +54,7 @@ int main(int argc, char* argv[]) {
             solver.Solve(N_carl, T, WriteDuringSimulation);
             solver.NormAndCalcExp(N_carl, T);
             cycles[i] = N_carl;
+            NumberOfFlips[i] = solver.NumberOfFlips;
             t_list[i] = T;
             E_values[i] = solver.m_E;
             Mabs_values[i] = solver.m_Mabs;
@@ -71,6 +73,7 @@ int main(int argc, char* argv[]) {
         ofilename.append(fname).append(".csv");
         ofile.open(ofilename);
         ofile << "Cycle"
+              << ",NumberOfFlips"
               << ",Temperature"
               << ",MeanEnergy"
               << ",Magnetization_Abs"
@@ -79,6 +82,7 @@ int main(int argc, char* argv[]) {
         for (int i = 0; i<N_T; i++)
         {
             ofile << cycles[i] << ","
+                  << NumberOfFlips[i] << ","
                   << t_list[i] << ","
                   << E_values[i] << ","
                   << Mabs_values[i] << ","
