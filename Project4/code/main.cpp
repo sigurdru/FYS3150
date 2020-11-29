@@ -36,7 +36,7 @@ int main(int argc, char* argv[]) {
     WriteDuringSimulation = (WriteDuringArg == "true");
 
     int cycles[N_T];
-    int NumberOfFlips[N_T];
+    unsigned int NumberOfFlips[N_T];
     double t_list[N_T];
     double E_values[N_T];
     double Mabs_values[N_T];
