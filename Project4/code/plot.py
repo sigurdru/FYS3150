@@ -68,7 +68,7 @@ def plot_comparison(params, fname, data):
     color = colors['blue'] if params.random_init else colors['red']
 
     # expectation value for energy
-    axs[0][0].set_title(r'$\left<E\right>$')
+    axs[0][0].set_title('Expectation value for energy')
     axs[0][0].plot(Cycle, E, label="Computed", color=color)
     axs[0][0].plot(
         [Cycle[0], Cycle[Last_index]],
@@ -76,10 +76,10 @@ def plot_comparison(params, fname, data):
         '--', color=colors['green'],
         label="Theoretical"
     )
-    axs[0][0].set(ylabel='unitmaddafakka')
+    axs[0][0].set(ylabel=r'$\left < E\right >$ [J]')
 
     # heat capacity
-    axs[1][0].set_title(r'$\left<C_V\right>$')
+    axs[1][0].set_title('Heat capacity for constant volume')
     axs[1][0].plot(Cycle, Cv, color=color, label="Computed")
     axs[1][0].plot(
         [Cycle[0], Cycle[Last_index]],
@@ -87,10 +87,10 @@ def plot_comparison(params, fname, data):
         '--', color=colors['green'],
         label="Theoretical"
     )
-    axs[1][0].set(ylabel='unitmaddafakka')
+    axs[1][0].set(ylabel=r'$\left<C_V\right>$ [J/K]')
 
     # magnetic susceptibility
-    axs[0][1].set_title(r'$\chi$')
+    axs[0][1].set_title('Susceptibility')
     axs[0][1].plot(Cycle, chi, color=color, label="Computed")
     axs[0][1].plot(
         [Cycle[0], Cycle[Last_index]],
@@ -98,10 +98,10 @@ def plot_comparison(params, fname, data):
         '--', color=colors['green'],
         label="Theoretical"
     )
-    axs[0][1].set(ylabel='unitmaddafakka')
+    axs[0][1].set(ylabel=r'$\chi$ [1/J]')
 
     # mean magnetization
-    axs[1][1].set_title(r'$\left<|M|\right>$')
+    axs[1][1].set_title('Mean absolute magnetization')
     axs[1][1].plot(Cycle, Mabs, color=color, label="Computed")
     axs[1][1].plot(
         [Cycle[0], Cycle[Last_index]],
@@ -109,12 +109,12 @@ def plot_comparison(params, fname, data):
         '--', color=colors['green'],
         label="Theoretical"
     )
-    axs[1][1].set(ylabel='unitmaddafakka')
+    axs[1][1].set(ylabel=r'$\left<|M|\right>$')
 
     for ax in axs.flat:
         ax.set(xlabel='Number of Monte Carlo cycles')
         ax.legend()
-    fig.tight_layout()
+    fig.tight_layout(rect=[0, 0.03, 1, 0.95])
     fig.savefig(os.path.join(path, fname + '_comp.pdf'))
 
 def plot_expectation_values(params_list, fname, dfs):
@@ -141,21 +141,21 @@ def plot_expectation_values(params_list, fname, dfs):
         title = f'${params.L}' + r'\times' + f'{params.L}$ spins, '
         title += f'$T$ = {params.T}'
         fig.suptitle(title)
-        axs[0][0].set_title(r'$\left<E\right>$')
+        axs[0][0].set_title('Mean energy')
         axs[0][0].plot(Cycle, E, style, color=color, label=label)
-        axs[0][0].set(ylabel='unitmaddafakka')
+        axs[0][0].set(ylabel=r'$\left<E\right>$ [J]')
 
-        axs[1][0].set_title(r'$\left<C_V\right>$')
+        axs[1][0].set_title('Heat capacity for constant volume')
         axs[1][0].plot(Cycle, Cv, style, color=color, label=label)
-        axs[1][0].set(ylabel='unitmaddafakka')
+        axs[1][0].set(ylabel=r'$\left<C_V\right>$ [J/K]')
 
-        axs[0][1].set_title(r'$\chi$')
+        axs[0][1].set_title('Susceptibility')
         axs[0][1].plot(Cycle, chi, style, color=color, label=label)
-        axs[0][1].set(ylabel='unitmaddafakka')
+        axs[0][1].set(ylabel=r'$\chi$ [1/J]')
 
-        axs[1][1].set_title(r'$\left<|M|\right>$')
+        axs[1][1].set_title('Mean absolute magnetization')
         axs[1][1].plot(Cycle, Mabs, style, color=color, label=label)
-        axs[1][1].set(ylabel='unitmaddafakka')
+        axs[1][1].set(ylabel=r'$\left<|M|\right>$')
 
     for ax in axs.flat:
         ax.set(xlabel='Number of Monte Carlo cycles')
@@ -182,22 +182,22 @@ def plot_expectation_vs_temp(params, fname, data):
     ax = axs[0][0]
     ax.set_title('Energy')
     ax.plot(T, E, color=colors['blue'])
-    ax.set(ylabel=r'$\left<E\right>$, unitmaddafakka')
+    ax.set(ylabel=r'$\left<E\right>$ [J]')
 
     ax = axs[1][0]
     ax.set_title('Heat capacity')
     ax.plot(T, Cv, color=colors['blue'])
-    ax.set(ylabel=r'$\left<C_V\right>$, unitmaddafakka')
+    ax.set(ylabel=r'$\left<C_V\right>$ [J/K]')
 
     ax = axs[0][1]
     ax.set_title('Magnetic susceptibility')
     ax.plot(T, chi, color=colors['blue'])
-    ax.set(ylabel=r'$\chi$, unitmaddafakka')
+    ax.set(ylabel=r'$\chi$ [1/J]')
 
     ax = axs[1][1]
     ax.set_title('Absolute magnetization')
     ax.plot(T, Mabs, color=colors['blue'])
-    ax.set(ylabel=r'$\left<|M|\right>$, unitmaddafakka')
+    ax.set(ylabel=r'$\left<|M|\right>$')
 
     for ax in axs.flat:
         ax.set(xlabel='Temperature')
@@ -308,7 +308,7 @@ if __name__ == '__main__':
     # num_spins = sys.argv[2]
     # method = sys.argv[3]
     # if method == 'plot_comparison':
-        # plot_comparison(fname)
+    #     plot_comparison(fname)
     # elif method == 'plot_expectation_values':
         # plot_expectation_values(fname)
     # elif method == 'plot_expectation_vs_temp':

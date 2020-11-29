@@ -88,7 +88,7 @@ Hei jeg heter abstract
 
 \section{Introduction}
 
-A phase transition is a change of the macroscopic properties of a substance due to a change in for example temperature or pressure. This can have dramatic effects, like the Meissner effect, where at a certain critical temperature superconductors become very diamagnetic (susceptibility in the order of  negative $10^5$). In this report, we are going to study the phase transition of two dimensional lattices using the Icing model and Monte Carlo simulations. In the theory section you will find a short description of the theory needed in the report. We also list some calculations and ways in which we have optimized our code in the appendix.
+A phase transition is a change of the macroscopic properties of a substance due to a change in for example temperature or pressure. This can have dramatic effects, like the Meissner effect, where at a certain critical temperature superconductors become very diamagnetic (susceptibility in the order of  negative $10^5$). In this report, we are going to study the phase transition of two dimensional lattices using the Ising model and Monte Carlo simulations. In the theory section you will find a short description of the theory needed in the report. We also list some calculations and ways in which we have optimized our code in the appendix.
 
 We test our code against analytical results to make sure it runs correctly. For a 2x2 lattice we can derive analytical expressions for susceptibility, heat capacity for constant volume, mean energy and mean absolute magnetization. Using this, we can compare our algorithm with analytical results for different temperatures. This way we also get an idea of how many iterations are needed for the code to produce reliable results.
 
@@ -177,7 +177,7 @@ Where $\sigma_M$ is the variance of $|M|$. We evaluate the absolute value of $M$
 \end{equation}
 $\sigma_E$ is the variance of $E$.
 
-\subsection*{Icing model for two dimensional lattice} \label{sect:2by2Lattice}
+\subsection*{Ising model for two dimensional lattice} \label{sect:2by2Lattice}
 
 From \cite{lectures2015} chapter 13.3.1, the energy in a 2D lattice with no external magnetic field is given by
 \begin{equation}
@@ -290,7 +290,7 @@ We also plotted the number of accepted configurations as a function of Monte Car
 
 \begin{figure*}[!htb]
 	\includegraphics[width=16cm]{../output/c/L2-T1-dT0_0-NT1-N5-RandomTrue_comp.pdf}
-	\includegraphics[width=16cm]{../output/c/L2-T1-dT0_0-NT1-N5-RandomTrue_comp.pdf}
+	\includegraphics[width=16cm]{../output/c/L2-T1-dT0_0-NT1-N5-RandomFalse_comp.pdf}
 	\caption{In this figure you see the theoretical and computed values of $\left<E\right>$, $\left<|M|\right>$, $C_V$ and $\chi$, for a 2x2 lattice and temperature $T=1J/k_B$. The top four plots are from random initial values, and the bottom four are from all pointing in the same direction.}
 	\label{fig:L2_T1_Random_and_not}
 \end{figure*}
