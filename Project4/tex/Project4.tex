@@ -282,17 +282,21 @@ First we look at how our system behaves for different lattice sizes, around crit
 
 \section{Results}
 
-In figure \ref{fig:L2_T1_Random_and_not} you find theoretical and computed values for $\left<E\right>$, $\left<|M|\right>$, $C_V$ and $\chi$, in a 2x2 lattice. Both with random (top four plots) initial values, and ordered (all spins starting in the same direction) initial conditions (bottom four plots).
+In figure \ref{fig:L2_T1_Random_and_not} you find theoretical and computed values for $\left<E\right>$, $\left<|M|\right>$, $C_V$ and $\chi$, in a 2x2 lattice. Both with random (top four plots) initial values, and ordered (all spins starting in the same direction) initial conditions (bottom four plots). Afterwards we also plotted them as a function of temperature with random initial conditions, see figure \ref{fig:L2_Random}.
 
-Similar plots can be found for the 20x20 lattice in figure \ref{fig:L20_T1_and_T2_4}. There we have plotted the computed values of $\left<E\right>$, $\left<|M|\right>$, $C_V$ and $\chi$, where the top four are for the temperature $T=1$ and the bottom four are for $T=2.4J/k_B$.
+Similar plots can be found for the 20x20 lattice in figure \ref{fig:L20_T1_and_T2_4}. There we have plotted the computed values of $\left<E\right>$, $\left<|M|\right>$, $C_V$ and $\chi$, where the top four are for the temperature $T=1$ and the bottom four are for $T=2.4\rm{J}/k_B$.
 
-We also plotted the number of accepted configurations as a function of Monte Carlo Cycles in figure \ref{fig:Num_flips_T1_and_T2_4}. The top two plots are for temperature $T=1J/k_B$, with both random and ordered initial configuration, and the bottom two are with temperature $T=2.4J/k_B$.
-
+We also plotted the number of accepted configurations as a function of Monte Carlo Cycles in figure \ref{fig:Num_flips_T1_and_T2_4}. The top two plots are for temperature $T=1\rm{J}/k_B$, with both random and ordered initial configuration, and the bottom two are with temperature $T=2.4\rm{J}/k_B$.
 \begin{figure*}[!htb]
 	\includegraphics[width=16cm]{../output/c/L2-T1-dT0_0-NT1-N5-RandomTrue_comp.pdf}
 	\includegraphics[width=16cm]{../output/c/L2-T1-dT0_0-NT1-N5-RandomFalse_comp.pdf}
 	\caption{In this figure you see the theoretical and computed values of $\left<E\right>$, $\left<|M|\right>$, $C_V$ and $\chi$, for a 2x2 lattice and temperature $T=1J/k_B$. The top four plots are from random initial values, and the bottom four are from all pointing in the same direction.}
 	\label{fig:L2_T1_Random_and_not}
+\end{figure*}
+\begin{figure*}[!htb]
+	\includegraphics[width=\linewidth]{../output/c/L2-T1-dT0_01-NT240-N5-RandomFalse_comp.pdf}
+	\caption{In this figure you see the theoretical and computed values of $\left<E\right>$, $\left<|M|\right>$, $C_V$ and $\chi$, for a 2x2 lattice. They are all plotted as a function of temperature.}
+	\label{fig:L2_Random}
 \end{figure*}
 \begin{figure*}[!htb]
 	\includegraphics[width=16cm]{../output/de/L20-T1-dT0_0-NT1-N5-ExpVals.pdf}
@@ -309,7 +313,7 @@ We also plotted the number of accepted configurations as a function of Monte Car
 
 \section{Discussion}
 
-slette første delen av data
+When plotting for a specific temperature as a function Monte Carlo cycles, there was always what we could describe as a break in time.
 
 \section{Appendix}
 \subsection{Algorithm specific optimization}
@@ -396,9 +400,9 @@ int PeriodicBoundary(int i, int limit, int add) {
 	return (i+limit+add) % (limit);
 }
 \end{lstlisting}
-that takes the current index you are evaluating (\texttt{i}), the total size (\texttt{limit}) and the amount you want to go forward and backward (\texttt{add}). Then we sum all the arguments and take the rest, reassuring us we always arrive at the right index, or if we are at the edge, wrap back around.
+that takes the current index you are evaluating (\texttt{i}), the total size (\texttt{limit}) and the amount you want to go forward and backward (\texttt{add}). Then we sum all the arguments and take the rest, reassuring us that we always arrive at the right index.
 
-PARALELIZATION
+When we run our simulations for different temperatures, for example when studying phase transitions, we ended up parallelizing our code. The different temperatures are not dependant on eachother, so we can allocate the task to different cores. This was easiliy done with OpenMP.
 
 \subsection{Calculations of 2x2 lattice} \label{calc_of_22_lattice}
 
