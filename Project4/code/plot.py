@@ -115,7 +115,7 @@ def plot_comparison(params, fname, data):
         ax.set(xlabel='Number of Monte Carlo cycles')
         ax.legend()
     fig.tight_layout(rect=[0, 0.03, 1, 0.95])
-    fig.savefig(os.path.join(path, fname + '_comp.pdf'))
+    fig.savefig(os.path.join(path, fname + '-CompCycle.pdf'))
 
 def plot_comparison2(params, fname, data):
     Cycle = data['Cycle'][0]
@@ -163,7 +163,7 @@ def plot_comparison2(params, fname, data):
         ax.set(xlabel=r'Temperature [J/$k_B$]')
         ax.legend()
     fig.tight_layout(rect=[0, 0.03, 1, 0.95])
-    fig.savefig(os.path.join(path, fname + '_comp.pdf'))
+    fig.savefig(os.path.join(path, fname + '-CompTemp.pdf'))
 
 def plot_expectation_values(params_list, fname, dfs):
     assert (len(params_list) == len(dfs) == 2)
@@ -248,8 +248,7 @@ def plot_expectation_vs_temp(params, fname, data):
     ax.set(ylabel=r'$\left<|M|\right>$')
 
     for ax in axs.flat:
-        ax.set(xlabel='Temperature')
-        # ax.legend()
+        ax.set(xlabel=r'Temperature [J/$k_B$]')
     fig.tight_layout()
     fig.savefig(os.path.join(path, fname + '-TempExp.pdf'))
 
@@ -344,9 +343,10 @@ def plot_probability_of_energy(params_list, fname, dfs):
 def plot_percentage_of_accepted_flips(params_list, df_list):
     assert len(params_list) == len(df_list) == 4
     fig, ax = plt.subplots()
-    fig.suptitle('Fraction of accepted configurations')
-    ax.set_title('Random configuration')
-    ax.set_xlabel('Temperature, UNITS')
+    title = 'Fraction of accepted configurations'
+    title += '\nRandom start configuration'
+    fig.suptitle(title)
+    ax.set_xlabel(r'Temperature, [J/$k_B$]')
     ax.set_ylabel('Flipped spins, [\% of total]')
     for i in range(len(params_list)):
         params = params_list[i]
@@ -355,7 +355,7 @@ def plot_percentage_of_accepted_flips(params_list, df_list):
         num_possible_flips = params.N_carl*params.L**2
         ax.plot(
             df['Temperature'],
-            df['NumberOfFlips']/num_possible_flips,
+            df['NumberOfFlips']/num_possible_flips*100,     # % of total
             label=f'${params.L}' + r'\times' + f'{params.L}$ spins'
         )
     ax.legend()

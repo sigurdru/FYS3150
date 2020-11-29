@@ -126,7 +126,7 @@ def results_f():
             random_init, write_during, num_cores
         )
         fname = 'f/' + params.create_filename()
-        # run_simulation(params, fname)
+        run_simulation(params, fname)
         results = plot.read_exp_val_file(fname)
         params_list.append(params)
         df_list.append(results)
