@@ -293,6 +293,27 @@ def plot_probability_of_energy(params_list, fname, dfs):
     fig.tight_layout()
     fig.savefig(os.path.join(path, fname + '-ProbE.pdf'))
 
+def plot_percentage_of_accepted_flips(params_list, df_list):
+    assert len(params_list) == len(df_list) == 4
+    fig, ax = plt.subplots()
+    fig.suptitle('Fraction of accepted configurations')
+    ax.set_title('Random configuration')
+    ax.set_xlabel('Temperature, UNITS')
+    ax.set_ylabel('Flipped spins, [\% of total]')
+    for i in range(len(params_list)):
+        params = params_list[i]
+        assert params.random_init
+        df = df_list[i]
+        num_possible_flips = params.N_carl*params.L**2
+        ax.plot(
+            df['Temperature'],
+            df['NumberOfFlips']/num_possible_flips,
+            label=f'${params.L}' + r'\times' + f'{params.L}$ spins'
+        )
+    ax.legend()
+    fig.tight_layout()
+    fname = 'f/fract_of_accepted_configs.pdf'
+    fig.savefig(os.path.join(path, fname))
 
 path = '../output'
 colors = {

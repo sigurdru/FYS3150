@@ -19,7 +19,7 @@ class MetropolisSampling {
         void InitializeLattice(bool);
 
     public:
-        int NumberOfFlips;
+        unsigned int NumberOfFlips;
         double m_E, m_Mabs, m_HeatCapacity, m_MagneticSusceptibility;
         double *ExpectationValues;
         MetropolisSampling(int, bool, std::string);

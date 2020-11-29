@@ -108,15 +108,20 @@ def results_f():
     random_init = True
     write_during = False
     num_cores = 7
+    params_list = []
+    df_list = []
     for L in Ls:
         params = Parameters(
             L, T, dT, NT, N_carl,
             random_init, write_during, num_cores
         )
         fname = 'f/' + params.create_filename()
-        run_simulation(params, fname)
+        # run_simulation(params, fname)
         results = plot.read_exp_val_file(fname)
+        params_list.append(params)
+        df_list.append(results)
         plot.plot_expectation_vs_temp(params, fname, results)
+    plot.plot_percentage_of_accepted_flips(params_list, df_list)
 
 class Parameters:
     def __init__(self, L, T, dT, NT, N_carl, random_init, write_during,
