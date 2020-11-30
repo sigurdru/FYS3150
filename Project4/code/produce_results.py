@@ -24,8 +24,7 @@ def task_results(task):
     if task == 'all':
         results_c()
         results_d_and_e()
-        results_f()
-        results_g()
+        # results_f()
     elif task == 'c':
         results_c()
     elif task == 'de':
@@ -44,7 +43,7 @@ def results_c():
     T = 1
     dT = 0.0
     NT = 1
-    N = 1_000_000
+    N = 100_000
     random_inits = [True, False]
     write_during = True
     for random_init in random_inits:
@@ -56,9 +55,11 @@ def results_c():
     # Run comparison as a function of temperature    
     dT = 0.01
     NT = 240
+    N = 1_000_000
     random_inits = True
     write_during = False
-    params = Parameters(L, T, dT, NT, N, random_init, write_during, num_cores=8)
+    num_cores = 4
+    params = Parameters(L, T, dT, NT, N, random_init, write_during, num_cores)
     fname = 'c/' + params.create_filename()
     run_simulation(params, fname)
     results = plot.read_exp_val_file(fname)
@@ -117,7 +118,7 @@ def results_f():
     N_carl = 1_000_000
     random_init = True
     write_during = False
-    num_cores = 7
+    num_cores = 4
     params_list = []
     df_list = []
     for L in Ls:

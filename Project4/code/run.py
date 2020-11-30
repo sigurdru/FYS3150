@@ -47,7 +47,7 @@ params.add_argument('-W', '--write',
 )
 params.add_argument('-NC', '--num-cores',
     type=int,
-    default=8,
+    default=4,
     help='The number of cores to use if number of temperatures is greater than 1'
 )
 
