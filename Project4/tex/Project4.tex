@@ -81,7 +81,11 @@
 \end{titlepage}
 
 \begin{abstract}
-Hei jeg heter abstract
+  We have simulated a ferromagnet without the influence of an external magnetic field using the Ising model. We were able to reproduce theoretical results for a lattice with 2$\times$2 spins for a range of temperatures from 1.0 to 3.5 J/$k_B$. We simulated larger lattices with both ordered and random initial configurations and found them to converge on the same expectation values for different properties like energy, magnetic susceptibility, heat capacity and magnetization.
+
+  After the system reached its steady state, we found the probability density function describing the energy of a spin in a 20$\times$20 lattice to be a Gaussian. For $T = 1$ J$/k_B$, however, our system had the highest probability of being in its ground state ($E = -2.00$J, the lowest possible energy), with small probabilities of being in higher-energy states.
+
+  For large lattices (100$\times$100 spins), we saw indications of the critical temperature approaching Lars Onsager's result of $kT_C/\rm{J} \approx 2.269$ (valid for $\infty \times \infty$ spins). With a resolution $\Delta T = 0.04$ J/$k_B$ and using the peak of the heat capacity to identify the critical temperature, we found it to be $T_C = 2.28$ J/$k_B$ giving a relative error of 0.5\%. With this resolution we were unable to clearly separate the critical temperature of lattices of different sizes, but we did see indications of the true critical temperature being slightly higher for smaller lattices. We therefore believe the critical temperature would approach Onsager's value from above with increasing lattice sizes. With longer simulations, lowering the value of $\Delta T$, we expect to be able to reproduce Onsanger's results with increasing precision. This would be a clear way to further develop the results presented in this report.
 \end{abstract}
 \maketitle                              % creates the title
 
@@ -299,6 +303,9 @@ Our last study was on phase transitions. In figure \ref{fig:phase_trans} the com
 	\caption{In this figure you see the theoretical and computed values of $\left<E\right>$, $\left<|M|\right>$, $C_V$ and $\chi$, for a 2$\times$2 lattice. They are all plotted as a function of temperature, with random initial conditions.}
 	\label{fig:L2_Random}
 \end{figure*}
+
+
+
 \section{Discussion}
 
 From figure \ref{fig:L2_Random}, we see that the computed expectation values for a $2 \times 2$ lattice correspond extremely well with the theoretical values for temperatures $T \in [1.0, 3.5]$ J/$k_B$. When plotting for a specific temperature as a function Monte Carlo cycles, there was always what we could describe as a break-in time. Figure \ref{fig:L2_T1_Random_and_not} shows that we can potentially have large fluctuations during the first few thousand cycles. It seems that we can be fairly confident in our computed values after about 20 000 cycles. Notice that in figure \ref{fig:L2_T1_Random_and_not} the scales on the y-axes differ between the ordered and random configuration. The system in its ordered start configuration is already in or close to its equilibrium state from the start of the simulation and the expectation values never fluctuate far from the expected values. The relative error in energy is at most 0.2\% for the ordered start configuration and 3\% for the random start configuration. 100 000 Monte Carlo cycles seems sufficient to be confident that the relative error in our computed expectation values is low.
