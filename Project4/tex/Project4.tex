@@ -96,7 +96,7 @@ Next we do a more careful study of how many Monte Carlo iterations we need, befo
 
 From the results of these simulations we can also approximate the probability distribution for energy. This is done by counting the number of times each possible value for the system's total energy occurs during the simulation. We visualize this using a histogram plot and compare it to the computed variance in energy $\sigma_E^2$.
 
-Lastly, we do a numerical study of phase transitions. We simulate $L \times L$ lattices with $L = \{40, 60, 80, 100\}$ for a range of temperatures $T\in[2.0,2.3]$ (in units of J/$k_B$). We then plot the computed mean energy $\left<E\right>$, mean absolute magnetization $\left<|M|\right>$, heat capacity $C_V$ and susceptibility $\chi$, as functions of temperature. Hopefully we can then identify signs of phase transition and use our results to reproduce Lars Onsager's critical temperature (see \cite{larsonsager}) of $kT_C/\rm{J}=2/\ln(1+\sqrt{2})\approx2.269$.
+Lastly, we do a numerical study of phase transitions. We simulate $L \times L$ lattices with $L = \{40, 60, 80, 100\}$ for a range of temperatures $T\in[2.0,2.5]$ (in units of J/$k_B$). We then plot the computed mean energy $\left<E\right>$, mean absolute magnetization $\left<|M|\right>$, heat capacity $C_V$ and susceptibility $\chi$, as functions of temperature. Hopefully we can then identify signs of phase transition and use our results to reproduce Lars Onsager's critical temperature (see \cite{larsonsager}) of $kT_C/\rm{J}=2/\ln(1+\sqrt{2})\approx2.269$.
 
 For our studies we have used c++ for heavy computation, python for visualization and automation. All the code along with instructions on how to run it, can be cloned from our GitHub repository\footnote{github.com/sigurdru/FYS3150/tree/master/Project4}.
 
@@ -168,12 +168,12 @@ and mean square magnetic moment ($\left<M^2\right>$) by
 With this we can also find the susceptibility $\chi$
 \begin{equation}
 	\label{eq:magnetic_susceptibility}
-	\chi = \beta \sigma^2_M, \ \ \sigma_M = \sqrt{\left<M^2\right> - \left<|M|\right>}
+	\chi = \beta \sigma^2_M, \ \ \sigma_M = \sqrt{\left<M^2\right> - \left<|M|\right>^2}
 \end{equation}
 Where $\sigma_M$ is the standard deviation of $|M|$. We evaluate the absolute value of $M$ because that gives nicer plots. Specific heat capacity at constant volume $C_V$ is given by
 \begin{equation}
 	\label{eq:specific_heat_capacity}
-	C_V = \frac{\beta}{T}\sigma^2_E, \ \ \sigma_E = \sqrt{\left<E^2\right> - \left<E\right>}
+	C_V = \frac{\beta}{T}\sigma^2_E, \ \ \sigma_E = \sqrt{\left<E^2\right> - \left<E\right>^2}
 \end{equation}
 $\sigma_E$ is the standard deviation of $E$.
 
@@ -220,6 +220,12 @@ Another relation we can find is correlation length ($\xi$), which describes the 
 	\xi(T) \sim \abs{T_C - T}^\nu.
 \end{equation}
 Where $\nu$ is another critical exponent, which we will set to $\nu=1$ in our report.
+
+HEIEHI SKRIV HER
+\begin{equation}
+	\label{eq:critical_temperature}
+	T_C(L) - T_C(L\rightarrow\infty) = aL^{-1/\nu}
+\end{equation}
 
 \section{Methods}
 
@@ -269,16 +275,14 @@ With the partition function and the canonical ensemble through equation \eqref{e
 
 With this we can compare our simulations to expected theoretical values. Plotting expectation values (for $T=1$J/$k_B$) as a function of Monte Carlo iterations we can get an idea of how many we need to reach equilibrium. Then we can plot simulated and theoretical expectation values as a function of temperature, to see how well they correspond. Ideally we want them to overlap completely.
 
-\subsection{Reaching the most likely state (denne må finskrives)}
-From looking at an 2$\times$2 lattice, we will get an idea of how many Monte Carlo cycles we will need to reach equilibrium. However we want to study this more carefully, testing for $L=20$ spins. First with a temperature of $T = 1 $J$/k_B$, then $T = 2.4 $J$/k_B$, we will plot the expectation value of energy ($\left<E\right>$) and absolute magnetization ($\left<|M|\right>$) as a function of iterations. After testing with random initial conditions, we also do the same looking spin starting in the same direction.
+\subsection{Reaching the most likely state}
+From looking at an 2$\times$2 lattice, we will get an idea of how many Monte Carlo cycles we will need to reach equilibrium. However we want to study this more carefully, testing for $L=20$. First with a temperature of $T = 1 $J$/k_B$, then $T = 2.4 $J$/k_B$, we will plot $\left<E\right>$, $\left<|M|\right>$, $\chi$ and $C_V$, as a function of iterations. After testing with random initial conditions, we also do the same looking spin starting in the same direction. Trying to get a better idea of what happens in the beginning of the algorithm, we also study the number of accepted configurations. This means we count the number of times we flip a spin. We therefore make a plot of the total number of accepted configurations as a function of iterations. We also look at how this varies with temperatures $T = 1$J$/k_B$, $T=2.4$J$/k_B$, random and ordered initial conditions.
 
-We also want to study the number of accepted configurations. This means we want to count the number of times we flip a spin. We therefore make a plot of the total number of accepted configurations as a function of iterations. We also look at how this varies with temperature.
-
-It is interesting what the probability of obtaining an energy $E$ is (like a numerical partition function). The way we do this, is by finding out how many times a given energy $E$ appears and then divide it by the total number of energies tested for. Then we will get an estimate of the probability one energy appears. Then compare it to the computed variance in energy ($\sigma_E^2$).
+It is interesting to see what the probability of obtaining an energy $E$ is (like a numerical partition function). The way we do this, is by finding out how many times a given energy $E$ appears and then divide it by the total number of energies tested for. After normalizing, we will get an estimate of the probability density that different energies appear.
 
 \subsection{Study of phase transition}
 
-First we look at how our system behaves for different lattice sizes, around critical temperature. We test for $L=40$, $L=60$, $L=80$ and $L=100$ in the temperature range $T[K_B/J]\in [2.0, 2.3]$. We will initially start with a temperature step of $\Delta T = 0.05$, however might change it based on results. For the different lattice sizes we will plot $\left<E\right>$, $\left<|M|\right>$, $C_V$ and $\chi$ as a function of temperature $T$. Our hope is that we can see an indication of a phase transition, namely a changes in traits around a specific temperature.
+From equation \eqref{eq:critical_temperature} we notice that the change in critical temperature $T_C$ of one lattice $L$ and for $L\rightarrow\infty$ gets smaller as we get larger lattice sizes. When we have a large enough lattice size $L$, increasing it more should not change the critical temperature, and we should have an estimate of the theoretical value. We use Lars Onsager's theoretical result as comparison: $k_BT_C/J \approx 2.269$ (see \cite{larsonsager}). First we look at how our system behaves for different lattice sizes, around critical temperature. We test for $L=40$, $L=60$, $L=80$ and $L=100$ in the temperature range $T[\rm{J}/k_B]\in [2.0, 2.5]$. Our hope is that we notice little change between $L=80$ and $L=100$. We will initially start with a temperature step of $\Delta T = 0.05$, however might change it based on results. For the different lattice sizes we will plot $\left<E\right>$, $\left<|M|\right>$, $C_V$ and $\chi$ as a function of temperature $T$. We thereafter look for a change in properties, and use that to find the critical temperatures for the different lattice sizes.
 
 \section{Results}
 
@@ -288,7 +292,7 @@ Similar plots can be found for the 20$\times$20 lattice in figure \ref{fig:L20_T
 
 We also plotted the number of accepted configurations as a function of Monte Carlo Cycles in figure \ref{fig:Num_flips_T1_and_T2_4}. The top two plots are for temperature $T=1\rm{J}/k_B$, with both random and ordered initial configuration, and the bottom two are with temperature $T=2.4\rm{J}/k_B$.
 
-In figure \ref{fig:L20_prob_dist} we plotted the probability of obtaining a certain energy. The top two plots are for $T = 1$J/$k_B$ with both random and ordered initial conditions. Here there is little deviation from the lowest energy. Below we also plotted the probabilities for $T = 2.4$J/$k_B$. Since this looked like a Gaussian we did a fit on top, which is the red dotted line. In the title you see the computed variance from our simulations, and the variance from our Gaussian fit, and they turned out to be the same in both the random and ordered initial conditions.
+In figure \ref{fig:L20_prob_dist} we plotted the probability density of obtaining a certain energy. The top two plots are for $T = 1$J/$k_B$ with both random and ordered initial conditions. Here there is little deviation from the lowest energy. Below we also plotted the probabilities for $T = 2.4$J/$k_B$. Since this looked like a Gaussian we did a fit on top, which is the red dotted line. In the title you see the computed variance from our simulations, and the variance from our Gaussian fit, and they turned out to be the same in both the random and ordered initial conditions.
 
 Our last study was on phase transitions. In figure \ref{fig:phase_trans} the computed values of $\left<E\right>$, $\left<|M|\right>$, $C_V$ and $\chi$ are plotted as a function of temperature. The top four graphs are for a 40$\times$40 lattice and the bottom four are for a 100$\times$100, all temperatures are calculated with 1 000 000 Monte Carlo cycles and random initial conditions. We did not include the results from 60$\times$60 or 80$\times$80 lattice because they looked very similar. There are only minor changes in shape and how high for example heat capacity peaks. If you look at the 40$\times$40 plot for heat capacity, it peaks at around 2.0 J/K, the 100$\times$100 lattice peaks at around 2.5 J/K. The peak gets higher for larger lattice sizes, this is also the case for the 60$\times$60 and 80$\times$80 lattices
 
@@ -307,7 +311,9 @@ Figure \ref{fig:L20_T1_and_T2_4} shows that the system converges on the same exp
 
 
 
-Looking at the histograms (figure \ref{fig:L20_prob_dist}) it does not seem to make any difference weather or not we have a ordered or random initial condition. The differences we do observe are not larger than what we see from run to run. We do however see a large difference for the two different temperatures. For temperature $T = 1$J/$k_B$ we see few and discrete possible values for energy. The values we observe do make sense, considering the possible energy differences we cover in the appendix. There are five possible changes in energy ($\Delta E$), $\Delta E = 0$J, $\Delta E = \pm 4$J and $\Delta E = \pm8$J. Accounting for total number of spins ($L^2 = 400$) and ignoring $\Delta E = 0$, that equates to four different changes in energy per spin, $\Delta E_s = \pm0.01$ and $\Delta E_s = \pm0.02$. With this in mind it is intuitive that we also should see a column for $E = -1.99$J and a larger column for $E = -1.97$J. However if we study the spin orientations in the appendix we notice that $E=1.99$J is impossible and $E = 1.97$ is unlikely. When we are in ground state (all spins pointing in one direction) the only possible change in energy is $\Delta E_s=0.02$.
+Looking at the histograms (figure \ref{fig:L20_prob_dist}) it does not seem to make any difference weather or not we have a ordered or random initial condition. The differences we do observe are not larger than what we see from run to run. We do however see a large difference for the two different temperatures. For temperature $T = 1$J/$k_B$ we see few and discrete possible values for energy. The values we observe do make sense, considering the possible energy differences we cover in the appendix. There are five possible changes in energy ($\Delta E$), $\Delta E = 0$J, $\Delta E = \pm 4$J and $\Delta E = \pm8$J. Accounting for total number of spins ($L^2 = 400$) and ignoring $\Delta E = 0$, that equates to four different changes in energy per spin, $\Delta E_s = \pm0.01$ and $\Delta E_s = \pm0.02$. With this in mind it is intuitive that we also should see a column for $E = -1.99$J and a larger column for $E = -1.97$J. However if we study the spin orientations in the appendix we notice that $E=1.99$J is impossible and $E = 1.97$J is unlikely. When we are in ground state (all spins pointing in one direction) the only possible change in energy is $\Delta E_s=0.02$J. From there we notice that the only possible changes are $\Delta E_s = \pm 0.02$J and $\Delta E = 0.01$J, not $\Delta E = -0.01$. This means $E = -1.99$J is impossible. Furthermore the only way we can get $\Delta E_s=0.01$J is by changing the neighboring spin of the one we just changed. This is unlikely, and therefore we see few situations of that happening. For the temperature $T = 2.4$J/$k_B$ the result looks Gaussian, and we therefore plotted a fit on top. The variance from the fit is the same as the one we computed. This does not surprise us, because we used the same data to calculate both values. It is interesting however that the probability-density distribution has a Gaussian shape, although it is difficult to say why. We expected to see a larger spectra for observed energies however. When we look at the equation that describes probability of flip (equation \eqref{eq:prob_flip}), in the exponent, temperature is in the denominator, meaning the probability for a flip gets higher overall.
+eksluderte = fjerne 50 \%
+kjør lengre =
 
 The simulations giving us the results in figure \ref{fig:phase_trans} are quite costly and time consuming for large lattices. We are therefore limited in our resolution of temperature, which makes it impossible to determine the critical temperature $T_C$ exactly. But we can still read some useful information from the figure.
 
@@ -323,6 +329,7 @@ As the peaks of heat capacity and susceptibility are higher for $L = 100$ than f
 In order to determine the critical temperature more precisely, we could rerun the simulations for a narrower range of temperatures. We now know $T_C$ to be close to 2.3 J/$k_B$, and it is not necessary to cover temperatures from 2.0 J/$k_B$ to 2.5 J/$k_B$ in every simluation. It is useful to start width a wide range of values for the temperature to show the big picture like we have done here. To further develop our results, narrowing the range of $T$ and increasing the resolution would clearly be a natural first step.
 
 
+General improvements: axis fix, burn-in time
 
 \section{Conclusion}
 
@@ -452,7 +459,7 @@ Inserting the values from table \ref{tab:E_and_M_2D_lattice} into equations \eqr
 \begin{figure*}[!htb]
 	\includegraphics[width=16cm]{../output/de/L20-T1-dT0_0-NT1-N5-ProbE.pdf}
 	\includegraphics[width=16cm]{../output/de/L20-T2_4-dT0_0-NT1-N5-ProbE.pdf}
-	\caption{These histograms shows the probability of a given energy. The top two plots are for $T = 1$J/$k_B$ with ordered and random inital conditions. The bottom two are for $T = 2.4$J/$k_B$, also with random and ordered initial conditions. We have also done a gaussian fit to the bottom results (the red dotted graph). In the title you see the variance of our data ($\sigma_E$), and below the variance we computed with our simulations.}
+	\caption{These histograms shows the probability density of a given energy. The top two plots are for $T = 1$J/$k_B$ with ordered and random inital conditions. The bottom two are for $T = 2.4$J/$k_B$, also with random and ordered initial conditions. We have also done a gaussian fit to the bottom results (the red dotted graph). In the title you see the variance of our data ($\sigma_E$), and below the variance we computed with our simulations.}
 	\label{fig:L20_prob_dist}
 \end{figure*}
 \begin{figure*}[!htb]
