@@ -333,7 +333,7 @@ def plot_probability_of_energy(params_list, fname, dfs):
             title += '\n' + r'$\sigma_E^2 = ' + f'{std_dev**2:.3f}$'
             title += '\n' + r'Computed $\sigma_E^2 = ' + f'{comp_var:.3f}$'
         ax.set_title(title)
-        ax.set_xlabel('E')
+        ax.set_xlabel('E [J]')
         ax.set_ylabel('P(E)')
         ax.legend(loc=legend_loc)
     fname = '-'.join(fname.split('-')[:-1])

@@ -287,28 +287,11 @@ In figure \ref{fig:L2_T1_Random_and_not} you find theoretical and computed value
 Similar plots can be found for the 20x20 lattice in figure \ref{fig:L20_T1_and_T2_4}. There we have plotted the computed values of $\left<E\right>$, $\left<|M|\right>$, $C_V$ and $\chi$, where the top four are for the temperature $T=1$ and the bottom four are for $T=2.4\rm{J}/k_B$.
 
 We also plotted the number of accepted configurations as a function of Monte Carlo Cycles in figure \ref{fig:Num_flips_T1_and_T2_4}. The top two plots are for temperature $T=1\rm{J}/k_B$, with both random and ordered initial configuration, and the bottom two are with temperature $T=2.4\rm{J}/k_B$.
-\begin{figure*}[!htb]
-	\includegraphics[width=16cm]{../output/c/L2-T1-dT0_0-NT1-N5-RandomTrue_comp.pdf}
-	\includegraphics[width=16cm]{../output/c/L2-T1-dT0_0-NT1-N5-RandomFalse_comp.pdf}
-	\caption{In this figure you see the theoretical and computed values of $\left<E\right>$, $\left<|M|\right>$, $C_V$ and $\chi$, for a 2x2 lattice and temperature $T=1J/k_B$. The top four plots are from random initial values, and the bottom four are from all pointing in the same direction.}
-	\label{fig:L2_T1_Random_and_not}
-\end{figure*}
+
 \begin{figure*}[!htb]
 	\includegraphics[width=\linewidth]{../output/c/L2-T1-dT0_01-NT240-N5-RandomFalse_comp.pdf}
 	\caption{In this figure you see the theoretical and computed values of $\left<E\right>$, $\left<|M|\right>$, $C_V$ and $\chi$, for a 2x2 lattice. They are all plotted as a function of temperature.}
 	\label{fig:L2_Random}
-\end{figure*}
-\begin{figure*}[!htb]
-	\includegraphics[width=16cm]{../output/de/L20-T1-dT0_0-NT1-N5-ExpVals.pdf}
-	\includegraphics[width=16cm]{../output/de/L20-T2_4-dT0_0-NT1-N5-ExpVals.pdf}
-	\caption{In this figure you see the computed values of $\left<E\right>$, $\left<|M|\right>$, $C_V$ and $\chi$, for both random and ordered initial conditions. The top four shows the computed values for random and ordered initial conditions, for a temperature $T=1J/k_B$. Bottom four shows the same, only for a temperature $T=2.4J/k_B$.}
-	\label{fig:L20_T1_and_T2_4}
-\end{figure*}
-\begin{figure*}[!htb]
-	\includegraphics[width=16cm]{../output/de/L20-T1-dT0_0-NT1-N5-NumFlips.pdf}
-	\includegraphics[width=16cm]{../output/de/L20-T2_4-dT0_0-NT1-N5-NumFlips.pdf}
-	\caption{Here we have plotted the number of accepted configuration as a function of Monte Carlo cycles, for a 20x20 lattice. The top two plots are with temperature $T=1J/k_B$, and shows both random and ordered initial conditions. The bottom two shows the same, only with a temperature of $T = 2.4$.}
-	\label{fig:Num_flips_T1_and_T2_4}
 \end{figure*}
 
 \section{Discussion}
@@ -419,6 +402,30 @@ Inserting the values from table \ref{tab:E_and_M_2D_lattice} into equations \eqr
 	\chi &= \frac{32\beta}{Z}\left(\left(1 + e^{8\beta }\right) - \frac{2}{Z}\left(2 + e^{8\beta }\right)^2 \right)\\
 	C_V &= \frac{256J^2\beta}{TZ}\left(\cosh(8\beta) - \frac{4}{Z}\cosh[2](8\beta)\right)
 \end{align*}
+\begin{figure*}[!htb]
+	\includegraphics[width=16cm]{../output/c/L2-T1-dT0_0-NT1-N5-RandomTrue_comp.pdf}
+	\includegraphics[width=16cm]{../output/c/L2-T1-dT0_0-NT1-N5-RandomFalse_comp.pdf}
+	\caption{In this figure you see the theoretical and computed values of $\left<E\right>$, $\left<|M|\right>$, $C_V$ and $\chi$, for a 2x2 lattice and temperature $T=1J/k_B$. The top four plots are from random initial values, and the bottom four are from all pointing in the same direction.}
+	\label{fig:L2_T1_Random_and_not}
+\end{figure*}
+\begin{figure*}[!htb]
+	\includegraphics[width=16cm]{../output/de/L20-T1-dT0_0-NT1-N5-ExpVals.pdf}
+	\includegraphics[width=16cm]{../output/de/L20-T2_4-dT0_0-NT1-N5-ExpVals.pdf}
+	\caption{In this figure you see the computed values of $\left<E\right>$, $\left<|M|\right>$, $C_V$ and $\chi$, for both random and ordered initial conditions. The top four shows the computed values for random and ordered initial conditions, for a temperature $T=1J/k_B$. Bottom four shows the same, only for a temperature $T=2.4J/k_B$.}
+	\label{fig:L20_T1_and_T2_4}
+\end{figure*}
+\begin{figure*}[!htb]
+	\includegraphics[width=16cm]{../output/de/L20-T1-dT0_0-NT1-N5-NumFlips.pdf}
+	\includegraphics[width=16cm]{../output/de/L20-T2_4-dT0_0-NT1-N5-NumFlips.pdf}
+	\caption{Here we have plotted the number of accepted configuration as a function of Monte Carlo cycles, for a 20x20 lattice. The top two plots are with temperature $T=1J/k_B$, and shows both random and ordered initial conditions. The bottom two shows the same, only with a temperature of $T = 2.4$.}
+	\label{fig:Num_flips_T1_and_T2_4}
+\end{figure*}
+\begin{figure*}[!htb]
+	\includegraphics[width=16cm]{../output/de/L20-T1-dT0_0-NT1-N5-ProbE.pdf}
+	\includegraphics[width=16cm]{../output/de/L20-T2_4-dT0_0-NT1-N5-ProbE.pdf}
+	\caption{In this figure you see the theoretical and computed values of $\left<E\right>$, $\left<|M|\right>$, $C_V$ and $\chi$, for a 2x2 lattice. They are all plotted as a function of temperature.}
+	\label{fig:L20_prob_dist}
+\end{figure*}
 
 
 \onecolumngrid
