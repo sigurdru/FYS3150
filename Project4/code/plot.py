@@ -229,22 +229,22 @@ def plot_expectation_vs_temp(params, fname, data):
     fig.suptitle(title)
     ax = axs[0][0]
     ax.set_title('Energy')
-    ax.plot(T, E, color=colors['blue'])
+    ax.plot(T, E, '-o', color=colors['blue'])
     ax.set(ylabel=r'$\left<E\right>$ [J]')
 
     ax = axs[1][0]
     ax.set_title('Heat capacity')
-    ax.plot(T, Cv, color=colors['blue'])
+    ax.plot(T, Cv, '-o', color=colors['blue'])
     ax.set(ylabel=r'$\left<C_V\right>$ [J/K]')
 
     ax = axs[0][1]
     ax.set_title('Magnetic susceptibility')
-    ax.plot(T, chi, color=colors['blue'])
+    ax.plot(T, chi, '-o', color=colors['blue'])
     ax.set(ylabel=r'$\chi$ [1/J]')
 
     ax = axs[1][1]
     ax.set_title('Absolute magnetization')
-    ax.plot(T, Mabs, color=colors['blue'])
+    ax.plot(T, Mabs, '-o', color=colors['blue'])
     ax.set(ylabel=r'$\left<|M|\right>$')
 
     for ax in axs.flat:
