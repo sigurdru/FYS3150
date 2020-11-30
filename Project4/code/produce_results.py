@@ -24,7 +24,7 @@ def task_results(task):
     if task == 'all':
         results_c()
         results_d_and_e()
-        # results_f()
+        results_f()
     elif task == 'c':
         results_c()
     elif task == 'de':
