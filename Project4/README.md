@@ -1,4 +1,4 @@
-# FYS3150 Project 3
+# FYS3150 Project 4
 Sigurd Sørlie Rustad and Vegard Falmår.
 
 The report Project4.pdf is found in the tex directory.
