@@ -90,9 +90,9 @@ Hei jeg heter abstract
 
 A phase transition is a change of the macroscopic properties of a substance due to a change in for example temperature or pressure. This can have dramatic effects, like the Meissner effect, where at a certain critical temperature superconductors become very diamagnetic (susceptibility in the order of  negative $10^5$). In this report, we are going to study the phase transition of two dimensional lattices using the Ising model and Monte Carlo simulations. In the theory section you will find a short description of the theory needed in the report. We also list some calculations and ways in which we have optimized our code in the appendix.
 
-We test our code against analytical results to make sure it runs correctly. For a 2x2 lattice we can derive analytical expressions for susceptibility, heat capacity for constant volume, mean energy and mean absolute magnetization. Using this, we can compare our algorithm with analytical results for different temperatures. This way we also get an idea of how many iterations are needed for the code to produce reliable results.
+We test our code against analytical results to make sure it runs correctly. For a $2 \times 2$ lattice we can derive analytical expressions for susceptibility, heat capacity for constant volume, mean energy and mean absolute magnetization. Using this, we can compare our algorithm with analytical results for different temperatures. This way we also get an idea of how many iterations are needed for the code to produce reliable results.
 
-Next we do a more careful study of how many Monte Carlo iterations we need, before we reach equilibrium. Using a 20x20 lattice and temperatures $T = 1.0$, 2.4 J/$\rm k_B$, we plot mean energy and magnetization as a function of cycles. Then we can eyeball how many iterations we need to reach the most likely state. We also make a plot of the total number of accepted configurations, hopefully getting an idea of when most flips happens.
+Next we do a more careful study of how many Monte Carlo iterations we need, before we reach equilibrium. Using a $20 \times 20$ lattice and temperatures $T = 1.0$, 2.4 J/$\rm k_B$, we plot mean energy and magnetization as a function of cycles. Then we can eyeball how many iterations we need to reach the most likely state. We also make a plot of the total number of accepted configurations, hopefully getting an idea of when most flips happens.
 
 From the results of these simulations we can also approximate the probability distribution for energy. This is done by counting the number of times each possible value for the system's total energy occurs during the simulation. We visualize this using a histogram plot and compare it to the computed variance in energy $\sigma_E^2$.
 
@@ -126,7 +126,7 @@ The often used standard deviation $\sigma_A$ is the square root of the variance:
 
 \subsection*{Monte Carlo}
 
-Monte Carlo simulations is a broad term for algorithms that rely on random sampling. These algorithms have a wide range of applications, one example of which is approximating the value of pi\footnote{https://academo.org/demos/estimating-pi-monte-carlo/}. We will be using random number generators to select spins in our lattice and then to determine whether they should be flipped.
+Monte Carlo simulations is a broad term for algorithms that rely on random sampling. These algorithms have a wide range of applications, a fun example of which is approximating the value of pi\footnote{https://academo.org/demos/estimating-pi-monte-carlo/}. We will be using random number generators to select spins in our lattice and then to determine whether they should be flipped.
 
 We will be simulating $L \times L$ lattices, each consisting of $L^2$ spins. One Monte Carlo cycle entails choosing $L^2$ spins at random and flipping it based on the probability described by equation \eqref{eq:prob_flip}. Each cycle we can calculate the energy and magnetization. The idea is that after a large number of cycles $N$, we have reached a state with properties like that of a real physical system. The challenge here is having the right probability distribution and completing enough cycles $N$.
 
@@ -136,12 +136,12 @@ The probability of finding a system in a given microstate is found through the c
 	\label{eq:canonical_ensemble}
 	P_i(\beta) = \frac{\exp(-\beta E_i)}{Z},\ \ \beta = \frac{1}{k_BT}
 \end{equation}
-Here $P_i(\beta)$ is the probability of finding the system with energy $E_i$ and temperature $T$ in Kelvin. $k_B$ is Boltzmann constant and $Z$ the partition function given by
+Here $P_i(\beta)$ is the probability of finding the system with energy $E_i$ and temperature $T$ in Kelvin. $k_B$ is the Boltzmann constant and $Z$ is the partition function given by
 \begin{equation}
 	\label{eq:partition_function}
-	Z = \sum_{i = 1}^{M}\exp(-\beta E_i).
+	Z = \sum_{i = 1}^{M}\exp(-\beta E_i),
 \end{equation}
-Where $M$ is the total number of microstates.
+where $M$ is the total number of microstates.
 
 The canonical ensemble and partition function is usually hard to find, however, when obtained we can use them to find many useful relations. Below we list the expressions (without derivation) we need will need in the report. Everything is from \cite{lectures2015} chapter 13.2.2.
 
@@ -170,12 +170,12 @@ With this we can also find the susceptibility $\chi$
 	\label{eq:magnetic_susceptibility}
 	\chi = \beta \sigma^2_M, \ \ \sigma_M = \sqrt{\left<M^2\right> - \left<|M|\right>}
 \end{equation}
-Where $\sigma_M$ is the variance of $|M|$. We evaluate the absolute value of $M$ because that gives nicer plots. Specific heat capacity at constant volume $C_V$ is given by
+Where $\sigma_M$ is the standard deviation of $|M|$. We evaluate the absolute value of $M$ because that gives nicer plots. Specific heat capacity at constant volume $C_V$ is given by
 \begin{equation}
 	\label{eq:specific_heat_capacity}
 	C_V = \frac{\beta}{T}\sigma^2_E, \ \ \sigma_E = \sqrt{\left<E^2\right> - \left<E\right>}
 \end{equation}
-$\sigma_E$ is the variance of $E$.
+$\sigma_E$ is the standard deviation of $E$.
 
 \subsection*{Ising model for two dimensional lattice} \label{sect:2by2Lattice}
 
@@ -223,7 +223,7 @@ Where $\nu$ is another critical exponent, which we will set to $\nu=1$ in our re
 
 \section{Methods}
 
-As we mentioned in the introduction, in this report we are going to simulate a 2D lattice with $L^2$ number of spins, $L$ in the x- and y-direction. We will look at different numbers of spin and temperature, looking at how our system responds. We are only going to use periodic boundary conditions, meaning the edges are neighbors. For a square peace of (stretchy) paper, this would look like first folding it into a cylinder and then into a donut-shape. We are going to use random initial spin direction, unless we specify otherwise. To simulate we are going to use Monte Carlo simulations for choosing and flipping spins. We use the probability distribution described by equation \eqref{eq:prob_flip} to choose weather or not to flip spins (see the theory section for a more detailed description).
+As we mentioned in the introduction, in this report we are going to simulate a 2D lattice with $L^2$ number of spins, $L$ in the x- and y-direction. We will look at different numbers of spin and temperature, looking at how our system responds. We are only going to use periodic boundary conditions, meaning the edges are neighbors. For a square piece of (stretchy) paper, this would look like first folding it into a cylinder and then into a donut-shape. We are going to use random initial spin direction, unless we specify otherwise. To simulate we are going to use Monte Carlo simulations for choosing and flipping spins. We use the probability distribution described by equation \eqref{eq:prob_flip} to choose whether or not to flip spins (see the theory section for a more detailed description).
 
 
 
@@ -251,7 +251,7 @@ We scale our units in order to have easier numbers to work with. We use J and th
 
 \subsection{Testing of algorithm}
 
-In order to make sure our algorithm is running correctly, we want to test it. We do this by comparing it to analytical results, namely a 2x2 lattice.
+In order to make sure our algorithm is running correctly, we want to test it. We do this by comparing it to analytical results, namely a $2 \times 2$ lattice.
 
 By using equation \eqref{eq:2D_energy} and testing all 16 different combinations for a 2D lattice, we have made a table \ref{tab:E_and_M_2D_lattice} that shows all the possible energies and magnetizations, as well as the multiplicity of each configuration (marked as degeneracy).
 \begin{table}[h]
@@ -270,33 +270,41 @@ With the partition function and the canonical ensemble through equation \eqref{e
 With this we can compare our simulations to expected theoretical values. Plotting expectation values (for $T=1$J/$k_B$) as a function of Monte Carlo iterations we can get an idea of how many we need to reach equilibrium. Then we can plot simulated and theoretical expectation values as a function of temperature, to see how well they correspond. Ideally we want them to overlap completely.
 
 \subsection{Reaching the most likely state (denne må finskrives)}
-From looking at an 2x2 lattice, we will get an idea of how many Monte Carlo cycles we will need to reach equilibrium. However we want to study this more carefully, testing for $L=20$ spins. First with a temperature of $T = 1 $J$/k_B$, then $T = 2.4 $J$/k_B$, we will plot the expectation value of energy ($\left<E\right>$) and absolute magnetization ($\left<|M|\right>$) as a function of iterations. After testing with random initial conditions, we also do the same looking spin starting in the same direction.
+From looking at a $2 \times 2$ lattice, we will get an idea of how many Monte Carlo cycles we will need to reach equilibrium. However we want to study this more carefully, testing for $L=20$ spins. First with a temperature of $T = 1 $J$/k_B$, then $T = 2.4 $J$/k_B$, we will plot the expectation value of energy ($\left<E\right>$) and absolute magnetization ($\left<|M|\right>$) as a function of iterations. After testing with random initial conditions, we also do the same looking spin starting in the same direction.
 
 We also want to study the number of accepted configurations. This means we want to count the number of times we flip a spin. We therefore make a plot of the total number of accepted configurations as a function of iterations. We also look at how this varies with temperature.
 
-It is interesting what the probability of obtaining an energy $E$ is (like a numerical partition function). The way we do this, is by finding out how many times a given energy $E$ appears and then divide it by the total number of energies tested for. Then we will get an estimate of the probability one energy appears. Then compare it to the computed variance in energy ($\sigma_E$).
+It is interesting what the probability of obtaining an energy $E$ is (like a numerical partition function). The way we do this, is by finding out how many times a given energy $E$ appears and then divide it by the total number of energies tested for. Then we will get an estimate of the probability one energy appears. Then compare it to the computed variance in energy ($\sigma_E^2$).
 
 \subsection{Study of phase transition}
 
-First we look at how our system behaves for different lattice sizes, around critical temperature. We test for $L=40$, $L=60$, $L=80$ and $L=100$ in the temperature range $T[K_B/J]\in [2.0, 2.3]$. We will initially start with a temperature step of $\Delta T = 0.005$, however might change it based on results. For the different lattice sizes we will plot $\left<E\right>$, $\left<|M|\right>$, $C_V$ and $\chi$ as a function of temperature $T$. Our hope is that we can see an indication of a phase transition, namely a changes in traits around a specific temperature.
+First we look at how our system behaves for different lattice sizes, around critical temperature. We test for $L=40$, $L=60$, $L=80$ and $L=100$ in the temperature range $T[K_B/J]\in [2.0, 2.3]$. We will initially start with a temperature step of $\Delta T = 0.05$, however might change it based on results. For the different lattice sizes we will plot $\left<E\right>$, $\left<|M|\right>$, $C_V$ and $\chi$ as a function of temperature $T$. Our hope is that we can see an indication of a phase transition, namely a changes in traits around a specific temperature.
 
 \section{Results}
 
-In figure \ref{fig:L2_T1_Random_and_not} you find theoretical and computed values for $\left<E\right>$, $\left<|M|\right>$, $C_V$ and $\chi$, in a 2x2 lattice. Both with random (top four plots) initial values, and ordered (all spins starting in the same direction) initial conditions (bottom four plots). Afterwards we also plotted them as a function of temperature with random initial conditions, see figure \ref{fig:L2_Random}.
+In figure \ref{fig:L2_T1_Random_and_not} you find theoretical and computed values for $\left<E\right>$, $\left<|M|\right>$, $C_V$ and $\chi$, in a $2 \times 2$ lattice. Both with random (top four plots) initial values, and ordered (all spins starting in the same direction) initial conditions (bottom four plots). Afterwards we also plotted them as a function of temperature with random initial conditions, see figure \ref{fig:L2_Random}.
 
-Similar plots can be found for the 20x20 lattice in figure \ref{fig:L20_T1_and_T2_4}. There we have plotted the computed values of $\left<E\right>$, $\left<|M|\right>$, $C_V$ and $\chi$, where the top four are for the temperature $T=1$ and the bottom four are for $T=2.4\rm{J}/k_B$.
+Similar plots can be found for the $20 \times 20$ lattice in figure \ref{fig:L20_T1_and_T2_4}. There we have plotted the computed values of $\left<E\right>$, $\left<|M|\right>$, $C_V$ and $\chi$, where the top four are for the temperature $T=1$ and the bottom four are for $T=2.4\rm{J}/k_B$.
 
 We also plotted the number of accepted configurations as a function of Monte Carlo Cycles in figure \ref{fig:Num_flips_T1_and_T2_4}. The top two plots are for temperature $T=1\rm{J}/k_B$, with both random and ordered initial configuration, and the bottom two are with temperature $T=2.4\rm{J}/k_B$.
 
 \begin{figure*}[!htb]
 	\includegraphics[width=\linewidth]{../output/c/L2-T1-dT0_01-NT240-N6-RandomFalse-CompTemp.pdf}
-	\caption{In this figure you see the theoretical and computed values of $\left<E\right>$, $\left<|M|\right>$, $C_V$ and $\chi$, for a 2x2 lattice. They are all plotted as a function of temperature.}
+	\caption{In this figure you see the theoretical and computed values of $\left<E\right>$, $\left<|M|\right>$, $C_V$ and $\chi$, for a $2 \times 2$ lattice. They are all plotted as a function of temperature.}
 	\label{fig:L2_Random}
 \end{figure*}
 
+
+
 \section{Discussion}
 
-When plotting for a specific temperature as a function Monte Carlo cycles, there was always what we could describe as a break in time.
+From figure \ref{fig:L2_Random}, we se that the computed expectation values for a $2 \times 2$ lattice correspond extremely well with the theoretical values for temperatures $T \in [1.0, 3.5]$. When plotting for a specific temperature as a function Monte Carlo cycles, there was always what we could describe as a break-in time. Figure \ref{fig:L2_T1_Random_and_not} shows that we can potentially have large fluctuations during the first few thousand cycles. It seems that we can be fairly confident in our computed values after about 20 000 cycles. Notice that in figure \ref{fig:L2_T1_Random_and_not} the scales on the y-axes differ between the ordered and random configuration. The system in its ordered start configuration is already in or close to its equilibrium state from the start of the simulation and the expectation values never fluctuate far from the expected values. The relative error in energy is at most 0.2\% for the ordered start configuration and 3\% for the random start configuration. 100 000 Monte Carlo cycles seems sufficient to be confident that the relative error in our computed expectation values is low.
+
+However, since our simulation is based on random sampling, we saw large differences in results from different runs of the code and they were not always as quick to converge as in figure \ref{fig:L2_T1_Random_and_not}. The random start configuration of the $2 \times 2$ lattice sometimes had a large effect on the results for tens of thousands of cycles. It seemed therefore that our algorithm is quite sensitive to random variations, but that we could count on convergence past 100 000 cycles.
+
+Figure \ref{fig:L20_T1_and_T2_4} shows that the system converges on the same expectation values for all the properties with random and ordered configuration. The break-in period, where there are significant differences between the two lines only lasts for a few cycles for $T = 1$ J/$k_B$, and a few thousand cycles for $T = 2.4$ J/$k_B$. This corresponds to the initial steep rise of the graph of the top left plot in figure \ref{fig:Num_flips_T1_and_T2_4}. In the beginning of the simulation, very many spins are flipped because the system was initially far from its equilibrium state. When the system reaches its equilibrium state, the graph of the total number of flips is linear, which means that the number of flips per cycle is constant. Spins are flipped due to random, probabilistic fluctuations with the same frequency as long as the system is in its equilibrium state. The microstate changes as some spins flip from -1 to 1 and some flip from 1 to -1, but the macroscopic properties remain the same. 
+
+
 
 \section{Appendix}
 \subsection{Algorithm specific optimization}
@@ -387,7 +395,7 @@ that takes the current index you are evaluating (\texttt{i}), the total size (\t
 
 When we run our simulations for different temperatures, for example when studying phase transitions, we ended up parallelizing our code. The different temperatures are not dependant on eachother, so we can allocate the task to different cores. This was easiliy done with OpenMP.
 
-\subsection{Calculations of 2x2 lattice} \label{calc_of_22_lattice}
+\subsection{Calculations of $2 \times 2$ lattice} \label{calc_of_22_lattice}
 
 Inserting the values from table \ref{tab:E_and_M_2D_lattice} into equations \eqref{eq:canonical_ensemble} and (\ref{eq:expected_energy}-\ref{eq:specific_heat_capacity}) we get
 \begin{align*}
@@ -405,7 +413,7 @@ Inserting the values from table \ref{tab:E_and_M_2D_lattice} into equations \eqr
 \begin{figure*}[!htb]
 	\includegraphics[width=16cm]{../output/c/L2-T1-dT0_0-NT1-N5-RandomTrue-CompCycle.pdf}
 	\includegraphics[width=16cm]{../output/c/L2-T1-dT0_0-NT1-N5-RandomFalse-CompCycle.pdf}
-	\caption{In this figure you see the theoretical and computed values of $\left<E\right>$, $\left<|M|\right>$, $C_V$ and $\chi$, for a 2x2 lattice and temperature $T=1J/k_B$. The top four plots are from random initial values, and the bottom four are from all pointing in the same direction.}
+	\caption{In this figure you see the theoretical and computed values of $\left<E\right>$, $\left<|M|\right>$, $C_V$ and $\chi$, for a $2 \times 2$ lattice and temperature $T=1J/k_B$. The top four plots are from random initial values, and the bottom four are from all pointing in the same direction.}
 	\label{fig:L2_T1_Random_and_not}
 \end{figure*}
 \begin{figure*}[!htb]
@@ -417,13 +425,13 @@ Inserting the values from table \ref{tab:E_and_M_2D_lattice} into equations \eqr
 \begin{figure*}[!htb]
 	\includegraphics[width=16cm]{../output/de/L20-T1-dT0_0-NT1-N5-NumFlips.pdf}
 	\includegraphics[width=16cm]{../output/de/L20-T2_4-dT0_0-NT1-N5-NumFlips.pdf}
-	\caption{Here we have plotted the number of accepted configuration as a function of Monte Carlo cycles, for a 20x20 lattice. The top two plots are with temperature $T=1J/k_B$, and shows both random and ordered initial conditions. The bottom two shows the same, only with a temperature of $T = 2.4$.}
+	\caption{Here we have plotted the number of accepted configuration as a function of Monte Carlo cycles, for a $20 \times 20$ lattice. The top two plots are with temperature $T=1J/k_B$, and shows both random and ordered initial conditions. The bottom two shows the same, only with a temperature of $T = 2.4$.}
 	\label{fig:Num_flips_T1_and_T2_4}
 \end{figure*}
 \begin{figure*}[!htb]
 	\includegraphics[width=16cm]{../output/de/L20-T1-dT0_0-NT1-N5-ProbE.pdf}
 	\includegraphics[width=16cm]{../output/de/L20-T2_4-dT0_0-NT1-N5-ProbE.pdf}
-	\caption{In this figure you see the theoretical and computed values of $\left<E\right>$, $\left<|M|\right>$, $C_V$ and $\chi$, for a 2x2 lattice. They are all plotted as a function of temperature.}
+	\caption{In this figure you see the theoretical and computed values of $\left<E\right>$, $\left<|M|\right>$, $C_V$ and $\chi$, for a $20 \times 20$ lattice. They are all plotted as a function of temperature.}
 	\label{fig:L20_prob_dist}
 \end{figure*}
 
