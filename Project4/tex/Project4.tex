@@ -198,34 +198,31 @@ Where $P_{\text{flip}}$ is the probability that we flip, $T$ is temperature and 
 A phase transition is an abrupt change on the macroscopic scale (i.e. ice melting), because parameters like pressure and temperature changing. The point at which this happens is called the critical point. In this report we are going to study the critical temperature ($T_C$), and will cover some theory and necessary equations for our report. Everything is from \cite{lectures2015} chapter 13, and we recommend reading it for a more extensive explanation.
 
 In our simulations we expect to see a second order transition at critical temperature. Meaning mean magnetization $\left<M\right>$ will change to be zero at critical temperature, with an infinite slope. For critical phenomena, when temperature approaches critical ($T\rightarrow T_C$) the mean magnetic moment ($\left<M(T)\right>$) scales as (for $T<T_C$)
-\begin{equation}
-	\label{eq:critical_M}
+\begin{equation*}
  	\left<M(T)\right> \sim \left(T - T_C\right)^{1/8},
-\end{equation}
+\end{equation*}
 susceptibility ($\chi(T)$) scales as
-\begin{equation}
-	\label{eq:critical_chi}
+\begin{equation*}
 	\chi(T) \sim \abs{T_C - T}^{7/4}
-\end{equation}
+\end{equation*}
 and specific heat capacity ($C_V$) as
-\begin{equation}
-	\label{eq:critical_Cv}
+\begin{equation*}
 	C_V(T) \sim \abs{T_C - T}^0.
-\end{equation}
+\end{equation*}
 The exponents are what we refer to as critical exponents.
 
-Another relation we can find is correlation length ($\xi$), which describes the length scale when overall properties of the material starts to differ from its bulk properties. When $T\geqq T_C$ it is at the length scale of the lattice spacing. When we approach critical temperature spins become more correlated, and when the they are close, the correlation length goes as
-\begin{equation}
-	\label{eq:critical_ksi}
+Another relation we can find is correlation length ($\xi$), which describes the length scale when overall properties of the material starts to differ from its bulk properties. When $T\geq T_C$ it is at the length scale of the lattice spacing. When we approach critical temperature spins become more correlated, and when the they are close, the correlation length goes as
+\begin{equation*}
 	\xi(T) \sim \abs{T_C - T}^\nu.
-\end{equation}
-Where $\nu$ is another critical exponent, which we will set to $\nu=1$ in our report.
+\end{equation*}
+Where $\nu$ is another critical exponent.
 
-HEIEHI SKRIV HER
+What we are most interested in however is how critical temperature ($T_C$) changes as a function of lattice size $L$.
 \begin{equation}
 	\label{eq:critical_temperature}
 	T_C(L) - T_C(L\rightarrow\infty) = aL^{-1/\nu}
 \end{equation}
+By studying how $T_C$ changes as a function of $L$ we can try to find $T_C(L\rightarrow\infty)$. By looking at the equation \eqref{eq:critical_temperature}, we the right side approaches zero as $L$ gets large.
 
 \section{Methods}
 
@@ -278,7 +275,7 @@ With this we can compare our simulations to expected theoretical values. Plottin
 \subsection{Reaching the most likely state}
 From looking at an 2$\times$2 lattice, we will get an idea of how many Monte Carlo cycles we will need to reach equilibrium. However we want to study this more carefully, testing for $L=20$. First with a temperature of $T = 1 $J$/k_B$, then $T = 2.4 $J$/k_B$, we will plot $\left<E\right>$, $\left<|M|\right>$, $\chi$ and $C_V$, as a function of iterations. After testing with random initial conditions, we also do the same looking spin starting in the same direction. Trying to get a better idea of what happens in the beginning of the algorithm, we also study the number of accepted configurations. This means we count the number of times we flip a spin. We therefore make a plot of the total number of accepted configurations as a function of iterations. We also look at how this varies with temperatures $T = 1$J$/k_B$, $T=2.4$J$/k_B$, random and ordered initial conditions.
 
-It is interesting to see what the probability of obtaining an energy $E$ is (like a numerical partition function). The way we do this, is by finding out how many times a given energy $E$ appears and then divide it by the total number of energies tested for. After normalizing, we will get an estimate of the probability density that different energies appear.
+It is interesting to see what the probability of obtaining an energy $E$ is (like a numerical partition function). The way we do this, is by finding out how many times a given energy $E$ appears and then divide it by the total number of energies tested for. After normalizing, we will get an estimate of the probability density that different energies appear. We disregard the first 50\% of energies, this is because the the initial energies might be a very unlikely situation, and would in that case give us a false image of the probabilities.
 
 \subsection{Study of phase transition}
 
@@ -309,9 +306,7 @@ However, since our simulation is based on random sampling, we saw large differen
 
 Figure \ref{fig:L20_T1_and_T2_4} shows that the system converges on the same expectation values for all the properties with random and ordered configuration. The break-in period, where there are significant differences between the two lines only lasts for a few cycles for $T = 1$ J/$k_B$, and a few thousand cycles for $T = 2.4$ J/$k_B$. This corresponds to the initial steep rise of the graph of the top left plot in figure \ref{fig:Num_flips_T1_and_T2_4}. In the beginning of the simulation, very many spins are flipped because the system was initially far from its equilibrium state. When the system reaches its equilibrium state, the graph of the total number of flips is linear, which means that the number of flips per cycle is constant. Spins are flipped due to random, probabilistic fluctuations with the same frequency as long as the system is in its equilibrium state. The microstate changes as some spins flip from -1 to 1 and some flip from 1 to -1, but the macroscopic properties remain the same.
 
-Looking at the histograms (figure \ref{fig:L20_prob_dist}) it does not seem to make any difference weather or not we have a ordered or random initial condition. The differences we do observe are not larger than what we see from run to run. We do however see a large difference for the two different temperatures. For temperature $T = 1$J/$k_B$ we see few and discrete possible values for energy. The values we observe do make sense, considering the possible energy differences we cover in the appendix. There are five possible changes in energy ($\Delta E$), $\Delta E = 0$J, $\Delta E = \pm 4$J and $\Delta E = \pm8$J. Accounting for total number of spins ($L^2 = 400$) and ignoring $\Delta E = 0$, that equates to four different changes in energy per spin, $\Delta E_s = \pm0.01$ and $\Delta E_s = \pm0.02$. With this in mind it is intuitive that we also should see a column for $E = -1.99$J and a larger column for $E = -1.97$J. However if we study the spin orientations in the appendix we notice that $E=1.99$J is impossible and $E = 1.97$J is unlikely. When we are in ground state (all spins pointing in one direction) the only possible change in energy is $\Delta E_s=0.02$J. From there we notice that the only possible changes are $\Delta E_s = \pm 0.02$J and $\Delta E = 0.01$J, not $\Delta E = -0.01$. This means $E = -1.99$J is impossible. Furthermore the only way we can get $\Delta E_s=0.01$J is by changing the neighboring spin of the one we just changed. This is unlikely, and therefore we see few situations of that happening. For the temperature $T = 2.4$J/$k_B$ the result looks Gaussian, and we therefore plotted a fit on top. The variance from the fit is the same as the one we computed. This does not surprise us, because we used the same data to calculate both values. It is interesting however that the probability-density distribution has a Gaussian shape, although it is difficult to say why. We expected to see a larger spectra for observed energies however. When we look at the equation that describes probability of flip (equation \eqref{eq:prob_flip}), in the exponent, temperature is in the denominator, meaning the probability for a flip gets higher overall.
-eksluderte = fjerne 50 \%
-kjør lengre =
+Looking at the histograms (figure \ref{fig:L20_prob_dist}) it does not seem to make any difference weather or not we have a ordered or random initial condition. The differences we do observe are not larger than what we see from run to run. We do however see a large difference for the two different temperatures. For temperature $T = 1$J/$k_B$ we see few and discrete possible values for energy. The values we observe do make sense, considering the possible energy differences we cover in the appendix. There are five possible changes in energy ($\Delta E$), $\Delta E = 0$J, $\Delta E = \pm 4$J and $\Delta E = \pm8$J. Accounting for total number of spins ($L^2 = 400$) and ignoring $\Delta E = 0$, that equates to four different changes in energy per spin, $\Delta E_s = \pm0.01$ and $\Delta E_s = \pm0.02$. With this in mind it is intuitive that we also should see a column for $E = -1.99$J and a larger column for $E = -1.97$J. However if we study the spin orientations in the appendix we notice that $E=1.99$J is impossible and $E = 1.97$J is unlikely. When we are in ground state (all spins pointing in one direction) the only possible change in energy is $\Delta E_s=0.02$J. From there we notice that the only possible changes are $\Delta E_s = \pm 0.02$J and $\Delta E = 0.01$J, not $\Delta E = -0.01$. This means $E = -1.99$J is impossible. Furthermore the only way we can get $\Delta E_s=0.01$J is by changing the neighboring spin of the one we just changed. This is unlikely, and therefore we see few situations of that happening. For the temperature $T = 2.4$J/$k_B$ the result looks Gaussian, and we therefore plotted a fit on top. The variance from the fit is the same as the one we computed. This does not surprise us, because we used the same data to calculate both values. It is interesting however that the probability-density distribution has a Gaussian shape, although it is difficult to say why. We expected to see a larger spectra for observed energies however. When we look at the equation that describes probability of flip (equation \eqref{eq:prob_flip}), in the exponent, temperature is in the denominator, meaning the probability for a flip gets higher overall. We ended up disregarding the first 50\% of our data, which in light of our other results might be too much. It seems our simulations converges way before 100 000 iterations, and we end up wasting good data. This is hard to conclude however, and would require a more careful study of the algorithm.
 
 The simulations giving us the results in figure \ref{fig:phase_trans} are quite costly and time consuming for large lattices. We are therefore limited in our resolution of temperature, which makes it impossible to determine the critical temperature $T_C$ exactly. But we can still read some useful information from the figure.
 
@@ -326,8 +321,9 @@ As the peaks of heat capacity and susceptibility are higher for $L = 100$ than f
 
 In order to determine the critical temperature more precisely, we could rerun the simulations for a narrower range of temperatures. We now know $T_C$ to be between 2.24 and 2.32 J/$k_B$, and it is not necessary to cover temperatures from 2.0 J/$k_B$ to 2.5 J/$k_B$ in every simluation. It is useful to start width a wide range of values for the temperature to show the big picture like we have done here. To further develop our results, narrowing the range of $T$ and increasing the resolution would clearly be a natural first step.
 
+As we have touched on above there are many challenges when working with Monte Carlo simulations. We get different results from run to run, which is a natural consequence when working with the algorithm. Ideally we would like to do a more careful study of the algorithm and how to handle the initial data. If we end up with random initial conditions far away from the real values, it might seem we converge better than if we start close to the real values. This is because the axis gets zoomed out when we plot, giving us a worse look at how the data varies. A way we thought to counteract this was with fixed axes.
 
-General improvements: axis fix, burn-in time
+
 
 \section{Conclusion}
 
