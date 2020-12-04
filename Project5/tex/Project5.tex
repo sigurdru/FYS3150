@@ -92,7 +92,89 @@ For our studies we have used c++ for heavy computation, python for visualization
 
 \section{Theory}
 
-Theory
+\subsection*{The diffusion equation}
+
+The full diffusion equation reads
+\begin{equation*}
+	\frac{\partial u(\mathbf{r}, t)}{\partial t} = \nabla \cdot \left[D(u, \mathbf{r})\nabla u(\mathbf{r}, t)\right],
+\end{equation*}
+with $\mathbf{r}$ is a positional vector. If $D(u,\mathbf{r}) = 1$ the equation simplifies to
+\begin{equation*}
+	\frac{\partial u}{\partial t} = \nabla^2u(\mathbf{r}, t),
+\end{equation*}
+or
+\begin{equation}
+	\label{eq:diffusion_equation}
+	\left(\frac{\partial^2}{\partial x^2} + \frac{\partial^2}{\partial y^2} + \frac{\partial^2}{\partial z^2}\right) u(x,y,z,t) = \frac{\partial u(x,y,z,t)}{\partial t}
+\end{equation}
+in cartesian coordinates. In this report we are mainly going to work with the diffusion equation in one and two dimensions, i.e.
+\begin{equation*}
+	\frac{\partial^2 u(x,t)}{\partial x^2} = \frac{\partial u(x,t)}{\partial t} \ \ \wedge \ \ \frac{\partial^2u(x,t)}{\partial x^2} + \frac{\partial^2u(x,t)}{\partial y^2} = \frac{\partial u(x,t)}{\partial t}.
+\end{equation*}
+
+\subsection*{Discretization}
+
+Equation \eqref{eq:diffusion_equation} in one dimension reads
+\begin{equation}
+\frac{\partial^2u(x, t)}{\partial x^2} = \frac{\partial u(x,t)}{\partial t} \ \ \text{or} \ \ u_{xx} = u_t.
+\end{equation}
+With $x\in[0,L]$ and boundary conditions
+\begin{equation}
+\label{eq:boundary_conditions}
+u(0, t) = a(t), \ \ t\geq 0 \ \ \wedge \ \ u(L,t) = b(t), \ \ t\geq 0,
+\end{equation}
+we can approximate the solution by discretization. First introducing $\Delta x$ and $\Delta t$ as small steps in $x$-direction and time. Then we can define the value domain of $t$ and $x$,
+\begin{equation*}
+t_j = j\Delta t, \ \ j\in \mathbb{N}_0 \ \ \wedge \ \ x_i = i\Delta x, \ \ \{i \in \mathbb{N}_0 | i \leq n + 1\}.
+\end{equation*}
+Where $n$ is the number of points we evaluate $u(x,t)$ at, minus one. 
+
+\subsection*{Explicit and implicit schemes}
+
+Something on this here maybe?
+
+\subsection*{Explicit forward Euler}
+
+
+The algorithm for explicit forward Euler in one dimension (from \cite{lectures2015} chapter 10.2.1) reads
+\begin{align*}
+	u(x_i, t_j+\Delta t) = &\alpha u(x_i - \Delta x, t_j) + (1-2\alpha) u(x_i,t_j) + \\
+	& \alpha u(x_i + \Delta x, t_j)
+\end{align*}
+where
+\begin{equation*}
+	\alpha = \frac{\Delta t}{\Delta x^2},
+\end{equation*}
+and the discretization is explained in the appropriate section.
+
+%\begin{equation}
+%	u_t \approx \frac{u(x, t+\Delta t) - u(x,t)}{\Delta t} = \frac{u(x_i,t_j+\Delta t) - u(x_i, t_j)}{\Delta t}
+%\end{equation}
+%and
+%\begin{equation}
+%	u_{xx} \approx \frac{u(x+\Delta x, t) - 2u(x,t) + u(x-\Delta x, t)}{\Delta x^2}
+%\end{equation}
+%or
+%\begin{equation}
+%	u_{xx} \approx \frac{u(x_i + \Delta x, t_j) - 2u(x_i,t_j) + u(x_i - \Delta x, t_j)}{\Delta x^2}
+%\end{equation}
+%and has a local approximation error $O(\Delta x^2)$. Symbols are defined in the discretization section. If we define $\alpha = \Delta t/\Delta x^2$ equ
+
+\subsection*{Implicit Backward Euler}
+
+\begin{equation}
+	u_{xx} = \frac{u(x_i + \Delta x, t_j)2u(x_i,t_j + u(x_i-\Delta x, t_j))}{\Delta x^2}
+\end{equation}
+
+
+\subsection*{Implicit Crank-Nicolson}
+
+
+\begin{align*}
+	u_{xx} \approx &\frac{1}{2} \bigg(\frac{u(x_i+\Delta x, t_j) - 2u(x_i,t_j) + u(x_i-\Delta x, t_j)}{\Delta x^2} + \\
+	&\frac{u(x_i+\Delta x, t_j + \Delta t) - 2u(x_i, t_j + \Delta t)}{\Delta x^2} + \\
+	&\frac{u(x_i - \Delta x, t_j + \Delta t)}{\Delta x^2} \bigg)
+\end{align*}
 
 \section{Methods}
 
