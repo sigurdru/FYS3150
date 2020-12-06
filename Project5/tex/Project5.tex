@@ -127,14 +127,19 @@ we can approximate the solution by discretization. First introducing $\Delta x$ 
 \begin{equation*}
 t_j = j\Delta t, \ \ j\in \mathbb{N}_0 \ \ \wedge \ \ x_i = i\Delta x, \ \ \{i \in \mathbb{N}_0 | i \leq n + 1\}.
 \end{equation*}
-Where $n$ is the number of points we evaluate $u(x,t)$ at, minus one. 
+Where $n + 1$ is the number of points at which we evaluate $u(x,t)$.
+
 
 \subsection*{Explicit and implicit schemes}
 
-Something on this here maybe?
+It is common divide numerical algorithms for integration into explicit and implicit schemes. When perfoming a numerical integration, we iterate over a discrete set of grid points at which we evaluate the function in question. In explicit schemes, the value at the next grid point is determined entirely by the value at the current grid point. In implicit schemes, the value at a later stage is determined by solving a system of equations containing both the current state and later states.
+
+Using an implicit method instead of an explicit method usually requires more computation in every step, and they are often harder to implement. It can, in turn, save computation by allowing larger step sizes. Implicit methods can be (ARE?) unconditionally stable, meaning they are stable for any choice of step sizes. Explicit schemes are conditionally stable, meaning there is a relation between the step sizes in time and position that must be fulfilled in order to achieve stability. Of course, in order to achieve a desired  \textit{accuracy}, the step sizes can not be arbitrarily large for either the explicit or implicit schemes. It is generally the case, though, that implicit schemes allow for larger step sizes than explicit schemes.
+
+REFERENCES
+
 
 \subsection*{Explicit forward Euler}
-
 
 The algorithm for explicit forward Euler in one dimension (from \cite{lectures2015} chapter 10.2.1) reads
 \begin{align*}
