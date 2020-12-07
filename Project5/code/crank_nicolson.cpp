@@ -21,7 +21,7 @@ CrankNicolson::CrankNicolson(int num_int_points,
     for (int i=0; i<=Nx; i++) u[i] = InitialCondition[i];
 }
 
-void CrankNicolson::Solve_CrankNiocolson(double BoundaryLeft(double),
+void CrankNicolson::Solve_CrankNicolson(double BoundaryLeft(double),
                                         double BoundaryRight(double))
 {
     double t;

@@ -45,7 +45,7 @@ class CrankNicolson : public Solvers {
                     float dtimestep,
                     double* InitialCondition,
                     std::string ResOutFileName);
-        void Solve_CrankNiocolson(double BoundaryLeft(double),
+        void Solve_CrankNicolson(double BoundaryLeft(double),
                                 double BoundaryRight(double));
         ~CrankNicolson();
 };
