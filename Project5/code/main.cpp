@@ -25,9 +25,8 @@ int main(int charc, char* argv[])
 
 
     if (method == "ForwardEuler") {
-        ForwardEuler ForwardSolver;
-        ForwardSolver.Initialize(Nx, Nt, dt);
-        for (int i=0; i<Nt-1; i++){
+        ForwardEuler ForwardSolver(Nx, Nt, dt);
+        for (int i=0; i<Nt-1; i+{
             ForwardSolver.CalcOneStep(i);
         }
     }else if (method == "BackwardEuler") {

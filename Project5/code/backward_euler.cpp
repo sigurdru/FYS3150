@@ -1,10 +1,15 @@
 #include "solvers.hpp"
 #include "tridiag.hpp"
 
-BackwardEuler::BackwardEuler(double dx, double dt, int n, double *InitialCondition)
+BackwardEuler::BackwardEuler(
+    double dx, double dt, int n,
+    double *InitialCondition, std::string ResOutFileName)
 {
-    n = n;      // store the number of positional steps in an instance variable
-    dt = dt;    // store the time step in an instance variable
+    // store parameters in instance variables
+    n = n;
+    dt = dt;
+    ResOutFileName = ResOutFileName;
+
     alpha = dt/(dx*dx);
     b = new double[n-1];
     u = new double[n+1];

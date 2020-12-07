@@ -10,8 +10,11 @@ ForwardEuler::ForwardEuler(double dx, double dt, int n, double *InitialCondition
     for (int i=0; i<=n; i++) u_new[i] = InitialCondition[i];
 }
 
-ForwardEuler::Solve(int NumTimeSteps, double BoundaryLeft(double))
-{
+ForwardEuler::Solve(
+    int NumTimeSteps,
+    double BoundaryLeft(double),
+    double BoundaryRight(double)
+) {
     t = 0.0;
     for (int j=0; j<NumTimeSteps; j++) {
         // store the current values for later use before updating

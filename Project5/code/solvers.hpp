@@ -5,9 +5,11 @@
 struct Solvers {
     // Here we define common stuff
     int Nx, Nt;
-    double dt, dx, L;
-    double alpha;
-    void write_to_file(std::string fname);
+    double dt, t, dx, L, alpha;
+    double *u;
+    std::string ResOutFileName;
+    std::ofile ResOutFile;
+    void WriteToFile(std::string fname);
 };
 
 class ForwardEuler : public Solvers{
