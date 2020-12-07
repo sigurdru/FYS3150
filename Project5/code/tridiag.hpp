@@ -14,13 +14,14 @@ public:
     void write_to_file(std::string fname);
 };
 
-class TriDiagSolver : public Lineq {
+class TriDiagSolver : public Common {
 private:
     double m_a, m_b, m_c;
+    int m_n;
     double *m_alpha, *m_rho;
 
 public:
-    void TriDiagSolver(double a, double b, double c, int n);
+    TriDiagSolver(double a, double b, double c, int n);
     void Solve(double *comp, double *RHS);
     ~TriDiagSolver();
 };
