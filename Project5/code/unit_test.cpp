@@ -2,56 +2,60 @@
 #include <catch2/catch.hpp>
 #include "tridiag.hpp"
 #include "solvers.hpp"
+#include <string>
+
+double RelTol = 1E-6;
 
 TEST_CASE("Checking that the TriDiagSolver class works as expected")
 {
-    int n = 6;
-    TriDiagSolver Solver(-1, 2, -1, n);
-    double *u = new double[n+1];
-    for (int i = 0; i <= n; i++) u[i] = 0.0;
-    double *b = new double[n-1];
-    double *b_copy = new double[n-1];
-    for (int i = 0; i <= n-2; i++) {
+    int Nx = 6;
+    TriDiagSolver Solver(-1, 2, -1, Nx);
+    double *u = new double[Nx+1];
+    for (int i = 0; i <= Nx; i++) u[i] = 0.0;
+    double *b = new double[Nx-1];
+    double *b_copy = new double[Nx-1];
+    for (int i = 0; i <= Nx-2; i++) {
         b[i] = i + 1;
         b_copy[i] = i + 1;
     }
-    b[n-2] = b_copy[n-2] = 6;
-    double exact[n+1] = {0, 6, 11, 14, 14, 10};
+    b[Nx-2] = b_copy[Nx-2] = 6;
+    double exact[Nx+1] = {0, 6, 11, 14, 14, 10};
     Solver.Solve(u, b);
 
     SECTION( "Checking that the results are as expected" )
     {
-        for (int i = 0; i <= n; i++)
-            REQUIRE( u[i] == Approx(exact[i]).epsilon(1E-15) );
+        for (int i = 0; i <= Nx; i++)
+            REQUIRE( u[i] == Approx(exact[i]).epsilon(RelTol) );
     }
 
     SECTION( "Checking that the RHS array is unchanged" )
     {
-        for (int i = 0; i <= n-2; i++)
+        for (int i = 0; i <= Nx-2; i++)
             REQUIRE( b[i] == b_copy[i] );
     }
 
     delete[] u;
     delete[] b;
+    delete[] b_copy;
 }
+
+// boundary values for the tests
+double Boundary(double x) {return 0.0;}
 
 TEST_CASE( "Checking that the ForwardEuler class works as expected" )
 {
-    int n = 10;
+    int Nx = 10;
+    int Nt = 1;
+    double dx = 1.0/Nx;
     // alpha = dt/dx^2 = 2
-    int dt = 8;
-    int dx = 2;
+    double dt = 2.0*dx*dx;
+    std::string fname = "blabla";
 
-    // set boundary to zero in this test
-    double Boundary(double x) {return 0.0;}
+    double *InitialCondition = new double[Nx+1] {0, 1, 2, 3, 4, 5, 3, 2, 1, 4, 6};
+    double exact[Nx+1] = { 0., 1., 2., 3., 4., -1., 5., 2., 9., 2., 0.};
 
-    double *InitialCondition = new double[n+1];
-    for (int i = 0; i <= n; i++) InitialCondition[i] = i;
-
-    double exact[n+1] = { 0.,  1.,  2.,  3.,  4., -1.,  5.,  2.,  9.,  2.,  0.}
-
-    ForwardEuler Solver(dx, dt, n, InitialCondition);
-    Solver.solve(1, Boundary, Boundary);
-    for (int i = 0; i <= n; i++)
-        REQUIRE( Solver.u[i] == Approx(exact[i]).epsilon(1E-15) );
+    ForwardEuler Solver(Nx, Nt, dt, InitialCondition, fname);
+    Solver.Solve(Boundary, Boundary);
+    for (int i = 0; i <= Nx; i++)
+        REQUIRE( Solver.u[i] == Approx(exact[i]).epsilon(RelTol) );
 }
