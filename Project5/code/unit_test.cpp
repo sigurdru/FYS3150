@@ -1,7 +1,7 @@
 #define CATCH_CONFIG_MAIN
 #include <catch2/catch.hpp>
 #include "tridiag.hpp"
-#include "forward_euler.hpp"
+#include "solvers.hpp"
 
 TEST_CASE("Checking that the TriDiagSolver class works as expected")
 {
@@ -42,10 +42,16 @@ TEST_CASE( "Checking that the ForwardEuler class works as expected" )
     int dt = 8;
     int dx = 2;
 
+    // set boundary to zero in this test
     double Boundary(double x) {return 0.0;}
 
     double *InitialCondition = new double[n+1];
     for (int i = 0; i <= n; i++) InitialCondition[i] = i;
+
+    double exact[n+1] = { 0.,  1.,  2.,  3.,  4., -1.,  5.,  2.,  9.,  2.,  0.}
+
     ForwardEuler Solver(dx, dt, n, InitialCondition);
     Solver.solve(1, Boundary, Boundary);
+    for (int i = 0; i <= n; i++)
+        REQUIRE( Solver.u[i] == Approx(exact[i]).epsilon(1E-15) );
 }
