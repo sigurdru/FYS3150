@@ -26,4 +26,4 @@ public:
     ~TriDiagSolver();
 };
 
-#endif
+#endif //TRIDIAG_HPP

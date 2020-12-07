@@ -20,9 +20,8 @@ class ForwardEuler : public Solvers{
         ForwardEuler(int num_int_points, int num_time_points, 
                       float dtimestep, double *InitialCondition,
                       std::string ResOutFileName);
-        void Solve_ForwardEuler( 
-                                 double BoundaryLeft(double),
-                                 double BoundaryRight(double));
+        void Solve_ForwardEuler(double BoundaryLeft(double),
+                                double BoundaryRight(double));
         ~ForwardEuler();
 };
 
@@ -33,17 +32,23 @@ class BackwardEuler : public Solvers {
         BackwardEuler(int num_int_points, int num_time_points, 
                       float dtimestep, double *InitialCondition,
                       std::string ResOutFileName);
-        void Solve_BackwardEuler( 
-                                 double BoundaryLeft(double),
+        void Solve_BackwardEuler(double BoundaryLeft(double),
                                  double BoundaryRight(double));
         ~BackwardEuler();
 };
 
 class CrankNicolson : public Solvers {
     // Crank-Nicolson solver class
-    private:
     public:
+        CrankNicolson(int num_int_points,
+                    int num_time_points,
+                    float dtimestep,
+                    double* InitialCondition,
+                    std::string ResOutFileName);
+        void Solve_CrankNocolson(double BoundaryLeft(double),
+                                double BoundaryRight(double));
+        ~CrankNicolson();
 };
 
-#endif //SOLVERS_HP
+#endif //SOLVERS_HPP
 
