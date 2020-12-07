@@ -1,4 +1,4 @@
-#include "tridiag.hpp"
+#include "solvers.hpp"
 
 ForwardEuler::ForwardEuler(double dx, double dt, int n, double *InitialCondition)
 {

@@ -1,14 +1,14 @@
 #ifndef SOLVERS_HPP
 #define SOLVERS_HPP
-
+#include <fstream>
 
 struct Solvers {
     // Here we define common stuff
     int Nx, Nt;
     double dt, t, dx, L, alpha;
-    double *u;
+    double *u, *b;
     std::string ResOutFileName;
-    std::ofile ResOutFile;
+    // std::ofile ResOutFile;
     void WriteToFile(std::string fname);
 };
 
@@ -26,7 +26,13 @@ class BackwardEuler : public Solvers {
     // Backward Euler solver class
     private:
     public:
-        BackwardEuler(int num_int_points, int num_time_points, float dtimestep);
+        BackwardEuler(int num_int_points, int num_time_points, 
+                      float dtimestep, double *InitialCondition,
+                      std::string ResOutFileName);
+        void Solve_BackwardEuler(int NumTimeStep, 
+                                 double BoundaryLeft(double),
+                                 double BoundaryRight(double));
+        ~BackwardEuler();
 };
 
 class CrankNicolson : public Solvers {
