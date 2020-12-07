@@ -71,13 +71,12 @@ TEST_CASE( "Checking that the BackwardEuler class works as expected" )
     double dt = 2.0*dx*dx;
     std::string fname = "blabla";
 
-    double *InitialCondition = new double[Nx+1] {1, 14, -10, 18, 2, 2};
-    double Expected[Nx+1] = {1, 4, 2, 6, 4, 3};
+    double *InitialCondition = new double[Nx+1] {1, 14, -10, 18, 4, 2};
+    double Expected[Nx+1] = {1, 4, 2, 6, 4, 2};
 
     BackwardEuler Solver(Nx, Nt, dt, InitialCondition, fname);
     Solver.Solve(BoundaryLeft, BoundaryRight);
     for (int i = 0; i <= Nx; i++)
-        std::cout << Solver.u[i] << std::endl;
-        // REQUIRE( Solver.u[i] == Approx(Expected[i]).epsilon(RelTol) );
+        REQUIRE( Solver.u[i] == Approx(Expected[i]).epsilon(RelTol) );
     delete[] InitialCondition;
 }
