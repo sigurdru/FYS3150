@@ -13,43 +13,51 @@ struct Solvers {
 };
 
 class ForwardEuler : public Solvers{
-    // Forward Euler solver class
-    private:
-    protected:
-    public:
-        ForwardEuler(int num_int_points, int num_time_points,
-                      float dtimestep, double *InitialCondition,
-                      std::string ResOutFileName);
-        void Solve(
-             double BoundaryLeft(double),
-             double BoundaryRight(double)
-        );
-        ~ForwardEuler();
+public:
+    ForwardEuler(
+        int num_int_points,
+        int num_time_points,
+        float dtimestep,
+        double *InitialCondition,
+        std::string ResOutFileName
+    );
+    void Solve(
+        double BoundaryLeft(double),
+        double BoundaryRight(double)
+    );
+    ~ForwardEuler();
 };
 
 class BackwardEuler : public Solvers {
-    // Backward Euler solver class
-    private:
-    public:
-        BackwardEuler(int num_int_points, int num_time_points,
-                      float dtimestep, double *InitialCondition,
-                      std::string ResOutFileName);
-        void Solve_BackwardEuler(double BoundaryLeft(double),
-                                 double BoundaryRight(double));
-        ~BackwardEuler();
+public:
+    BackwardEuler(
+        int num_int_points,
+        int num_time_points,
+        float dtimestep,
+        double *InitialCondition,
+        std::string ResOutFileName
+    );
+    void Solve(
+        double BoundaryLeft(double),
+        double BoundaryRight(double)
+    );
+    ~BackwardEuler();
 };
 
 class CrankNicolson : public Solvers {
-    // Crank-Nicolson solver class
-    public:
-        CrankNicolson(int num_int_points,
-                    int num_time_points,
-                    float dtimestep,
-                    double* InitialCondition,
-                    std::string ResOutFileName);
-        void Solve_CrankNicolson(double BoundaryLeft(double),
-                                double BoundaryRight(double));
-        ~CrankNicolson();
+public:
+    CrankNicolson(
+        int num_int_points,
+        int num_time_points,
+        float dtimestep,
+        double* InitialCondition,
+        std::string ResOutFileName
+    );
+    void Solve_CrankNicolson(
+        double BoundaryLeft(double),
+        double BoundaryRight(double)
+    );
+    ~CrankNicolson();
 };
 
 #endif //SOLVERS_HPP

@@ -10,7 +10,7 @@ ForwardEuler::ForwardEuler(int num_int_points,
     double L = 1;
     Nx = num_int_points;    // store the number of positional steps in an instance variable
     Nt = num_time_points;
-    double dx = L/Nx;
+    dx = L/Nx;
     dt = dtimestep;         // store the time step in an instance variable
     alpha = dt/dx/dx;
     u = new double[Nx + 1];
@@ -21,7 +21,6 @@ ForwardEuler::ForwardEuler(int num_int_points,
 
 void ForwardEuler::Solve(double BoundaryLeft(double),
                         double BoundaryRight(double)) {
-  float t;
   for (int j = 0; j < Nt; j++) {
     // store the current values for later use before updating
     for (int i = 0; i <= Nx; i++)

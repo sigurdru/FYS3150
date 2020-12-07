@@ -64,5 +64,20 @@ TEST_CASE( "Checking that the ForwardEuler class works as expected" )
 
 TEST_CASE( "Checking that the BackwardEuler class works as expected" )
 {
-    // do stuff
+    int Nx = 5;
+    int Nt = 1;
+    double dx = 1.0/Nx;
+    // alpha = dt/dx^2 = 2
+    double dt = 2.0*dx*dx;
+    std::string fname = "blabla";
+
+    double *InitialCondition = new double[Nx+1] {1, 14, -10, 18, 2, 2};
+    double Expected[Nx+1] = {1, 4, 2, 6, 4, 3};
+
+    BackwardEuler Solver(Nx, Nt, dt, InitialCondition, fname);
+    Solver.Solve(BoundaryLeft, BoundaryRight);
+    for (int i = 0; i <= Nx; i++)
+        std::cout << Solver.u[i] << std::endl;
+        // REQUIRE( Solver.u[i] == Approx(Expected[i]).epsilon(RelTol) );
+    delete[] InitialCondition;
 }

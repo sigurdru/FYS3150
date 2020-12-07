@@ -1,15 +1,19 @@
 #include "solvers.hpp"
 #include "tridiag.hpp"
 
-BackwardEuler::BackwardEuler(int num_int_points, int num_time_points,
-                             float dtimestep, double *InitialCondition, std::string ResOutFileName)
-{
+BackwardEuler::BackwardEuler(
+    int num_int_points,
+    int num_time_points,
+    float dtimestep,
+    double *InitialCondition,
+    std::string ResOutFileName
+) {
     // store parameters in instance variables
     double L = 1;
     Nx = num_int_points;
     Nt = num_time_points;
     dt = dtimestep;
-    dx = L/(Nx + 1);
+    dx = L/Nx;
     ResOutFileName = ResOutFileName;
     alpha = dt/(dx*dx);
 
@@ -18,10 +22,10 @@ BackwardEuler::BackwardEuler(int num_int_points, int num_time_points,
     for (int i=0; i<=Nx; i++) u[i] = InitialCondition[i];
 }
 
-void BackwardEuler::Solve_BackwardEuler(double BoundaryLeft(double),
-                                        double BoundaryRight(double))
-{
-    double t;
+void BackwardEuler::Solve(
+    double BoundaryLeft(double),
+    double BoundaryRight(double)
+) {
     TriDiagSolver Solver(-alpha, (1+2*alpha), -alpha, Nx);
     for (int j=0; j<Nt; j++) {
         // store the current values for later use before updating
