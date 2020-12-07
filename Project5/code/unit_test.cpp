@@ -40,7 +40,8 @@ TEST_CASE("Checking that the TriDiagSolver class works as expected")
 }
 
 // boundary values for the tests
-double Boundary(double x) {return 0.0;}
+double BoundaryLeft(double x) {return 1.0;}
+double BoundaryRight(double x) {return 2.0;}
 
 TEST_CASE( "Checking that the ForwardEuler class works as expected" )
 {
@@ -52,10 +53,16 @@ TEST_CASE( "Checking that the ForwardEuler class works as expected" )
     std::string fname = "blabla";
 
     double *InitialCondition = new double[Nx+1] {0, 1, 2, 3, 4, 5, 3, 2, 1, 4, 6};
-    double exact[Nx+1] = { 0., 1., 2., 3., 4., -1., 5., 2., 9., 2., 0.};
+    double Expected[Nx+1] = { 1., 1., 2., 3., 4., -1., 5., 2., 9., 2., 2.};
 
     ForwardEuler Solver(Nx, Nt, dt, InitialCondition, fname);
-    Solver.Solve(Boundary, Boundary);
+    Solver.Solve(BoundaryLeft, BoundaryRight);
     for (int i = 0; i <= Nx; i++)
-        REQUIRE( Solver.u[i] == Approx(exact[i]).epsilon(RelTol) );
+        REQUIRE( Solver.u[i] == Approx(Expected[i]).epsilon(RelTol) );
+    delete[] InitialCondition;
+}
+
+TEST_CASE( "Checking that the BackwardEuler class works as expected" )
+{
+    // do stuff
 }

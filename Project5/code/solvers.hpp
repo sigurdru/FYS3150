@@ -34,12 +34,7 @@ class BackwardEuler : public Solvers {
         BackwardEuler(int num_int_points, int num_time_points,
                       float dtimestep, double *InitialCondition,
                       std::string ResOutFileName);
-<<<<<<< HEAD
-        void Solve_BackwardEuler(
-                                 double BoundaryLeft(double),
-=======
         void Solve_BackwardEuler(double BoundaryLeft(double),
->>>>>>> 4e65f7ea259de97c743b01002981f3b684557378
                                  double BoundaryRight(double));
         ~BackwardEuler();
 };
