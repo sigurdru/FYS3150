@@ -21,7 +21,7 @@ public:
         double *InitialCondition,
         std::string ResOutFileName
     );
-    void Solve(
+    void Solve_ForwardEuler(
         double BoundaryLeft(double),
         double BoundaryRight(double)
     );
@@ -37,7 +37,7 @@ public:
         double *InitialCondition,
         std::string ResOutFileName
     );
-    void Solve(
+    void Solve_BackwardEuler(
         double BoundaryLeft(double),
         double BoundaryRight(double)
     );

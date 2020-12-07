@@ -22,7 +22,7 @@ BackwardEuler::BackwardEuler(
     for (int i=0; i<=Nx; i++) u[i] = InitialCondition[i];
 }
 
-void BackwardEuler::Solve(
+void BackwardEuler::Solve_BackwardEuler(
     double BoundaryLeft(double),
     double BoundaryRight(double)
 ) {

@@ -19,8 +19,8 @@ ForwardEuler::ForwardEuler(int num_int_points,
         u[i] = InitialCondition[i];
 }
 
-void ForwardEuler::Solve(double BoundaryLeft(double),
-                        double BoundaryRight(double)) {
+void ForwardEuler::Solve_ForwardEuler(double BoundaryLeft(double),
+                                    double BoundaryRight(double)) {
   for (int j = 0; j < Nt; j++) {
     // store the current values for later use before updating
     for (int i = 0; i <= Nx; i++)

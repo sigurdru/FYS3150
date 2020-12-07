@@ -56,7 +56,7 @@ TEST_CASE( "Checking that the ForwardEuler class works as expected" )
     double Expected[Nx+1] = { 1., 1., 2., 3., 4., -1., 5., 2., 9., 2., 2.};
 
     ForwardEuler Solver(Nx, Nt, dt, InitialCondition, fname);
-    Solver.Solve(BoundaryLeft, BoundaryRight);
+    Solver.Solve_ForwardEuler(BoundaryLeft, BoundaryRight);
     for (int i = 0; i <= Nx; i++)
         REQUIRE( Solver.u[i] == Approx(Expected[i]).epsilon(RelTol) );
     delete[] InitialCondition;
@@ -75,7 +75,7 @@ TEST_CASE( "Checking that the BackwardEuler class works as expected" )
     double Expected[Nx+1] = {1, 4, 2, 6, 4, 2};
 
     BackwardEuler Solver(Nx, Nt, dt, InitialCondition, fname);
-    Solver.Solve(BoundaryLeft, BoundaryRight);
+    Solver.Solve_BackwardEuler(BoundaryLeft, BoundaryRight);
     for (int i = 0; i <= Nx; i++)
         REQUIRE( Solver.u[i] == Approx(Expected[i]).epsilon(RelTol) );
     delete[] InitialCondition;
