@@ -34,17 +34,28 @@ class BackwardEuler : public Solvers {
         BackwardEuler(int num_int_points, int num_time_points,
                       float dtimestep, double *InitialCondition,
                       std::string ResOutFileName);
+<<<<<<< HEAD
         void Solve_BackwardEuler(
                                  double BoundaryLeft(double),
+=======
+        void Solve_BackwardEuler(double BoundaryLeft(double),
+>>>>>>> 4e65f7ea259de97c743b01002981f3b684557378
                                  double BoundaryRight(double));
         ~BackwardEuler();
 };
 
 class CrankNicolson : public Solvers {
     // Crank-Nicolson solver class
-    private:
     public:
+        CrankNicolson(int num_int_points,
+                    int num_time_points,
+                    float dtimestep,
+                    double* InitialCondition,
+                    std::string ResOutFileName);
+        void Solve_CrankNocolson(double BoundaryLeft(double),
+                                double BoundaryRight(double));
+        ~CrankNicolson();
 };
 
-#endif //SOLVERS_HP
+#endif //SOLVERS_HPP
 
