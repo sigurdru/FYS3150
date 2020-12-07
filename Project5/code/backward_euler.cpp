@@ -13,7 +13,7 @@ BackwardEuler::BackwardEuler(double dx, double dt, int n, double *InitialConditi
 ForwardEuler::Solve(int NumTimeSteps, double BoundaryLeft(double))
 {
     t = 0.0;
-    TriDiagSolver Solver(-alpha, (1-2*alpha), -alpha, n);
+    TriDiagSolver Solver(-alpha, (1+2*alpha), -alpha, n);
     for (jnt j=0; j<NumTimeSteps; j++) {
         // store the current values for later use before updating
         for (int i=0; i<=n-2; i++)

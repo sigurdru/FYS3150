@@ -1,3 +1,4 @@
+#include "tridiag.hpp"
 
 ForwardEuler::ForwardEuler(double dx, double dt, int n, double *InitialCondition)
 {
@@ -12,7 +13,7 @@ ForwardEuler::ForwardEuler(double dx, double dt, int n, double *InitialCondition
 ForwardEuler::Solve(int NumTimeSteps, double BoundaryLeft(double))
 {
     t = 0.0;
-    for (jnt j=0; j<NumTimeSteps; j++) {
+    for (int j=0; j<NumTimeSteps; j++) {
         // store the current values for later use before updating
         for (int i=0; i<=n; i++)
             u_old[i] = u_new[i];
@@ -23,4 +24,9 @@ ForwardEuler::Solve(int NumTimeSteps, double BoundaryLeft(double))
             u_new[i] = alpha*u_old[i-1] + (1 - 2*alpha)*u_old[i] + alpha*u_old[i+1];
         WriteToFile();
     }
+}
+
+ForwardEuler::~ForwardEuler() {
+    delete[] u_old;
+    delete[] u_new;
 }
