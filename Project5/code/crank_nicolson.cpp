@@ -21,7 +21,7 @@ CrankNicolson::CrankNicolson(int num_int_points,
     for (int i=0; i<=Nx; i++) u[i] = InitialCondition[i];
 }
 
-void BackwardEuler::Solve_BackwardEuler(double BoundaryLeft(double),
+void CrankNicolson::Solve_CrankNicolson(double BoundaryLeft(double),
                                         double BoundaryRight(double))
 {
     double t;
@@ -29,7 +29,7 @@ void BackwardEuler::Solve_BackwardEuler(double BoundaryLeft(double),
     for (int j=0; j<Nt; j++) {
         // store the current values for later use before updating
         for (int i=0; i<=Nx-2; i++)
-            b[i] = u[i+1];
+            b[i] = alpha*u[i] + (2-2*alpha)*u[i+1] + alpha*u[i+2];
         t = dt*j;
         u[0] = BoundaryLeft(t);
         u[Nx] = BoundaryRight(t);
@@ -40,7 +40,7 @@ void BackwardEuler::Solve_BackwardEuler(double BoundaryLeft(double),
     }
 }
 
-BackwardEuler::~BackwardEuler()
+CrankNicolson::~CrankNicolson()
 {
     delete[] u;
     delete[] b;
