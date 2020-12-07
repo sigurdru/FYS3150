@@ -1,8 +1,6 @@
 #define CATCH_CONFIG_MAIN
-#include "jacobi.hpp"
-#include <cmath>
+#include "tridiag.hpp"
 #include <catch2/catch.hpp>
-#include <iostream>
 
 TEST_CASE("Testing that the TriDiagSolver class works as expected")
 {
@@ -17,4 +15,5 @@ TEST_CASE("Testing that the TriDiagSolver class works as expected")
     double exact[n+1] = {0, 6, 11, 14, 14, 10};
     Solver.Solve(u, b);
     for (int i = 0; i <= n; i++)
-        REQUIRE(u[i] == exact[i])
+        REQUIRE( u[i] == Approx(exact[i]).epsilon(1E-15) );
+}

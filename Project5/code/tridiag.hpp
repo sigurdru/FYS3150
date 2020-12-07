@@ -2,21 +2,22 @@
 #define TRIDIAG_HPP
 #include <string>
 
-class Lineq {
-protected:
-    double m_h;
-    int m_n;
-    double *m_x;
-    double *m_exact;
-    double *m_comp;
+// class Lineq {
+// protected:
+//     double m_h;
+//     int m_n;
+//     double *m_x;
+//     double *m_exact;
+//     double *m_comp;
 
-public:
-    void write_to_file(std::string fname);
-};
+// public:
+//     void write_to_file(std::string fname);
+// };
 
 class TriDiagSolver {
 private:
     double m_a, m_b, m_c;
+    int m_n;
     double *m_alpha, *m_rho;
 
 public:
