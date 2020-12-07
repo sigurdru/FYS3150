@@ -1,6 +1,6 @@
 #include "tridiag.hpp"
 
-void TriDiagSolver::TriDiagSolver(double a, double b, double c, int n)
+TriDiagSolver::TriDiagSolver(double a, double b, double c, int n)
 {
     m_n = n;
     m_a = a;

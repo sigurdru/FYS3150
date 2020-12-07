@@ -1,9 +1,9 @@
-#include "tridiag.hpp"
+#include "solvers.hpp"
 #include <iostream>
 #include <cmath>
 #include <fstream>
 
-void Common::write_to_file (std::string fname) {
+void Solvers::write_to_file (std::string fname) {
     std::string res_fname, error_fname;
     res_fname.append(fname);
     res_fname.append(".txt");

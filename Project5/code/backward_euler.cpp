@@ -1,4 +1,5 @@
-#include "diffusion.hpp"
+#include "solvers.hpp"
+#include "tridiag.hpp"
 
 BackwardEuler::BackwardEuler(double dx, double dt, int n, double *InitialCondition)
 {
