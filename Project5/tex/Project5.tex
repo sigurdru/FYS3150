@@ -198,24 +198,24 @@ Again, defining
 we obtain by inserting \eqref{eq:centered_2nd_deriv_space} and \eqref{eq:backward_deriv_time} into our differential equation the equation describing Backward Euler:
 \begin{equation}
   \label{eq:backward_euler}
-  u_{i, j-1} = -\alpha u_{i-1, j} + (1 - 2 \alpha) u_{i, j} - \alpha u_{i+1, j}
+  u_{i, j-1} = -\alpha u_{i-1, j} + (1 + 2 \alpha) u_{i, j} - \alpha u_{i+1, j}
 \end{equation}
 
 Written out for all $i$, equation \ref{eq:backward_euler} becomes
 \begin{align*}
-  - \alpha u_{0, j} + (1 - 2 \alpha) u_{1, j} - \alpha u_{2, j} &= u_{1, j-1} \\
-  - \alpha u_{1, j} + (1 - 2 \alpha) u_{2, j} - \alpha u_{3, j} &= u_{2, j-1} \\
+  - \alpha u_{0, j} + (1 + 2 \alpha) u_{1, j} - \alpha u_{2, j} &= u_{1, j-1} \\
+  - \alpha u_{1, j} + (1 + 2 \alpha) u_{2, j} - \alpha u_{3, j} &= u_{2, j-1} \\
   ... \\
-  - \alpha u_{n-3, j} + (1 - 2 \alpha) u_{n-2, j} - \alpha u_{n-1, j} &= u_{n-2, j-1} \\
-  - \alpha u_{n-2, j} + (1 - 2 \alpha) u_{n-1, j} - \alpha u_{n, j} &= u_{n-1, j-1} \\
+  - \alpha u_{n-3, j} + (1 + 2 \alpha) u_{n-2, j} - \alpha u_{n-1, j} &= u_{n-2, j-1} \\
+  - \alpha u_{n-2, j} + (1 + 2 \alpha) u_{n-1, j} - \alpha u_{n, j} &= u_{n-1, j-1} \\
 \end{align*}
 In general, this can be rearranged slightly so that
 \begin{align*}
-  (1 - 2 \alpha) u_{1, j} -\alpha  u_{2, j} &= u_{1, j-1} + \alpha u_{0, j} \\
-  - \alpha u_{1, j} + (1 - 2 \alpha) u_{2, j} - \alpha u_{3, j} &= u_{2, j-1} \\
+  (1 + 2 \alpha) u_{1, j} -\alpha  u_{2, j} &= u_{1, j-1} + \alpha u_{0, j} \\
+  - \alpha u_{1, j} + (1 + 2 \alpha) u_{2, j} - \alpha u_{3, j} &= u_{2, j-1} \\
   ... \\
-  - \alpha u_{n-3, j} + (1 - 2 \alpha) u_{n-2, j} - \alpha u_{n-1, j} &= u_{n-2, j-1} \\
-  - \alpha u_{n-2, j} + (1 - 2 \alpha) u_{n-1, j} &= u_{n-1, j-1} + \alpha u_{n, j} \\
+  - \alpha u_{n-3, j} + (1 + 2 \alpha) u_{n-2, j} - \alpha u_{n-1, j} &= u_{n-2, j-1} \\
+  - \alpha u_{n-2, j} + (1 + 2 \alpha) u_{n-1, j} &= u_{n-1, j-1} + \alpha u_{n, j} \\
 \end{align*}
 Let $\vc v_j$ be a vector containing the values of $u$ at $n - 1$ points in space at a time $t_j$
 \begin{equation}
@@ -251,14 +251,14 @@ where $\vc A$ is defined as
   \label{def:matrix_A}
   A =
   \begin{bmatrix}
-    (1 - 2 \alpha) & -\alpha         & 0       & 0      & \ldots         & 0 \\
-    -\alpha        & (1 - 2 \alpha)  & -\alpha & 0      & \ldots         & 0 \\
+    (1 + 2 \alpha) & -\alpha         & 0       & 0      & \ldots         & 0 \\
+    -\alpha        & (1 + 2 \alpha)  & -\alpha & 0      & \ldots         & 0 \\
     \vdots         &                 & \ddots  &        &                & \vdots \\
-    0              & \ldots          & 0       &-\alpha & (1 - 2 \alpha) & -\alpha  \\
-    0              & \ldots          & 0       & 0      &-\alpha         & (1 - 2 \alpha)  \\
+    0              & \ldots          & 0       &-\alpha & (1 + 2 \alpha) & -\alpha  \\
+    0              & \ldots          & 0       & 0      &-\alpha         & (1 + 2 \alpha)  \\
   \end{bmatrix}
 \end{equation}
-This is a tridiagonal matrix with $(1 - 2 \alpha)$ on the diagonal and $-\alpha$ directly above and below the diagonal.
+This is a tridiagonal matrix with $(1 + 2 \alpha)$ on the diagonal and $-\alpha$ directly above and below the diagonal.
 
 MOVE SOMETHING TO METHODS?
 
