@@ -17,8 +17,12 @@ class ForwardEuler : public Solvers{
     private:
     protected:
     public:
-        void Initialize(int num_int_points, int num_time_points, float dtimestep);
-        void CalcOneStep(int j);
+        ForwardEuler(int num_int_points, int num_time_points, 
+                      float dtimestep, double *InitialCondition,
+                      std::string ResOutFileName);
+        void Solve_ForwardEuler( 
+                                 double BoundaryLeft(double),
+                                 double BoundaryRight(double));
         ~ForwardEuler();
 };
 
@@ -29,7 +33,7 @@ class BackwardEuler : public Solvers {
         BackwardEuler(int num_int_points, int num_time_points, 
                       float dtimestep, double *InitialCondition,
                       std::string ResOutFileName);
-        void Solve_BackwardEuler(int NumTimeStep, 
+        void Solve_BackwardEuler( 
                                  double BoundaryLeft(double),
                                  double BoundaryRight(double));
         ~BackwardEuler();

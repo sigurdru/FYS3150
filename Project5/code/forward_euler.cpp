@@ -1,35 +1,39 @@
 #include "solvers.hpp"
 
-ForwardEuler::ForwardEuler(double dx, double dt, int n, double *InitialCondition)
-{
-    n = n;      // store the number of positional steps in an instance variable
-    dt = dt;    // store the time step in an instance variable
-    alpha = dt/(dx*dx);
-    u_old = new double[n+1];
-    u_new = new double[n+1];
-    for (int i=0; i<=n; i++) u_new[i] = InitialCondition[i];
+ForwardEuler::ForwardEuler(int num_int_points,
+                           int num_time_points,
+                           float dtimestep,
+                           double* InitialCondition,
+                           std::string ResOutFileName) {
+
+    double L = 1;
+    Nx = num_int_points;    // store the number of positional steps in an instance variable
+    dt = dtimestep;  // store the time step in an instance variable
+    alpha = dt/dx/dx;
+    u = new double[Nx + 1];
+    b = new double[Nx - 1];
+    for (int i = 0; i <= Nx; i++)
+        u[i] = InitialCondition[i];
 }
 
-ForwardEuler::Solve(
-    int NumTimeSteps,
-    double BoundaryLeft(double),
-    double BoundaryRight(double)
-) {
-    t = 0.0;
-    for (int j=0; j<NumTimeSteps; j++) {
-        // store the current values for later use before updating
-        for (int i=0; i<=n; i++)
-            u_old[i] = u_new[i];
-        t += dt;
-        u_new[0] = BoundaryLeft(t);
-        u_new[n] = BoundaryRight(t);
-        for (int i=1; i<n; i++)
-            u_new[i] = alpha*u_old[i-1] + (1 - 2*alpha)*u_old[i] + alpha*u_old[i+1];
-        WriteToFile();
-    }
+void ForwardEuler::Solve_ForwardEuler(double BoundaryLeft(double),
+                                      double BoundaryRight(double)) {
+  float t;
+  for (int j = 0; j < Nt; j++) {
+    // store the current values for later use before updating
+    for (int i = 0; i <= Nx; i++)
+      b[i] = u[i];
+    t = dt*j;
+    u[0] = BoundaryLeft(t);
+    u[Nx] = BoundaryRight(t);
+    for (int i = 1; i < Nx; i++)
+      u[i] = alpha * b[i - 1] + (1 - 2 * alpha) * b[i] +
+                 alpha * b[i + 1];
+    // WriteToFile();
+  }
 }
 
 ForwardEuler::~ForwardEuler() {
-    delete[] u_old;
-    delete[] u_new;
+    delete[] u;
+    delete[] b;
 }

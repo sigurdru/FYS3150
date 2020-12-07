@@ -18,8 +18,7 @@ BackwardEuler::BackwardEuler(int num_int_points, int num_time_points,
     for (int i=0; i<=Nx; i++) u[i] = InitialCondition[i];
 }
 
-void BackwardEuler::Solve_BackwardEuler(int NumTimeSteps, 
-                                        double BoundaryLeft(double),
+void BackwardEuler::Solve_BackwardEuler(double BoundaryLeft(double),
                                         double BoundaryRight(double))
 {
     double t;
