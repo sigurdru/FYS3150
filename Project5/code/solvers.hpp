@@ -8,8 +8,8 @@ struct Solvers {
     double dt, t, dx, L, alpha;
     double *u, *b;
     std::string ResOutFileName;
-    // std::ofile ResOutFile;
-    void WriteToFile(std::string fname);
+    std::ofstream ResOutFile;
+    void WriteToFile();
 };
 
 class ForwardEuler : public Solvers{
