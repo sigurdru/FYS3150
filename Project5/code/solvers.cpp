@@ -20,11 +20,18 @@ void Solvers::WriteToFile() {
     ResOutFile << endl;
 }
 
-void Solvers::ProduceFName(std::string fname, std::string method) {
+void Solvers::ProduceFName(std::string fname) {
     ResOutFileName = fname;
     std::string location = "../output/";
     ResOutFileName.insert(0, location);
-    ResOutFileName.append("_").append(method);
     ResOutFileName.append(".csv");
     std::cout << "Output file: " << ResOutFileName << std::endl;
+}
+
+void Solvers::ShouldIPrint(int i) {
+    // Should you print?
+    bool ShouldPrint;
+    int NumberOfprints = 5;
+    ShouldPrint = i%(Nt/NumberOfprints) == 0;
+    if (ShouldPrint) WriteToFile();
 }

@@ -39,17 +39,17 @@ int main(int charc, char* argv[])
     if (method == "ForwardEuler") {
         // Solve using Forward Euler
         ForwardEuler ForwardSolver(Nx, Nt, dt, InitialConditions, ResOutFileName); 
-        ForwardSolver.ProduceFName(ResOutFileName, method);
+        ForwardSolver.ProduceFName(ResOutFileName);
         ForwardSolver.Solve_ForwardEuler(BoundaryLeft, BoundaryRight);
     }else if (method == "BackwardEuler") {
         // Solve using Backward Euler
         BackwardEuler BackwardSolver(Nx, Nt, dt, InitialConditions, ResOutFileName);
-        BackwardSolver.ProduceFName(ResOutFileName, method);
+        BackwardSolver.ProduceFName(ResOutFileName);
         BackwardSolver.Solve_BackwardEuler(BoundaryLeft, BoundaryRight);
     }else if (method == "CrankNicolson") {
         // Solve using Crank-Nicolson
         CrankNicolson CrankNicolsonSolver(Nx, Nt, dt, InitialConditions, ResOutFileName);
-        CrankNicolsonSolver.ProduceFName(ResOutFileName, method);
+        CrankNicolsonSolver.ProduceFName(ResOutFileName);
         CrankNicolsonSolver.Solve_CrankNicolson(BoundaryLeft, BoundaryRight);
     }else {
         std::cout << "Error: unknown method" << std::endl;

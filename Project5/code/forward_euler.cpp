@@ -13,6 +13,7 @@ ForwardEuler::ForwardEuler(int num_int_points,
     dx = L/Nx;
     dt = dtimestep;         // store the time step in an instance variable
     alpha = dt/dx/dx;
+    t = 0;
     u = new double[Nx + 1];
     b = new double[Nx + 1];
     for (int i = 0; i <= Nx; i++)
@@ -21,18 +22,21 @@ ForwardEuler::ForwardEuler(int num_int_points,
 
 void ForwardEuler::Solve_ForwardEuler(double BoundaryLeft(double),
                                     double BoundaryRight(double)) {
-  for (int j = 0; j < Nt; j++) {
-    // store the current values for later use before updating
-    for (int i = 0; i <= Nx; i++)
-      b[i] = u[i];
-    t = dt*j;
-    u[0] = BoundaryLeft(t);
-    u[Nx] = BoundaryRight(t);
-    for (int i = 1; i < Nx; i++)
-      u[i] = alpha * b[i - 1] + (1 - 2 * alpha) * b[i] +
-                 alpha * b[i + 1];
     WriteToFile();
-    }
+    for (int j = 0; j < Nt; j++) {
+        // store the current values for later use before updating
+        ShouldIPrint(j);
+        for (int i = 0; i <= Nx; i++)
+          b[i] = u[i];
+        t = dt*j;
+        u[0] = BoundaryLeft(t);
+        u[Nx] = BoundaryRight(t);
+        for (int i = 1; i < Nx; i++)
+            u[i] = alpha * b[i - 1]
+                   + (1 - 2 * alpha) * b[i]
+                   + alpha * b[i + 1];
+        }
+        WriteToFile();
 }
 
 ForwardEuler::~ForwardEuler() {

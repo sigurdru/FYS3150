@@ -1,6 +1,7 @@
 #ifndef SOLVERS_HPP
 #define SOLVERS_HPP
 #include <fstream>
+#include <iostream>
 
 struct Solvers {
     // Here we define common stuff
@@ -10,7 +11,8 @@ struct Solvers {
     std::string ResOutFileName;
     std::ofstream ResOutFile;
     void WriteToFile();
-    void ProduceFName(std::string fname, std::string method);
+    void ProduceFName(std::string fname);
+    void ShouldIPrint(int i);
 };
 
 class ForwardEuler : public Solvers{
