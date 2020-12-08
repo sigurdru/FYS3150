@@ -12,7 +12,7 @@ CrankNicolson::CrankNicolson(int num_int_points,
     Nx = num_int_points;
     Nt = num_time_points;
     dt = dtimestep;
-    dx = L/(Nx + 1);
+    dx = L/Nx;
     ResOutFileName = ResOutFileName;
     alpha = dt/(dx*dx);
 
@@ -24,8 +24,7 @@ CrankNicolson::CrankNicolson(int num_int_points,
 void CrankNicolson::Solve_CrankNicolson(double BoundaryLeft(double),
                                         double BoundaryRight(double))
 {
-    double t;
-    TriDiagSolver Solver(-alpha, (1+2*alpha), -alpha, Nx);
+    TriDiagSolver Solver(-alpha, (2+2*alpha), -alpha, Nx);
     for (int j=0; j<Nt; j++) {
         // store the current values for later use before updating
         for (int i=0; i<=Nx-2; i++)

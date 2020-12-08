@@ -119,8 +119,6 @@ TEST_CASE( "Checking that the CrankNicolson class works as expected" )
     SECTION( "Checking that the results are as expected" )
     {
         for (int i = 0; i <= Nx; i++)
-            std::cout << Solver.u[i] << " " << Expected[i] << std::endl;
-        for (int i = 0; i <= Nx; i++)
             REQUIRE( Solver.u[i] == Approx(Expected[i]).epsilon(RelTol) );
     }
     delete[] InitialCondition;

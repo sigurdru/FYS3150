@@ -281,7 +281,7 @@ Inserting these two equations into our differential equation, we obtain (see App
   \label{eq:Crank-Nicolson_matrix}
   \vc A \vc v_j = \vc b_j
 \end{equation}
-The vector $\vc v_j$ is the same as in the case of Backward Euler, defined in \eqref{def:vector_v}. The matrix $\vc A$ is a tridiagonal matrix with $2 (1 - \alpha)$ on the diagonal and $\alpha$ directly above and below the diagonal. The vector $\vc b_j$ is
+The vector $\vc v_j$ is the same as in the case of Backward Euler, defined in \eqref{def:vector_v}. The matrix $\vc A$ is a tridiagonal matrix with $2 (1 + \alpha)$ on the diagonal and $-\alpha$ directly above and below the diagonal. The vector $\vc b_j$ is
 \begin{equation}
   \label{def:vector_b_CrankNicolson}
   \vc b_j =
@@ -407,7 +407,7 @@ Using this and the definition of the vector $\vc v_j$ from \eqref{def:vector_v},
 \begin{equation*}
   \vc A \vc v_j = \vc b_j
 \end{equation*}
-where the matrix $\vc A$ is a tridiagonal matrix with $2 (1 - \alpha)$ on the diagonal and $\alpha$ directly above and below the diagonal.
+where the matrix $\vc A$ is a tridiagonal matrix with $2 (1 + \alpha)$ on the diagonal and $-\alpha$ directly above and below the diagonal.
 
 
 \end{document}
