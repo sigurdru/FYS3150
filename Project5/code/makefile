@@ -4,4 +4,9 @@ run:
 	./main.exe 1 2 6 CrankNicolson test
 
 compile_test:
-	g++ -o unit_test.exe -Wall unit_test.cpp tridiag.cpp forward_euler.cpp backward_euler.cpp
+	g++ -o unit_test.exe -Wall unit_test.cpp tridiag.cpp forward_euler.cpp backward_euler.cpp crank_nicolson.cpp
+
+run_test:
+	./unit_test.exe
+
+test: compile_test run_test

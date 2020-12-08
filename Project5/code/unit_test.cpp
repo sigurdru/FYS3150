@@ -56,9 +56,17 @@ TEST_CASE( "Checking that the ForwardEuler class works as expected" )
     double Expected[Nx+1] = { 1., 1., 2., 3., 4., -1., 5., 2., 9., 2., 2.};
 
     ForwardEuler Solver(Nx, Nt, dt, InitialCondition, fname);
+    SECTION( "Checking that the result array is initialized correctly" )
+    {
+        for (int i = 0; i <= Nx; i++)
+            REQUIRE( Solver.u[i] == Approx(InitialCondition[i]).epsilon(RelTol) );
+    }
     Solver.Solve_ForwardEuler(BoundaryLeft, BoundaryRight);
-    for (int i = 0; i <= Nx; i++)
-        REQUIRE( Solver.u[i] == Approx(Expected[i]).epsilon(RelTol) );
+    SECTION( "Checking that the results are as expected" )
+    {
+        for (int i = 0; i <= Nx; i++)
+            REQUIRE( Solver.u[i] == Approx(Expected[i]).epsilon(RelTol) );
+    }
     delete[] InitialCondition;
 }
 
@@ -75,8 +83,43 @@ TEST_CASE( "Checking that the BackwardEuler class works as expected" )
     double Expected[Nx+1] = {1, 4, 2, 6, 4, 2};
 
     BackwardEuler Solver(Nx, Nt, dt, InitialCondition, fname);
+    SECTION( "Checking that the result array is initialized correctly" )
+    {
+        for (int i = 0; i <= Nx; i++)
+            REQUIRE( Solver.u[i] == Approx(InitialCondition[i]).epsilon(RelTol) );
+    }
     Solver.Solve_BackwardEuler(BoundaryLeft, BoundaryRight);
-    for (int i = 0; i <= Nx; i++)
-        REQUIRE( Solver.u[i] == Approx(Expected[i]).epsilon(RelTol) );
+    SECTION( "Checking that the results are as expected" )
+    {
+        for (int i = 0; i <= Nx; i++)
+            REQUIRE( Solver.u[i] == Approx(Expected[i]).epsilon(RelTol) );
+    }
+    delete[] InitialCondition;
+}
+
+TEST_CASE( "Checking that the CrankNicolson class works as expected" )
+{
+    int Nx = 5;
+    int Nt = 1;
+    double dx = 1.0/Nx;
+    // alpha = dt/dx^2 = 2
+    double dt = 2.0*dx*dx;
+    std::string fname = "blabla";
+
+    double *InitialCondition = new double[Nx+1] {1, 6, 14, 4, 2, 2};
+    double Expected[Nx+1] = {1, 4, 2, 6, 4, 2};
+
+    CrankNicolson Solver(Nx, Nt, dt, InitialCondition, fname);
+    SECTION( "Checking that the result array is initialized correctly" )
+    {
+        for (int i = 0; i <= Nx; i++)
+            REQUIRE( Solver.u[i] == Approx(InitialCondition[i]).epsilon(RelTol) );
+    }
+    Solver.Solve_CrankNicolson(BoundaryLeft, BoundaryRight);
+    SECTION( "Checking that the results are as expected" )
+    {
+        for (int i = 0; i <= Nx; i++)
+            REQUIRE( Solver.u[i] == Approx(Expected[i]).epsilon(RelTol) );
+    }
     delete[] InitialCondition;
 }
