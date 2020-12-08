@@ -31,8 +31,8 @@ void ForwardEuler::Solve_ForwardEuler(double BoundaryLeft(double),
     for (int i = 1; i < Nx; i++)
       u[i] = alpha * b[i - 1] + (1 - 2 * alpha) * b[i] +
                  alpha * b[i + 1];
-    // WriteToFile();
-  }
+    WriteToFile();
+    }
 }
 
 ForwardEuler::~ForwardEuler() {

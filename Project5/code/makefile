@@ -1,7 +1,7 @@
 compile:
-	g++ -o main.exe -Wall main.cpp forward_euler.cpp 
+	g++ -o main.exe -Wall main.cpp forward_euler.cpp backward_euler.cpp crank_nicolson.cpp solvers.cpp tridiag.cpp
 run:
-	./main.exe 100 100 0.01 ForwardEuler
+	./main.exe 1 2 6 CrankNicolson test
 
 compile_test:
 	g++ -o unit_test.exe -Wall unit_test.cpp tridiag.cpp forward_euler.cpp backward_euler.cpp crank_nicolson.cpp

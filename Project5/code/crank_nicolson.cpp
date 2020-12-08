@@ -36,6 +36,7 @@ void CrankNicolson::Solve_CrankNicolson(double BoundaryLeft(double),
         b[Nx-2] += alpha*u[Nx];
         // call tridiag solver and update values in u
         Solver.Solve(u, b);
+        WriteToFile();
     }
 }
 

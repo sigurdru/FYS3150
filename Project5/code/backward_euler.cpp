@@ -38,6 +38,7 @@ void BackwardEuler::Solve_BackwardEuler(
         b[Nx-2] += alpha*u[Nx];
         // call tridiag solver and update values in u
         Solver.Solve(u, b);
+        WriteToFile();
     }
 }
 
