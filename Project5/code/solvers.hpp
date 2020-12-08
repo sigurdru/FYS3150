@@ -10,6 +10,7 @@ struct Solvers {
     std::string ResOutFileName;
     std::ofstream ResOutFile;
     void WriteToFile();
+    void ProduceFName(std::string fname, std::string method);
 };
 
 class ForwardEuler : public Solvers{

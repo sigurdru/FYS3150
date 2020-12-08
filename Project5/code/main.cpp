@@ -1,10 +1,11 @@
 #include <iostream>
+#include <cmath>
 #include "solvers.hpp"
 
 // Left boundary condition
 double BoundaryLeft(double);
 // Right boundary condition
-double BoundatyRight(double);
+double BoundaryRight(double);
 
 int main(int charc, char* argv[])
 {
@@ -22,31 +23,34 @@ int main(int charc, char* argv[])
                   << "- CrankNicolson" << std::endl;
         exit(1);
     }
-    Nx = atoi(argv[1]);
-    Nt = atoi(argv[2]);
-    dt = atof(argv[3]);
+    Nx = std::pow(10, atoi(argv[1]));
+    Nt = std::pow(10, atoi(argv[2]));
+    dt = std::pow(10, -atof(argv[3]));
     method = argv[4];
     ResOutFileName = argv[5];
 
     // Define initial conditions
-    double *InitialConditions[Nx + 1];
-    for (int i=0; i<Nx-1)
-        InitialConditions[i] = 0;
-    InitialConditions[Nx] = 1;
+    double InitialConditions[Nx + 1];
+    for (int i=0; i<Nx-1; i++)
+        InitialConditions[i] = 0.;
+    InitialConditions[Nx] = 1.;
 
     // Solve with desired solver
     if (method == "ForwardEuler") {
         // Solve using Forward Euler
-        ForwardEuler ForwardSolver(Nx, Nt, dt, InitialConditions, ResOutFileName);  
-        ForwardSolver.Solve_ForwardEuler(BoundaryLeft, BoundatyRight);
+        ForwardEuler ForwardSolver(Nx, Nt, dt, InitialConditions, ResOutFileName); 
+        ForwardSolver.ProduceFName(ResOutFileName, method);
+        ForwardSolver.Solve_ForwardEuler(BoundaryLeft, BoundaryRight);
     }else if (method == "BackwardEuler") {
         // Solve using Backward Euler
         BackwardEuler BackwardSolver(Nx, Nt, dt, InitialConditions, ResOutFileName);
+        BackwardSolver.ProduceFName(ResOutFileName, method);
         BackwardSolver.Solve_BackwardEuler(BoundaryLeft, BoundaryRight);
     }else if (method == "CrankNicolson") {
         // Solve using Crank-Nicolson
         CrankNicolson CrankNicolsonSolver(Nx, Nt, dt, InitialConditions, ResOutFileName);
-        CrankNicolsonSolver.Solve_CrankNocolson(BoundaryLeft, BoundaryRight);
+        CrankNicolsonSolver.ProduceFName(ResOutFileName, method);
+        CrankNicolsonSolver.Solve_CrankNicolson(BoundaryLeft, BoundaryRight);
     }else {
         std::cout << "Error: unknown method" << std::endl;
         std::cout << "Acceptable method args:" << std::endl
@@ -64,5 +68,5 @@ double BoundaryRight(double t) {
 }
 double BoundaryLeft(double t) {
     // Left boundary condition
-    return 0.0
+    return 0.0;
 }
