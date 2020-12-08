@@ -17,13 +17,18 @@ def read_data(fname):
         fname (str): name of file containing the desired data
 
     Returns:
-        df (pandas.DataFrame): the expectation values
+        df (pandas.DataFrame): the calculated values
 
     """
     df = pd.read_csv(os.path.join(path, fname + '.csv'), header=None)
     return df
 
 def plot_evolution(fname, method):
+    """
+    The function plots and saves the figure
+    Args:
+        fname (str): name of the file containing the desired data
+    """
     df = read_data(fname)
     NumRows = len(df.loc[:,0])
     NumCols = len(df.loc[0,:])
@@ -41,6 +46,9 @@ def plot_evolution(fname, method):
 
 
 if __name__ == "__main__":
+    """
+    TESTING
+    """
     df = read_data("ForwardEuler-Nt5_0-dt6_0-Nx2_0")
     length = len(df.loc[:,0])
     for i in range(length):

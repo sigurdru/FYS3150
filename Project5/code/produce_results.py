@@ -7,7 +7,6 @@ def run_simulation(params, fname):
     Args:
         params (Parameters): an instance containing the parameters for this simulation
         fname (str): the filename used for saving data and plots
-
     """
     print(f'Simulating...\n    Result file: {fname}')
     command = ['./main.exe']
@@ -27,11 +26,8 @@ class Parameters:
         self.num_cores = num_cores
 
     def create_filename(self):
-        """Create a filename based on the parameters to the simulation.
-
-        Returns:
-            fname (str): the filename (without filetype)
-
+        """
+        Create a filename based on the parameters to the simulation.
         """
         import math
         Nx = self.Nx
@@ -43,13 +39,15 @@ class Parameters:
         return fname
 
     def produce_params_list(self):
-        """Return a list of the parameters for the simulation.
-        Returns:
-            parameter (list): a list of all the parameters
+        """
+        parameter (list): a list of all the parameters
         """
         return [self.Nx, self.Nt, self.dt, self.method]
 
 if __name__ == '__main__':
+    """
+    TESTING
+    """
     Nx = 2
     Nt = 4
     dt = 6
