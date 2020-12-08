@@ -1,18 +1,21 @@
 #include "solvers.hpp"
 #include <iostream>
 #include <cmath>
-#include <fstream>
 
-void Solvers::WriteToFile () {
+void Solvers::WriteToFile() {
     using namespace std;
+    // Open the file, which is a class variable
     if (!ResOutFile.good()){
         ResOutFile.open(ResOutFileName.c_str(), ofstream::out);
-        if (!ResOutfile.good()) {
+        if (!ResOutFile.good()) {
             cout << "Error opening file " << ResOutFileName << ". Aborting!" << endl;
             terminate();
         }
     }
+    // Add current time
     ResOutFile << t;
-    for (int i = 0; i <= n; i++) ResOutFile << "," << u[i];
+    // Add the data of u
+    for (int i = 0; i <= Nx; i++) 
+        ResOutFile << "," << u[i];
     ResOutFile << endl;
 }
