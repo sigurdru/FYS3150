@@ -15,6 +15,9 @@ def run_simulation(params, fname):
     command += [str(arg) for arg in parameter_list] + [fname]
     subprocess.call(command)
 
+def plot_solution(fname, method):
+    plot.plot_evolution(fname, method)
+
 class Parameters:
     def __init__(self, Nx, Nt, dt, method, num_cores=1):
         self.Nx = Nx

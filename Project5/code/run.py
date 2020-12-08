@@ -25,16 +25,29 @@ params.add_argument('-dt',
 params.add_argument('-m',
     type=str,
     default=1,
-    help='The metod you want to use (ForwardEuler, BackwardEuler, CrankNicolson).'
+    help='The metod you want to use (ForwardEuler, BackwardEuler, CrankNicolson, all).'
 )
 
 args = parser.parse_args()
 
 
-params = produce_results.Parameters(
-    args.Nx,
-    args.Nt,
-    args.dt,
-    args.m
-)
-produce_results.run_simulation(params, params.create_filename())
+if args.m == 'all':
+    m_list = ['ForwardEuler', 'BackwardEuler', 'CrankNicolson']
+    for method in m_list:
+        params = produce_results.Parameters(
+            args.Nx,
+            args.Nt,
+            args.dt,
+            method
+        )
+        produce_results.run_simulation(params, params.create_filename())
+        produce_results.plot_solution(params.create_filename(), method)
+else:
+    params = produce_results.Parameters(
+        args.Nx,
+        args.Nt,
+        args.dt,
+        args.m
+    )
+    produce_results.run_simulation(params, params.create_filename())
+    produce_results.plot_solution(params.create_filename(), args.m)
