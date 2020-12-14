@@ -1,22 +1,10 @@
 #include "solvers.hpp"
 #include <iostream>
 
-ForwardEuler::ForwardEuler(int num_int_points,
-                           int num_time_points,
-                           float dtimestep,
-                           double* InitialCondition,
-                           std::string ResOutFileName) {
-
-    double L = 1;
-    Nx = num_int_points;    // store the number of positional steps in an instance variable
-    Nt = num_time_points;
-    dx = L/Nx;
-    dt = dtimestep;         // store the time step in an instance variable
-    alpha = dt/dx/dx;
-    u = new double[Nx + 1];
+ForwardEuler::ForwardEuler(Parameters params) {
+    Initialize(params);
+    ProduceFName("ForwardEuler");
     b = new double[Nx + 1];
-    for (int i = 0; i <= Nx; i++)
-        u[i] = InitialCondition[i];
 }
 
 void ForwardEuler::Solve_ForwardEuler(double BoundaryLeft(double),

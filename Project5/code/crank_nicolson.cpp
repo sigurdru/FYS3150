@@ -1,24 +1,10 @@
 #include "solvers.hpp"
 #include "tridiag.hpp"
 
-CrankNicolson::CrankNicolson(int num_int_points,
-                             int num_time_points,
-                             float dtimestep,
-                             double* InitialCondition,
-                             std::string ResOutFileName)
-{
-    // store parameters in instance variables
-    double L = 1;
-    Nx = num_int_points;
-    Nt = num_time_points;
-    dt = dtimestep;
-    dx = L/Nx;
-    ResOutFileName = ResOutFileName;
-    alpha = dt/(dx*dx);
-
+CrankNicolson::CrankNicolson(Parameters params) {
+    Initialize(params);
+    ProduceFName("CrankNicolson");
     b = new double[Nx-1];
-    u = new double[Nx+1];
-    for (int i=0; i<=Nx; i++) u[i] = InitialCondition[i];
 }
 
 void CrankNicolson::Solve_CrankNicolson(double BoundaryLeft(double),

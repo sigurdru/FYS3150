@@ -50,12 +50,16 @@ TEST_CASE( "Checking that the ForwardEuler class works as expected" )
     double dx = 1.0/Nx;
     // alpha = dt/dx^2 = 2
     double dt = 2.0*dx*dx;
+    double L = 1.0;
     std::string fname = "blabla";
 
-    double *InitialCondition = new double[Nx+1] {0, 1, 2, 3, 4, 5, 3, 2, 1, 4, 6};
+    double *InitialCondition = new double[Nx+1]
+        {0, 1, 2, 3, 4, 5, 3, 2, 1, 4, 6};
     double Expected[Nx+1] = { 1., 1., 2., 3., 4., -1., 5., 2., 9., 2., 2.};
 
-    ForwardEuler Solver(Nx, Nt, dt, InitialCondition, fname);
+    Parameters params { Nx, Nt, dt, L, InitialCondition, fname };
+
+    ForwardEuler Solver(params);
     SECTION( "Checking that the result array is initialized correctly" )
     {
         for (int i = 0; i <= Nx; i++)
@@ -77,12 +81,14 @@ TEST_CASE( "Checking that the BackwardEuler class works as expected" )
     double dx = 1.0/Nx;
     // alpha = dt/dx^2 = 2
     double dt = 2.0*dx*dx;
+    double L = 1.0;
     std::string fname = "blabla";
 
     double *InitialCondition = new double[Nx+1] {1, 14, -10, 18, 4, 2};
     double Expected[Nx+1] = {1, 4, 2, 6, 4, 2};
 
-    BackwardEuler Solver(Nx, Nt, dt, InitialCondition, fname);
+    Parameters params { Nx, Nt, dt, L, InitialCondition, fname };
+    BackwardEuler Solver(params);
     SECTION( "Checking that the result array is initialized correctly" )
     {
         for (int i = 0; i <= Nx; i++)
@@ -104,12 +110,14 @@ TEST_CASE( "Checking that the CrankNicolson class works as expected" )
     double dx = 1.0/Nx;
     // alpha = dt/dx^2 = 2
     double dt = 2.0*dx*dx;
+    double L = 1.0;
     std::string fname = "blabla";
 
     double *InitialCondition = new double[Nx+1] {1, 6, 14, 4, 2, 2};
     double Expected[Nx+1] = {1, 4, 2, 6, 4, 2};
 
-    CrankNicolson Solver(Nx, Nt, dt, InitialCondition, fname);
+    Parameters params { Nx, Nt, dt, L, InitialCondition, fname };
+    CrankNicolson Solver(params);
     SECTION( "Checking that the result array is initialized correctly" )
     {
         for (int i = 0; i <= Nx; i++)

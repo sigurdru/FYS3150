@@ -26,30 +26,30 @@ int main(int charc, char* argv[])
     Nx = std::pow(10, atoi(argv[1]));
     Nt = std::pow(10, atoi(argv[2]));
     dt = std::pow(10, -atof(argv[3]));
+    double L = 1.0;
     method = argv[4];
     ResOutFileName = argv[5];
 
     // Define initial conditions
-    double InitialConditions[Nx + 1];
+    double initialCondition[Nx + 1];
     for (int i=0; i<Nx-1; i++)
-        InitialConditions[i] = 0.;
-    InitialConditions[Nx] = 1.;
+        initialCondition[i] = 0.;
+    initialCondition[Nx] = 1.;
+
+    Parameters params{ Nx, Nt, dt, L, initialCondition, ResOutFileName };
 
     // Solve with desired solver
     if (method == "ForwardEuler") {
         // Solve using Forward Euler
-        ForwardEuler ForwardSolver(Nx, Nt, dt, InitialConditions, ResOutFileName); 
-        ForwardSolver.ProduceFName(ResOutFileName, method);
+        ForwardEuler ForwardSolver(params); 
         ForwardSolver.Solve_ForwardEuler(BoundaryLeft, BoundaryRight);
     }else if (method == "BackwardEuler") {
         // Solve using Backward Euler
-        BackwardEuler BackwardSolver(Nx, Nt, dt, InitialConditions, ResOutFileName);
-        BackwardSolver.ProduceFName(ResOutFileName, method);
+        BackwardEuler BackwardSolver(params);
         BackwardSolver.Solve_BackwardEuler(BoundaryLeft, BoundaryRight);
     }else if (method == "CrankNicolson") {
         // Solve using Crank-Nicolson
-        CrankNicolson CrankNicolsonSolver(Nx, Nt, dt, InitialConditions, ResOutFileName);
-        CrankNicolsonSolver.ProduceFName(ResOutFileName, method);
+        CrankNicolson CrankNicolsonSolver(params);
         CrankNicolsonSolver.Solve_CrankNicolson(BoundaryLeft, BoundaryRight);
     }else {
         std::cout << "Error: unknown method" << std::endl;
