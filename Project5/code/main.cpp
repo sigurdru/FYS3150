@@ -15,12 +15,13 @@ int main(int charc, char* argv[])
     if (charc != 6) {
         std::cout << "Not enough arguments!" << std::endl
                   << "I take: Nx(int), Nt(int), dt(float), "
-                  << "method(string), ResOutFileName(string)"
+                  << "method(string), ResOutFileName(string),"
                   << std::endl;
         std::cout << "Acceptable method args:" << std::endl
                   << "- ForwardEuler" << std::endl
                   << "- BackwardEuler" << std::endl
-                  << "- CrankNicolson" << std::endl;
+                  << "- CrankNicolson" << std::endl
+                  << "- TwoDimensions" << std::endl;
         exit(1);
     }
     Nx = std::pow(10, atoi(argv[1]));
@@ -31,10 +32,19 @@ int main(int charc, char* argv[])
 
     // Define initial conditions
     double InitialConditions[Nx + 1];
-    for (int i=0; i<Nx-1; i++)
-        InitialConditions[i] = 0.;
-    InitialConditions[Nx] = 1.;
-
+    double InitialConditions2D[Nx+1][Nx+1];
+    if (method == "TwoDimensions"){
+        // !!!DETTE MÅ FIKSES
+        for (int i=0; i<=Nx;i++){
+            for (int j=0; j<=Nx; j++){
+            InitialConditions2D[i][j] = 0.;
+            }
+        }
+    }else{
+        for (int i=0; i<Nx-1; i++)
+            InitialConditions[i] = 0.;
+        InitialConditions[Nx] = 1.;
+    }
     // Solve with desired solver
     if (method == "ForwardEuler") {
         // Solve using Forward Euler
@@ -51,12 +61,18 @@ int main(int charc, char* argv[])
         CrankNicolson CrankNicolsonSolver(Nx, Nt, dt, InitialConditions, ResOutFileName);
         CrankNicolsonSolver.ProduceFName(ResOutFileName);
         CrankNicolsonSolver.Solve_CrankNicolson(BoundaryLeft, BoundaryRight);
+    }else if (method == "TwoDimensions") {
+        // Solve two dimensional problem using Forward Euler
+        TwoDimensions TwoDimensionsSolver(Nx, Nt, dt, InitialConditions2D, ResOutFileName);
+        TwoDimensionsSolver.ProduceFName(ResOutFileName);
+        TwoDimensionsSolver.Solve_TwoDimensions();
     }else {
         std::cout << "Error: unknown method" << std::endl;
         std::cout << "Acceptable method args:" << std::endl
                   << "- ForwardEuler" << std::endl
                   << "- BackwardEuler" << std::endl
-                  << "- CrankNicolson" << std::endl;
+                  << "- CrankNicolson" << std::endl
+                  << "- TwoDimensions" << std::endl;
         exit(1);
     }
     return 0;

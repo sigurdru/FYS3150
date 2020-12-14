@@ -9,7 +9,7 @@ BackwardEuler::BackwardEuler(
     std::string ResOutFileName
 ) {
     // store parameters in instance variables
-    double L = 1;
+    L = 1.0;
     Nx = num_int_points;
     Nt = num_time_points;
     dt = dtimestep;

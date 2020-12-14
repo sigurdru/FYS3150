@@ -7,7 +7,7 @@ ForwardEuler::ForwardEuler(int num_int_points,
                            double* InitialCondition,
                            std::string ResOutFileName) {
 
-    double L = 1;
+    L = 1.0;
     Nx = num_int_points;    // store the number of positional steps in an instance variable
     Nt = num_time_points;
     dx = L/Nx;
@@ -36,7 +36,7 @@ void ForwardEuler::Solve_ForwardEuler(double BoundaryLeft(double),
                    + (1 - 2 * alpha) * b[i]
                    + alpha * b[i + 1];
         }
-        WriteToFile();
+    WriteToFile();
 }
 
 ForwardEuler::~ForwardEuler() {

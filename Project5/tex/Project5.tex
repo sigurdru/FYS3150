@@ -12,6 +12,7 @@
 
 \usepackage{physics,amssymb}  % mathematical symbols (physics imports amsmath)
 \usepackage{graphicx}         % include graphics such as plots
+
 \usepackage{xcolor}           % set colors
 \usepackage{hyperref}         % automagic cross-referencing (this is GODLIKE)
 \usepackage{tikz}             % draw figures manually
@@ -19,7 +20,7 @@
 \usepackage{subfigure}        % imports a lot of cool and useful figure commands
 \usepackage{verbatim}
 \usepackage{adjustbox}
-
+\usepackage{dsfont}
 
 % defines the color of hyperref objects
 % Blending two colors:  blue!80!black  =  80% blue and 20% black
@@ -108,9 +109,9 @@ or
 	\left(\frac{\partial^2}{\partial x^2} + \frac{\partial^2}{\partial y^2} + \frac{\partial^2}{\partial z^2}\right) u(x,y,z,t) = \frac{\partial u(x,y,z,t)}{\partial t}
 \end{equation}
 in cartesian coordinates. In this report we are mainly going to work with the diffusion equation in one and two dimensions, i.e.
-\begin{equation*}
-	\frac{\partial^2 u(x,t)}{\partial x^2} = \frac{\partial u(x,t)}{\partial t} \ \ \wedge \ \ \frac{\partial^2u(x,t)}{\partial x^2} + \frac{\partial^2u(x,t)}{\partial y^2} = \frac{\partial u(x,t)}{\partial t}.
-\end{equation*}
+\begin{align*}
+	 \scriptsize\frac{\partial^2 u(x,t)}{\partial x^2} &= \frac{\partial u(x,t)}{\partial t} \\ &\wedge \\ \frac{\partial^2u(x, y,t)}{\partial x^2} + \frac{\partial^2u(x, y,t)}{\partial y^2} &= \frac{\partial u(x, y,t)}{\partial t}.
+\end{align*}
 
 \subsection*{Discretization}
 
@@ -139,17 +140,6 @@ Using an implicit method instead of an explicit method usually requires more com
 REFERENCES, Intro to PDEs book, Wiki
 
 
-\subsection*{Stability of explicit schemes}
-
-The following stability requirement applies to problems of solving linear partial differential equations for both Dirichlet, Neumann, and periodic boundary conditions:
-\begin{equation}
-  \label{eq:von_neumann_stability}
-  \frac{\Delta t}{(\Delta x)^2} \le 1/2
-\end{equation}
-
-REFERENCES, double check, book p 147, notes p 308
-
-
 \subsection*{Explicit forward Euler}
 
 The algorithm for explicit forward Euler in one dimension (from \cite{lectures2015} chapter 10.2.1) reads
@@ -161,21 +151,40 @@ where
 \begin{equation*}
 	\alpha = \frac{\Delta t}{\Delta x^2},
 \end{equation*}
-and the discretization is explained in the appropriate section. Note that the expression on the right hand side, used to calculate the value at a time $t_j + \Delta t$, only contains the state of the system at time $t_j$.
+and a local approximate error of $O(\Delta t)$ and $O(\Delta x ^2)$. The discretization is explained in the appropriate section. Note that the expression on the right hand side, used to calculate the value at a time $t_j + \Delta t$, only contains the state of the system at time $t_j$. This can be written as a matrix equation (see \cite{lectures2015} chapter 10.2.1)
+\begin{equation*}
+	\mathbf{u}_{j+1} = (\mathds{1} - \alpha \mathbf{B})\mathbf{u}_j
+\end{equation*}
+where
+\begin{equation*}
+	\begin{bmatrix}
+	2 & -1 & 0 & 0\dots \\
+	-1 & 2 & -1 & 0\dots\\
+	\dots & \dots & \dots &\dots \\
+	0 & \dots & -1 & 2
+	\end{bmatrix}	 \ \ \wedge \ \ 
+	\mathbf{u}_{j} = \begin{bmatrix}
+	u_{1,j} \\
+	u_{2,j} \\
+	\ldots \\
+	u_{n,j}
+	\end{bmatrix}
+\end{equation*}
+The stability requirement for this algorithm (also from \cite{lectures2015} chapter 10.2.1) is
+\begin{equation}
+	\label{eq:von_neumann_stability}
+	\rho(\mathbf{B}) \le 1 \implies \frac{\Delta t}{(\Delta x)^2} \le 1/2
+\end{equation}
+Where $\rho(\mathbf{B})$ is the spectral radius of $\mathbf{B}$:
+\begin{equation*}
+	\rho(\mathbf{B}) = \text{max}\{|\lambda|:\text{det}(\mathbf{B}- \lambda \mathds{1}) = 0\}.
+\end{equation*}
 
-%\begin{equation}
-%	u_t \approx \frac{u(x, t+\Delta t) - u(x,t)}{\Delta t} = \frac{u(x_i,t_j+\Delta t) - u(x_i, t_j)}{\Delta t}
-%\end{equation}
-%and
-%\begin{equation}
-%	u_{xx} \approx \frac{u(x+\Delta x, t) - 2u(x,t) + u(x-\Delta x, t)}{\Delta x^2}
-%\end{equation}
-%or
-%\begin{equation}
-%	u_{xx} \approx \frac{u(x_i + \Delta x, t_j) - 2u(x_i,t_j) + u(x_i - \Delta x, t_j)}{\Delta x^2}
-%\end{equation}
-%and has a local approximation error $O(\Delta x^2)$. Symbols are defined in the discretization section. If we define $\alpha = \Delta t/\Delta x^2$ equ
-
+In two dimensions ($u(x,y)$) the method for solving is similar. Assuming the same number of integration points in x- and y-direction ($\Delta x = \Delta y = \Delta l$), the algorithm (from \cite{lectures2015} chapter 10.2.5) reads
+\begin{equation*}
+	u_{i,j}^{l+1} = u_{i,j}^{l} + \alpha \left[u_{i+1,j}^{l} + u_{i-1,j}^{l} + u_{i,j+1}^{l} + u_{i,j-1}^{l} - 4u_{i,j}^{l}\right]
+\end{equation*}
+where $u_{i,j}^l = u(i\Delta l, j \Delta l, l\Delta t)$ and $\alpha = \Delta t/\Delta l^2$.
 
 
 \subsection*{Implicit Backward Euler}
@@ -188,9 +197,9 @@ The Backward Euler algorithm uses the same centered difference in space as Forwa
 but a backward formula for the time derivative:
 \begin{equation}
   \label{eq:backward_deriv_time}
-  u_t \approx \frac{u(x_i, t_j) - u(x_i, t_j - \Delta t)}{\Delta t}
+  u_t \approx \frac{u(x_i, t_j) - u(x_i, t_j - \Delta t)}{\Delta t},
 \end{equation}
-
+which also has a local truncation error of $O(\Delta t)$ and $O(\Delta x ^2)$.
 Again, defining
 \begin{equation*}
   \alpha = \frac{\Delta t}{(\Delta x)^2}
@@ -265,7 +274,7 @@ MOVE SOMETHING TO METHODS?
 
 \subsection*{Implicit Crank-Nicolson}
 
-The Crank-Nicolson algorithm uses a time-centered scheme centered around $t + \Delta t/2$. The time derivative is given by
+The Crank-Nicolson algorithm uses a time-centered scheme centered around $t + \Delta t/2$, with a truncation error of $O(\Delta t^2)$ and $O(\Delta x^2)$. The time derivative is given by
 \begin{equation}
   \label{eq:forward_deriv_time}
   u_t \approx \frac{u(x_i, t_j + \Delta t) - u(x_i, t_j)}{\Delta t}

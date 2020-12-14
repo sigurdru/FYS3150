@@ -63,5 +63,22 @@ public:
     ~CrankNicolson();
 };
 
+class TwoDimensions : public Solvers {
+public:
+    double **u;
+    double **u2;
+    void WriteToFile();
+    TwoDimensions(
+        int num_int_points,
+        int num_time_points,
+        double dtimestep,
+        double** InitialConditions,
+        std::string ResOutFileName
+    );
+    void WriteToFile();
+    void ShouldIPrint(int i);
+    void Solve_TwoDimensions();
+};
+
 #endif //SOLVERS_HPP
 
