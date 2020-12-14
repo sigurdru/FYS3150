@@ -65,7 +65,7 @@ TEST_CASE( "Checking that the ForwardEuler class works as expected" )
         for (int i = 0; i <= Nx; i++)
             REQUIRE( Solver.u[i] == Approx(InitialCondition[i]).epsilon(RelTol) );
     }
-    Solver.Solve_ForwardEuler(BoundaryLeft, BoundaryRight);
+    Solver.Solve_ForwardEuler(BoundaryLeft, BoundaryRight, 1);
     SECTION( "Checking that the results are as expected" )
     {
         for (int i = 0; i <= Nx; i++)
@@ -94,7 +94,7 @@ TEST_CASE( "Checking that the BackwardEuler class works as expected" )
         for (int i = 0; i <= Nx; i++)
             REQUIRE( Solver.u[i] == Approx(InitialCondition[i]).epsilon(RelTol) );
     }
-    Solver.Solve_BackwardEuler(BoundaryLeft, BoundaryRight);
+    Solver.Solve_BackwardEuler(BoundaryLeft, BoundaryRight, 1);
     SECTION( "Checking that the results are as expected" )
     {
         for (int i = 0; i <= Nx; i++)
@@ -123,7 +123,7 @@ TEST_CASE( "Checking that the CrankNicolson class works as expected" )
         for (int i = 0; i <= Nx; i++)
             REQUIRE( Solver.u[i] == Approx(InitialCondition[i]).epsilon(RelTol) );
     }
-    Solver.Solve_CrankNicolson(BoundaryLeft, BoundaryRight);
+    Solver.Solve_CrankNicolson(BoundaryLeft, BoundaryRight, 1);
     SECTION( "Checking that the results are as expected" )
     {
         for (int i = 0; i <= Nx; i++)

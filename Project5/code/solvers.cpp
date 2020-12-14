@@ -11,6 +11,9 @@ void Solvers::Initialize(Parameters params)
     this->L = params.L;
     this->ResOutFileName = params.ResOutFileName;
 
+    ProduceFName();
+    t = 0.0;
+
     dx = L/Nx;
     alpha = dt/dx/dx;
     u = new double[Nx + 1];
@@ -36,10 +39,16 @@ void Solvers::WriteToFile() {
     ResOutFile << endl;
 }
 
-void Solvers::ProduceFName(std::string method) {
+void Solvers::ProduceFName() {
     std::string location = "../output/";
     ResOutFileName.insert(0, location);
-    ResOutFileName.append("_").append(method);
     ResOutFileName.append(".csv");
     std::cout << "Output file: " << ResOutFileName << std::endl;
+}
+
+void Solvers::ShouldIPrint(int i, int NumberOfprints) {
+    // Should you print?
+    bool ShouldPrint;
+    ShouldPrint = (i%(Nt/NumberOfprints + 1) == 0);
+    if (ShouldPrint) WriteToFile();
 }
