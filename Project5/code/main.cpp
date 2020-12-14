@@ -51,26 +51,26 @@ int main(int charc, char* argv[])
       initialCondition[Nx] = 1.;
     }
 
-    Parameters params{ Nx, Nt, dt, L, initialCondition, ResOutFileName };
+    Parameters params{ Nx, Nt, dt, L, ResOutFileName };
 
     // Solve with desired solver
     if (method == "ForwardEuler") {
         // Solve using Forward Euler
-        ForwardEuler ForwardSolver(params);
-        ForwardSolver.Solve_ForwardEuler(BoundaryLeft, BoundaryRight, NumberOfPrints);
-    }else if (method == "BackwardEuler") {
+        ForwardEuler ForwardSolver(params, initialCondition);
+        ForwardSolver.Solve(BoundaryLeft, BoundaryRight, NumberOfPrints);
+    } else if (method == "BackwardEuler") {
         // Solve using Backward Euler
-        BackwardEuler BackwardSolver(params);
-        BackwardSolver.Solve_BackwardEuler(BoundaryLeft, BoundaryRight, NumberOfPrints);
-    }else if (method == "CrankNicolson") {
+        BackwardEuler BackwardSolver(params, initialCondition);
+        BackwardSolver.Solve(BoundaryLeft, BoundaryRight, NumberOfPrints);
+    } else if (method == "CrankNicolson") {
         // Solve using Crank-Nicolson
-        CrankNicolson CrankNicolsonSolver(params);
-        CrankNicolsonSolver.Solve_CrankNicolson(BoundaryLeft, BoundaryRight, NumberOfPrints);
-    }else if (method == "TwoDimensions") {
+        CrankNicolson CrankNicolsonSolver(params, initialCondition);
+        CrankNicolsonSolver.Solve(BoundaryLeft, BoundaryRight, NumberOfPrints);
+    } else if (method == "TwoDimensions") {
         // Solve two dimensional problem using Forward Euler
-        TwoDimensions TwoDimensionsSolver(Nx, Nt, dt, InitialConditions2D, ResOutFileName);
+        TwoDimensions TwoDimensionsSolver(params, InitialConditions2D);
         TwoDimensionsSolver.Solve_TwoDimensions(NumberOfPrints);
-    }else {
+    } else {
         std::cout << "Error: unknown method" << std::endl;
         std::cout << "Acceptable method args:" << std::endl
                   << "- ForwardEuler" << std::endl

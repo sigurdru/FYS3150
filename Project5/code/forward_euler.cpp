@@ -1,20 +1,23 @@
 #include "solvers.hpp"
 #include <iostream>
 
-ForwardEuler::ForwardEuler(Parameters params) {
+ForwardEuler::ForwardEuler(Parameters params, double *initialCondition) {
     Initialize(params);
+    u = new double[Nx + 1];
     b = new double[Nx + 1];
+    for (int i = 0; i <= Nx; i++)
+        u[i] = initialCondition[i];
 }
 
-void ForwardEuler::Solve_ForwardEuler(
+void ForwardEuler::Solve(
     double BoundaryLeft(double),
     double BoundaryRight(double),
-    int NumberOfprints
+    int NumberOfPrints
 ) {
     WriteToFile();
+    bool ShouldPrint;
     for (int j = 0; j < Nt; j++) {
         // store the current values for later use before updating
-        ShouldIPrint(j, NumberOfprints);
         for (int i = 0; i <= Nx; i++)
           b[i] = u[i];
         t = dt*j;
@@ -24,6 +27,8 @@ void ForwardEuler::Solve_ForwardEuler(
             u[i] = alpha * b[i - 1]
                    + (1 - 2 * alpha) * b[i]
                    + alpha * b[i + 1];
+        ShouldPrint = (j%(Nt/NumberOfPrints + 1) == 0);
+        if (ShouldPrint) WriteToFile();
         }
     WriteToFile();
 }

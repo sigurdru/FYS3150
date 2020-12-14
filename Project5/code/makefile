@@ -12,4 +12,8 @@ compile_test:
 run_test:
 	./unit_test.exe
 
+run_test_memory:
+	valgrind --leak-check=yes ./unit_test.exe
+
 test: compile_test run_test
+test_memory: compile_test run_test_memory

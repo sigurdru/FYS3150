@@ -1,23 +1,16 @@
 #include "solvers.hpp"
 #include <cmath>
 
-TwoDimensions::TwoDimensions(int num_int_points,
-                             int num_time_points,
-                             double dtimestep,
-                             double** InitialConditions,
-                             std::string ResOutFileName)
-{
-    L = 1;
-    Nx = num_int_points;
-    Nt = num_time_points;
-    dx = L/Nx;
-    dt = dtimestep;
-    alpha = dt/dx/dx;
+TwoDimensions::TwoDimensions(
+    Parameters params,
+    double** InitialConditions
+) {
+    Initialize(params);
     u = new double*[Nx+1];
-    u2 = new double*[Nx+1];
+    b = new double*[Nx+1];
     for (int i = 0; i<=Nx; i++){
         u[i] = new double[Nx+1];
-        u2[i] = new double[Nx+1];
+        b[i] = new double[Nx+1];
     }
     for (int i = 0; i<=Nx; i++){
         for (int j = 0; j<=Nx; j++){
@@ -60,14 +53,14 @@ void TwoDimensions::Solve_TwoDimensions(int NumberOfPrints) {
         ShouldIPrint(l, NumberOfPrints);
         for (int i = 0; i <= Nx; i++){
             for (int j = 0; j <= Nx; j++){
-                u2[i][j] = u[i][j];
+                b[i][j] = u[i][j];
             }
         }
         for (int i = 0; i <= Nx; i++){
             for (int j = 0; j <= Nx; j++){
-                u[i][j] = u2[i][j] + alpha*(u2[i+1][j]
-                        + u2[i-1][j] + u2[i][j+1]
-                        + u2[i][j-1] - 4*u2[i][j]);
+                u[i][j] = b[i][j] + alpha*(b[i+1][j]
+                        + b[i-1][j] + b[i][j+1]
+                        + b[i][j-1] - 4*b[i][j]);
             }
         }
     }

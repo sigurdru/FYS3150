@@ -12,6 +12,8 @@ TriDiagSolver::TriDiagSolver(double a, double b, double c, int n)
 
 void TriDiagSolver::Solve(double *comp, double *RHS)
 {
+    RHS[0] -= m_a*comp[0];
+    RHS[m_n-2] -= m_c*comp[m_n];
     m_alpha[0] = m_c/m_b;
     m_rho[0] = RHS[0]/m_b;
     // forward substitution

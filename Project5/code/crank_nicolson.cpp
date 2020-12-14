@@ -1,30 +1,33 @@
 #include "solvers.hpp"
 #include "tridiag.hpp"
 
-CrankNicolson::CrankNicolson(Parameters params) {
+CrankNicolson::CrankNicolson(Parameters params, double* initialCondition) {
     Initialize(params);
-    b = new double[Nx-1];
+    u = new double[Nx + 1];
+    b = new double[Nx + 1];
+    for (int i = 0; i <= Nx; i++)
+        u[i] = initialCondition[i];
 }
 
-void CrankNicolson::Solve_CrankNicolson(
+void CrankNicolson::Solve(
     double BoundaryLeft(double),
     double BoundaryRight(double),
     int NumberOfPrints
 ) {
     WriteToFile();
     TriDiagSolver Solver(-alpha, (2+2*alpha), -alpha, Nx);
+    bool ShouldPrint;
     for (int j=0; j<Nt; j++) {
-        ShouldIPrint(j, NumberOfPrints);
         // store the current values for later use before updating
         for (int i=0; i<=Nx-2; i++)
             b[i] = alpha*u[i] + (2-2*alpha)*u[i+1] + alpha*u[i+2];
         t = dt*j;
         u[0] = BoundaryLeft(t);
         u[Nx] = BoundaryRight(t);
-        b[0] += alpha*u[0];
-        b[Nx-2] += alpha*u[Nx];
         // call tridiag solver and update values in u
         Solver.Solve(u, b);
+        ShouldPrint = (j%(Nt/NumberOfPrints + 1) == 0);
+        if (ShouldPrint) WriteToFile();
     }
     // Last result
     WriteToFile();

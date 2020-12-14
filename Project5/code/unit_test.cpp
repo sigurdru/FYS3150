@@ -12,14 +12,14 @@ TEST_CASE("Checking that the TriDiagSolver class works as expected")
     TriDiagSolver Solver(-1, 2, -1, Nx);
     double *u = new double[Nx+1];
     for (int i = 0; i <= Nx; i++) u[i] = 0.0;
-    double *b = new double[Nx-1];
+    u[0] = 1.0;
+    u[Nx] = 2.0;
+
+    double *b = new double[Nx-1] { 0, 2, 3, 4, 4 };
     double *b_copy = new double[Nx-1];
-    for (int i = 0; i <= Nx-2; i++) {
-        b[i] = i + 1;
-        b_copy[i] = i + 1;
-    }
-    b[Nx-2] = b_copy[Nx-2] = 6;
-    double exact[Nx+1] = {0, 6, 11, 14, 14, 10};
+    for (int i = 0; i <= Nx-2; i++)b_copy[i] = b[i];
+
+    double exact[Nx+1] = {1, 6, 11, 14, 14, 10, 2};
     Solver.Solve(u, b);
 
     SECTION( "Checking that the results are as expected" )
@@ -28,10 +28,12 @@ TEST_CASE("Checking that the TriDiagSolver class works as expected")
             REQUIRE( u[i] == Approx(exact[i]).epsilon(RelTol) );
     }
 
-    SECTION( "Checking that the RHS array is unchanged" )
+    SECTION( "Checking that the RHS array is correct" )
     {
-        for (int i = 0; i <= Nx-2; i++)
+        for (int i = 1; i <= Nx-3; i++)
             REQUIRE( b[i] == b_copy[i] );
+        REQUIRE( b[0] == (b_copy[0] + u[0]) );
+        REQUIRE( b[Nx-2] == (b_copy[Nx-2] + u[Nx]) );
     }
 
     delete[] u;
@@ -57,15 +59,15 @@ TEST_CASE( "Checking that the ForwardEuler class works as expected" )
         {0, 1, 2, 3, 4, 5, 3, 2, 1, 4, 6};
     double Expected[Nx+1] = { 1., 1., 2., 3., 4., -1., 5., 2., 9., 2., 2.};
 
-    Parameters params { Nx, Nt, dt, L, InitialCondition, fname };
+    Parameters params { Nx, Nt, dt, L, fname };
 
-    ForwardEuler Solver(params);
+    ForwardEuler Solver(params, InitialCondition);
     SECTION( "Checking that the result array is initialized correctly" )
     {
         for (int i = 0; i <= Nx; i++)
             REQUIRE( Solver.u[i] == Approx(InitialCondition[i]).epsilon(RelTol) );
     }
-    Solver.Solve_ForwardEuler(BoundaryLeft, BoundaryRight, 1);
+    Solver.Solve(BoundaryLeft, BoundaryRight, 1);
     SECTION( "Checking that the results are as expected" )
     {
         for (int i = 0; i <= Nx; i++)
@@ -87,14 +89,14 @@ TEST_CASE( "Checking that the BackwardEuler class works as expected" )
     double *InitialCondition = new double[Nx+1] {1, 14, -10, 18, 4, 2};
     double Expected[Nx+1] = {1, 4, 2, 6, 4, 2};
 
-    Parameters params { Nx, Nt, dt, L, InitialCondition, fname };
-    BackwardEuler Solver(params);
+    Parameters params { Nx, Nt, dt, L, fname };
+    BackwardEuler Solver(params, InitialCondition);
     SECTION( "Checking that the result array is initialized correctly" )
     {
         for (int i = 0; i <= Nx; i++)
             REQUIRE( Solver.u[i] == Approx(InitialCondition[i]).epsilon(RelTol) );
     }
-    Solver.Solve_BackwardEuler(BoundaryLeft, BoundaryRight, 1);
+    Solver.Solve(BoundaryLeft, BoundaryRight, 1);
     SECTION( "Checking that the results are as expected" )
     {
         for (int i = 0; i <= Nx; i++)
@@ -116,14 +118,14 @@ TEST_CASE( "Checking that the CrankNicolson class works as expected" )
     double *InitialCondition = new double[Nx+1] {1, 6, 14, 4, 2, 2};
     double Expected[Nx+1] = {1, 4, 2, 6, 4, 2};
 
-    Parameters params { Nx, Nt, dt, L, InitialCondition, fname };
-    CrankNicolson Solver(params);
+    Parameters params { Nx, Nt, dt, L, fname };
+    CrankNicolson Solver(params, InitialCondition);
     SECTION( "Checking that the result array is initialized correctly" )
     {
         for (int i = 0; i <= Nx; i++)
             REQUIRE( Solver.u[i] == Approx(InitialCondition[i]).epsilon(RelTol) );
     }
-    Solver.Solve_CrankNicolson(BoundaryLeft, BoundaryRight, 1);
+    Solver.Solve(BoundaryLeft, BoundaryRight, 1);
     SECTION( "Checking that the results are as expected" )
     {
         for (int i = 0; i <= Nx; i++)

@@ -6,17 +6,14 @@
 struct Parameters {
     int Nx, Nt;
     double dt, L;
-    double *initialCondition;
     std::string ResOutFileName;
 };
 
-class Solvers {
+class Solvers : public Parameters {
 protected:
     // Here we define common stuff
-    int Nx, Nt;
-    double dt, t, dx, L, alpha;
+    double t, dx, alpha;
     double *b;
-    std::string ResOutFileName;
     std::ofstream ResOutFile;
 
     void Initialize(Parameters);
@@ -30,8 +27,8 @@ public:
 
 class ForwardEuler : public Solvers{
 public:
-    ForwardEuler(Parameters);
-    void Solve_ForwardEuler(
+    ForwardEuler(Parameters, double *initialCondition);
+    void Solve(
         double BoundaryLeft(double),
         double BoundaryRight(double),
         int NumberOfprints
@@ -41,8 +38,8 @@ public:
 
 class BackwardEuler : public Solvers {
 public:
-    BackwardEuler(Parameters);
-    void Solve_BackwardEuler(
+    BackwardEuler(Parameters, double *initialCondition);
+    void Solve(
         double BoundaryLeft(double),
         double BoundaryRight(double),
         int NumberOfPrints
@@ -52,8 +49,8 @@ public:
 
 class CrankNicolson : public Solvers {
 public:
-    CrankNicolson(Parameters);
-    void Solve_CrankNicolson(
+    CrankNicolson(Parameters, double *initialCondition);
+    void Solve(
         double BoundaryLeft(double),
         double BoundaryRight(double),
         int NumberOfprints
@@ -64,16 +61,9 @@ public:
 class TwoDimensions : public Solvers {
 public:
     double **u;
-    double **u2;
-    void ShouldIPrint(int i, int);
+    double **b;
     void WriteToFile();
-    TwoDimensions(
-        int num_int_points,
-        int num_time_points,
-        double dtimestep,
-        double** InitialConditions,
-        std::string ResOutFileName
-    );
+    TwoDimensions(Parameters, double** InitialConditions);
     void Solve_TwoDimensions(int);
 };
 
