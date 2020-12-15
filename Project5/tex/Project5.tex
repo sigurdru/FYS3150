@@ -51,10 +51,7 @@
 \newcommand{\ihat}{\boldsymbol{\hat{\textbf{\i}}}}
 \newcommand{\jhat}{\boldsymbol{\hat{\textbf{\j}}}}
 \newcommand{\khat}{\boldsymbol{\hat{\textbf{k}}}}
-\newcommand{\ddpart}[2]{\frac{\partial #1}{\partial #2}}
-\newcommand{\ddpartsq}[2]{\frac{\partial^2 #1}{\partial #2^2}}
-\newcommand{\ddtot}[2]{\frac{\mathrm d #1}{\mathrm d #2}}
-\newcommand{\ddtotsq}[2]{\frac{\mathrm d^2 #1}{\mathrm d #2^2}}
+\newcommand{\del}[1]{\textbf{#1)frac{ewcommand{\svarddpartsq}[12]{\underline{\underline{{#1}}}}
 \newcommand{\vc}[1]{\mathbf{#1}}
 
 \graphicspath{{../output/}} % search for figures in this dir
@@ -119,8 +116,7 @@ in cartesian coordinates. In this report we are mainly going to work with the di
 
 Equation \eqref{eq:diffusion_equation} in one dimension reads
 \begin{equation}
-  \label{eq:diffusion_equation_1D}
-  \frac{\partial^2u(x, t)}{\partial x^2} = \frac{\partial u(x,t)}{\partial t} \ \ \text{or} \ \ u_{xx} = u_t.
+\frac{\partial^2u(x, t)}{\partial x^2} = \frac{\partial u(x,t)}{\partial t} \ \ \text{or} \ \ u_{xx} = u_t.
 \end{equation}
 With $x\in[0,L]$ and boundary conditions
 \begin{equation}
@@ -158,7 +154,7 @@ and a local approximate error of $O(\Delta t)$ and $O(\Delta x ^2)$. The discret
 \begin{equation*}
 	\mathbf{u}_{j+1} = (\mathds{1} - \alpha \mathbf{B})\mathbf{u}_j
 \end{equation*}
-where
+where $\mathds{1}$ is the identity matrix and
 \begin{equation*}
 	\begin{bmatrix}
 	2 & -1 & 0 & 0\dots \\
@@ -332,82 +328,6 @@ Solving equations \eqref{eq:backward_euler_matrix} and REF is done by inverting 
 Specialized algorithms can be developed for solving tridiagonal matrix systems. We will be reusing code developed for a previous project\footnote{https://github.com/sigurdru/FYS3150/tree/master/Project1}.
 
 
-\subsection*{Analytic solution to the 1D diffusion equation}
-
-The boundary conditions $u(0, t) = 0$ and $u(L, t) = 1$ apply for all values of $t$. We expect the heat distribution to converge to a stable state $u_E$ as $t \to \infty$:
-\begin{equation*}
-  \lim_{t \to \infty} u(x, t) = u_E(x)
-\end{equation*}
-This final state should still satisfy our differential equation such that
-\begin{equation*}
-  \frac{\partial^2 u_E(x)}{\partial x^2} = \ddpart{u_E(x)}{t} = 0
-\end{equation*}
-The solution to this equation is
-\begin{equation*}
-  u_E(x) = A x + B,
-\end{equation*}
-and the boundary conditions give
-\begin{align*}
-  u_E(0) &= B = 0 \\
-  u_E(L) &= A L = 1 \quad \Rightarrow \quad u_E(x) = \frac{x}{L}
-\end{align*}
-
-Let us now define the function
-\begin{align*}
-  v(x, t) &= u(x, t) - u_E(x) \quad \text{which gives} \\
-  u(x, t) &= v(x, t) + u_E(x)
-\end{align*}
-We then have
-\begin{align*}
-  \ddpart{u}{t} &= \ddpart{v}{t} + \ddpart{u_E}{t} = \ddpart{v}{t} \\
-  \ddpartsq{u}{x} &= \ddpartsq{v}{x} + \ddpartsq{u_E}{x} = \ddpartsq{v}{x}
-\end{align*}
-Thus, $u(x, t)$ and $v(x, t)$ should both satisfy the same differential equation \eqref{eq:diffusion_equation_1D}. The intial and boundary conditions for $v(x, t)$ are
-\begin{align*}
-  v(x, 0) &= u(x, 0) - u_E(x) = - u_E(x) \\
-  v(0, t) &= u(0, t) - u_E(0) = 0 \\
-  v(0, t) &= u(L, t) - u_E(L) = 0
-\end{align*}
-In other words, $v$ obeys the same equation as $u$, but with boundary conditions 0.
-
-It is rather straightforward to see that
-\begin{equation}
-  \label{eq:analytic_part_sol_1D_diffusion_general}
-  f_n(x, t) = e^{- C_n^2 t} \left( A \sin(C_n x) + B \cos(C_n x) \right)
-\end{equation}
-is a particular solution to the one dimensional diffusion equation:
-\begin{equation*}
-  \frac{\partial f_n(x, t)}{\partial t} = \frac{\partial^2 f_n(x, t)}{\partial x^2} = -C_n^2 f_n(x, t)
-\end{equation*}
-The equation is linear and from the prinsiple of superposition we have that any sum of functions $f_n(x, t)$ with different values of $C_n$ is also a solution. The boundary conditions $v(0, t) = 0$ and $v(L, t) = 0$ give
-\begin{align*}
-  f_n(0, t) &= B_n e^{- C_n^2 t} = 0 \quad \Rightarrow \quad B_n = 0 \\
-  f_n(L, t) &= A_n e^{- C_n^2 t} \sin(C_n L) = 0 \quad \Rightarrow \quad C_n = \frac{n \pi}{L}, n \in \mathbb{Z}
-\end{align*}
-The solution $v(x, t)$ can then be written as sum
-\begin{equation*}
-  v(x, t) = \sum_n A_n e^{- \left( \frac{n \pi}{L} \right)^2 t} \sin( \frac{n \pi}{L} x)
-\end{equation*}
-The coefficients $A_n$ are given by the initial condition $v(x, 0) = - u_E(x)$ and can be determined from (see Lecture Notes CITE)
-\begin{align*}
-  A_n &= \frac{2}{L} \int_0^L - u_E(x) \; \sin( \frac{n \pi}{L} x) \; \mathrm dx \\
-  &= - \frac{2}{L^2} \int_0^L x \; \sin( \frac{n \pi}{L} x) \; \mathrm dx
-\end{align*}
-The solution to this is
-\begin{equation}
-  \label{eq:fourier_coeffs}
-  A_n = \dfrac{2 \left( \pi n \cos(\pi n) - \sin(\pi n) \right)}{\pi^2 n^2}
-\end{equation}
-
-The complete solution to our differential equation is thus
-\begin{equation}
-  \label{eq:exact_solution_1D}
-  u(x, t) = \frac{x}{L} + \sum_{n=1}^\infty A_n e^{- \left( \frac{n \pi}{L} \right)^2 t} \sin( \frac{n \pi}{L} x),
-\end{equation}
-where the coefficients $A_n$ are given by equation \eqref{eq:fourier_coeffs}.
-
-
-
 \section{Results}
 
 Results
@@ -479,7 +399,8 @@ Similar to the case of Backward Euler, this set of equations can be rearranged a
     &= \alpha u_{n-2, j}  + 2 (1 - \alpha) u_{n-1,j} + \alpha u_{n, j} + \alpha u_{n, j+1}
 \end{align*}
 We can define the vector $\vc b_j$ to hold the values on the right side of each of these equations:
-\begin{equation*}
+\begin{equation}
+  \label{def:vector_b_CrankNicolson}
   \vc b_j =
   \begin{bmatrix}
     \alpha u_{0, j}  + 2 (1 - \alpha) u_{1,j} + \alpha u_{2, j} + \alpha u_{0, j+1} \\
@@ -488,7 +409,7 @@ We can define the vector $\vc b_j$ to hold the values on the right side of each 
     \alpha u_{n-3, j}  + 2 (1 - \alpha) u_{n-2,j} + \alpha u_{n-1, j} \\
     \alpha u_{n-2, j}  + 2 (1 - \alpha) u_{n-1,j} + \alpha u_{n, j} + \alpha u_{n, j+1}
   \end{bmatrix}
-\end{equation*}
+\end{equation}
 Using this and the definition of the vector $\vc v_j$ from \eqref{def:vector_v}, we can write the set of equations as
 \begin{equation*}
   \vc A \vc v_j = \vc b_j
