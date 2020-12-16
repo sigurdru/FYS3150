@@ -82,7 +82,7 @@
 \end{titlepage}
 
 \begin{abstract}
-  Abstract
+  Vegard sitt abstract
 \end{abstract}
 \maketitle                              % creates the title
 
@@ -169,7 +169,7 @@ where $\mathds{1}$ is the identity matrix and
 	-1 & 2 & -1 & 0\dots\\
 	\dots & \dots & \dots &\dots \\
 	0 & \dots & -1 & 2
-	\end{bmatrix}	 \ \ \wedge \ \ 
+	\end{bmatrix}	 \ \ \wedge \ \
 	\mathbf{u}_{j} = \begin{bmatrix}
 	u_{1,j} \\
 	u_{2,j} \\
@@ -328,7 +328,7 @@ and boundary conditions
 	\label{eq:1D_bound}
 	\begin{split}
   u(0, t) &= 0, \quad t \ge 0 \quad \text{and} \\
-  u(L, t) &= 1, \quad t \ge 0.	
+  u(L, t) &= 1, \quad t \ge 0.
   \end{split}
 \end{align}
 As mentioned we use three methods, explicit forward Euler, implicit backward Euler and Crank-Nicolson. When using Explicit forward Euler, we only need to the difference-equation described by equation \eqref{eq:forward_euler}. When using Implicit backward Euler er Crank-Nicolson we need to solve the matrix-equations \eqref{eq:backward_euler_matrix} and \eqref{eq:Crank-Nicolson_matrix}. There are several methods for solving such tridiagonal matrix equations, however we will use the method covered in a previous project. see project\footnote{https://github.com/sigurdru/FYS3150/tree/master/Project1} page 2 (section A. Solve tridiagonal matrix equation).
@@ -419,7 +419,7 @@ Moving on to two dimensions we use explicit forward Euler. This means we need to
 and initial conditions
 \begin{equation}
 \label{eq:2D_init}
-	u(x,y,0) = 
+	u(x,y,0) =
 	\begin{cases}
 	1\quad \text{if }0<y\leq \frac{1}{2}\text{ and } 0<x<1 \\
 	0\quad \text{if }\frac{1}{2}<y<1\text{ and } 0<x<1
