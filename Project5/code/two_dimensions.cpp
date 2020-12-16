@@ -65,8 +65,6 @@ void TwoDimensions::Solve()
             for (int diag = 2; diag <= 2*Nx-2; diag++) {
                 if (core > 1) {
                     while (!completed[Index2D(core-2, numCores, diag-1)]) {
-                        // std::cout << "Core " << core << " sleeping" << std::endl;
-                        // WriteCompleted();
                         usleep(1);
                     }
                 }

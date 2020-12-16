@@ -174,7 +174,6 @@ TEST_CASE( "Checking that the TwoDimensions class works as expected" )
             }
             Parameters params { Nx, Nt, dt, L, fname };
             TwoDimensions Solver(params, initialCondition, numCores);
-            std::cout << "Initialized ok" << std::endl;
             SECTION( "Checking that the result array is initialized correctly" )
             {
                 for (int i = 0; i <= (Nx+1)*(Nx+1)-1; i++)

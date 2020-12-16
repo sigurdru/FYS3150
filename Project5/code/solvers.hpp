@@ -66,7 +66,7 @@ private:
 
 public:
     double **u;
-    TwoDimensions(Parameters, double* InitialConditions, int numCores);
+    TwoDimensions(Parameters, double *InitialConditions, int numCores);
     ~TwoDimensions();
     void WriteToFile();
     static inline int Index2D(int row, int rowLength, int col)

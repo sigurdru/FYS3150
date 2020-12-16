@@ -9,13 +9,13 @@ double BoundaryRight(double);
 
 int main(int charc, char* argv[])
 {
-    int Nx, Nt;
+    int Nx, Nt, numCores;
     double dt;
     std::string method, ResOutFileName;
-    if (charc != 6) {
+    if (charc != 7) {
         std::cout << "Not enough arguments!" << std::endl
                   << "I take: Nx(int), Nt(int), dt(float), "
-                  << "method(string), ResOutFileName(string),"
+                  << "method(string), numCores(int), ResOutFileName(string)"
                   << std::endl;
         std::cout << "Acceptable method args:" << std::endl
                   << "- ForwardEuler" << std::endl
@@ -24,30 +24,32 @@ int main(int charc, char* argv[])
                   << "- TwoDimensions" << std::endl;
         exit(1);
     }
-    Nx = std::pow(10, atoi(argv[1]));
-    Nt = std::pow(10, atoi(argv[2]));
+    Nx = std::pow(10, atof(argv[1]));
+    Nt = std::pow(10, atof(argv[2]));
     dt = std::pow(10, -atof(argv[3]));
+    method = argv[4];
+    numCores = atoi(argv[5]);
+    ResOutFileName = argv[6];
     double L = 1.0;
     int NumberOfPrints = 5;
-    method = argv[4];
-    ResOutFileName = argv[5];
+
     // Define initial conditions
     double *initialCondition;
-    double **InitialConditions2D;
-    if (method == "TwoDimensions"){
-        // !!!DETTE MÅ FIKSES
-        InitialConditions2D = new double*[Nx+1];
-        for (int i=0; i<=Nx;i++){
-            InitialConditions2D[i] = new double[Nx+1];
-            for (int j=0; j<=Nx; j++){
-                InitialConditions2D[i][j] = 0.;
-            }
+    if (method == "TwoDimensions") {
+        initialCondition = new double[(Nx+1)*(Nx+1)];
+        for (int i = 0; i <= Nx; i++) {
+            for (int j = 0; j <= Nx; j++)
+                initialCondition[TwoDimensions::Index2D(i, Nx+1, j)] = 0.0;
         }
-    }else{
-      initialCondition = new double[Nx + 1];
-      for (int i=0; i<Nx-1; i++)
-          initialCondition[i] = 0.;
-      initialCondition[Nx] = 1.;
+        for (int i = 1; i <= Nx-1; i++) {
+            for (int j = 1; j <= Nx/2; j++)
+                initialCondition[TwoDimensions::Index2D(i, Nx+1, j)] = 1.0;
+        }
+    } else {
+        initialCondition = new double[Nx + 1];
+        for (int i=0; i<Nx-1; i++)
+            initialCondition[i] = 0.;
+        initialCondition[Nx] = 1.;
     }
 
     Parameters params{ Nx, Nt, dt, L, ResOutFileName };
@@ -67,17 +69,20 @@ int main(int charc, char* argv[])
         CrankNicolsonSolver.Solve(BoundaryLeft, BoundaryRight, NumberOfPrints);
     } else if (method == "TwoDimensions") {
         // Solve two dimensional problem using Forward Euler
-        TwoDimensions TwoDimensionsSolver(params, InitialConditions2D);
-        TwoDimensionsSolver.Solve_TwoDimensions(NumberOfPrints);
+        TwoDimensions TwoDimensionsSolver(params, initialCondition, numCores);
+        TwoDimensionsSolver.Solve();
     } else {
-        std::cout << "Error: unknown method" << std::endl;
+        std::cout << "Error: unknown method " << method << std::endl;
         std::cout << "Acceptable method args:" << std::endl
                   << "- ForwardEuler" << std::endl
                   << "- BackwardEuler" << std::endl
                   << "- CrankNicolson" << std::endl
                   << "- TwoDimensions" << std::endl;
+        delete[] initialCondition;
         exit(1);
     }
+
+    delete[] initialCondition;
     return 0;
 }
 
