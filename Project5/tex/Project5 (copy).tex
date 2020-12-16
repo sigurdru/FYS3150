@@ -1,0 +1,551 @@
+\documentclass[reprint, english,notitlepage,nofootinbib]{revtex4-1}  % defines the basic parameters of the document
+% if you want a single-column, remove reprint
+
+% allows special characters (including æøå)
+\usepackage[utf8]{inputenc}
+%\usepackage [norsk]{babel} %if you write norwegian
+\usepackage[english]{babel}  %if you write english
+
+
+%% note that you may need to download some of these packages manually, it depends on your setup.
+%% I recommend downloading TeXMaker, because it includes a large library of the most common packages.
+
+\usepackage{physics,amssymb}  % mathematical symbols (physics imports amsmath)
+\usepackage{graphicx}         % include graphics such as plots
+
+\usepackage{xcolor}           % set colors
+\usepackage{hyperref}         % automagic cross-referencing (this is GODLIKE)
+\usepackage{tikz}             % draw figures manually
+\usepackage{listings}         % display code
+\usepackage{subfigure}        % imports a lot of cool and useful figure commands
+\usepackage{verbatim}
+\usepackage{adjustbox}
+\usepackage{dsfont}
+
+% defines the color of hyperref objects
+% Blending two colors:  blue!80!black  =  80% blue and 20% black
+\hypersetup{ % this is just my personal choice, feel free to change things
+    colorlinks,
+    linkcolor={red!50!black},
+    citecolor={blue!50!black},
+    urlcolor={blue!80!black}}
+
+%% Defines the style of the programming listing
+%% This is actually my personal template, go ahead and change stuff if you want
+\lstset{ %
+	inputpath=,
+	backgroundcolor=\color{white!88!black},
+	basicstyle={\ttfamily\scriptsize},
+	commentstyle=\color{magenta},
+	language=Python,
+	morekeywords={True,False},
+	tabsize=4,
+	stringstyle=\color{green!55!black},
+	frame=single,
+	keywordstyle=\color{blue},
+	showstringspaces=false,
+	columns=fullflexible,
+	keepspaces=true}
+
+\newcommand\numberthis{\addtocounter{equation}{1}\tag{\theequation}}
+\newcommand{\ihat}{\boldsymbol{\hat{\textbf{\i}}}}
+\newcommand{\jhat}{\boldsymbol{\hat{\textbf{\j}}}}
+\newcommand{\khat}{\boldsymbol{\hat{\textbf{k}}}}
+\newcommand{\ddpart}[2]{\frac{\partial #1}{\partial #2}}
+\newcommand{\ddpartsq}[2]{\frac{\partial^2 #1}{\partial #2^2}}
+\newcommand{\ddtot}[2]{\frac{\mathrm d #1}{\mathrm d #2}}
+\newcommand{\ddtotsq}[2]{\frac{\mathrm d^2 #1}{\mathrm d #2^2}}
+\newcommand{\vc}[1]{\mathbf{#1}}
+
+\graphicspath{{../output/}} % search for figures in this dir
+
+\begin{document}
+
+
+\begin{titlepage}
+	\begin{center}
+	\textbf{Diffusion Equation}
+
+	\vspace{0.2cm}
+	Vegard Falmår and Sigurd Sørlie Rustad
+
+	\vspace{0.5cm}
+	\includegraphics[scale=0.5]{../../pictures/UIO}
+	\vspace{0.8cm}
+
+	University of Oslo\\
+	Norway\\
+	\today	\\
+	\end{center}
+	\tableofcontents
+	\clearpage
+\end{titlepage}
+
+\begin{abstract}
+  Abstract
+\end{abstract}
+\maketitle                              % creates the title
+
+
+\section{Introduction}
+The diffusion equation is used in many areas. Everything from how heat is transferred through a stick, to how an oil spill will spread. In this report we will try to solve the diffusion equation for one and two dimensions, and using different algorithms. We are going to study the diffusion equation with a constant collective diffusion coefficient, giving us a linear differential equation identical to the heat equation.
+\begin{equation*}
+\frac{\partial u}{\partial t} = \nabla^2u(\mathbf{r}, t)
+\end{equation*}
+
+For our one dimensional problem, we use three different algorithms, explicit forward Euler, implicit backward Euler and implicit Crank-Nicolson.
+
+For our studies we have used c++ for heavy computation, python for visualization and automation. All the code along with instructions on how to run it, can be cloned from our GitHub repository\footnote{github.com/sigurdru/FYS3150/tree/master/Project5}.
+
+\section{Theory}
+
+\subsection*{The diffusion equation}
+
+The full diffusion equation reads
+\begin{equation*}
+	\frac{\partial u(\mathbf{r}, t)}{\partial t} = \nabla \cdot \left[D(u, \mathbf{r})\nabla u(\mathbf{r}, t)\right],
+\end{equation*}
+where $\mathbf{r}$ is a positional vector and $D(u,r)$ the collective diffusion coefficient. If $D(u,\mathbf{r}) = 1$ the equation simplifies to a linear differential equation
+\begin{equation*}
+	\frac{\partial u}{\partial t} = \nabla^2u(\mathbf{r}, t),
+\end{equation*}
+or
+\begin{equation}
+	\label{eq:diffusion_equation}
+	\left(\frac{\partial^2}{\partial x^2} + \frac{\partial^2}{\partial y^2} + \frac{\partial^2}{\partial z^2}\right) u(x,y,z,t) = \frac{\partial u(x,y,z,t)}{\partial t}
+\end{equation}
+in cartesian coordinates. In this report we are mainly going to work with the diffusion equation in one and two dimensions, i.e.
+\begin{align*}
+	 \scriptsize\frac{\partial^2 u(x,t)}{\partial x^2} &= \frac{\partial u(x,t)}{\partial t} \\ &\wedge \\ \frac{\partial^2u(x, y,t)}{\partial x^2} + \frac{\partial^2u(x, y,t)}{\partial y^2} &= \frac{\partial u(x, y,t)}{\partial t}.
+\end{align*}
+
+\subsection*{Discretization}
+
+Equation \eqref{eq:diffusion_equation} in one dimension reads
+\begin{equation}
+\label{eq:diffusion_equation_1D}
+\frac{\partial^2u(x, t)}{\partial x^2} = \frac{\partial u(x,t)}{\partial t} \ \ \text{or} \ \ u_{xx} = u_t.
+\end{equation}
+With $x\in[0,L]$ and boundary conditions
+\begin{equation*}
+\label{eq:boundary_conditions}
+u(0, t) = a(t), \ \ t\geq 0 \ \ \wedge \ \ u(L,t) = b(t), \ \ t\geq 0,
+\end{equation*}
+we can approximate the solution by discretization. First introducing $\Delta x = L/(n+1)$ and $\Delta t$ as small steps in $x$-direction and time. Then we can define the value domain of $t$ and $x$,
+\begin{equation*}
+t_j = j\Delta t, \ \ j\in \mathbb{N}_0 \ \ \wedge \ \ x_i = i\Delta x, \ \ \{i \in \mathbb{N}_0 | i \leq n + 1\}.
+\end{equation*}
+Where $n + 1$ is the number of points at which we evaluate $u(x,t)$.
+
+
+\subsection*{Explicit and implicit schemes}
+
+It is common divide numerical algorithms for integration into explicit and implicit schemes. When perfoming a numerical integration, we iterate over a discrete set of grid points at which we evaluate the function in question. In explicit schemes, the value at the next grid point is determined entirely by the value at the current grid point. In implicit schemes, the value at a later stage is determined by solving a system of equations containing both the current state and later states.
+
+Using an implicit method instead of an explicit method usually requires more computation in every step, and they are often harder to implement. It can, in turn, save computation by allowing larger step sizes. Implicit methods can be (ARE?) unconditionally stable, meaning they are stable for any choice of step sizes. Explicit schemes are conditionally stable, meaning there is a relation between the step sizes in time and position that must be fulfilled in order to achieve stability. Of course, in order to achieve a desired  \textit{accuracy}, the step sizes can not be arbitrarily large for either the explicit or implicit schemes. It is generally the case, though, that implicit schemes allow for larger step sizes than explicit schemes.
+
+REFERENCES, Intro to PDEs book, Wiki
+
+
+\subsection*{Explicit forward Euler}
+
+The algorithm for explicit forward Euler in one dimension (from \cite{lectures2015} chapter 10.2.1) reads
+\begin{equation}
+  \label{eq:forward_euler}
+	u_{i, j+1} = \alpha u_{i-1, j} + (1 - 2\alpha) u_{i,j} + \alpha u_{i+1, j}
+\end{equation}
+where
+\begin{equation*}
+	\alpha = \frac{\Delta t}{\Delta x^2},
+\end{equation*}
+and a local approximate error of $O(\Delta t)$ and $O(\Delta x ^2)$. The discretization is explained in the appropriate section. Note that the expression on the right hand side, used to calculate the value at a time $t_j + \Delta t$, only contains the state of the system at time $t_j$. This can be written as a matrix equation (see \cite{lectures2015} chapter 10.2.1)
+\begin{equation*}
+	\mathbf{u}_{j+1} = (\mathds{1} - \alpha \mathbf{B})\mathbf{u}_j
+\end{equation*}
+where $\mathds{1}$ is the identity matrix and
+\begin{equation*}
+	\begin{bmatrix}
+	2 & -1 & 0 & 0\dots \\
+	-1 & 2 & -1 & 0\dots\\
+	\dots & \dots & \dots &\dots \\
+	0 & \dots & -1 & 2
+	\end{bmatrix}	 \ \ \wedge \ \ 
+	\mathbf{u}_{j} = \begin{bmatrix}
+	u_{1,j} \\
+	u_{2,j} \\
+	\ldots \\
+	u_{n,j}
+	\end{bmatrix}
+\end{equation*}
+The stability requirement for this algorithm (also from \cite{lectures2015} chapter 10.2.1) is
+\begin{equation}
+	\label{eq:von_neumann_stability}
+	\rho(\mathbf{B}) \le 1 \implies \frac{\Delta t}{(\Delta x)^2} \le 1/2
+\end{equation}
+Where $\rho(\mathbf{B})$ is the spectral radius of $\mathbf{B}$:
+\begin{equation*}
+	\rho(\mathbf{B}) = \text{max}\{|\lambda|:\text{det}(\mathbf{B}- \lambda \mathds{1}) = 0\}.
+\end{equation*}
+
+In two dimensions ($u(x,y)$) the method for solving is similar. Assuming the same number of integration points in x- and y-direction ($\Delta x = \Delta y = \Delta l$), the algorithm (from \cite{lectures2015} chapter 10.2.5) reads
+\begin{equation}
+	\label{eq:3dEuler}
+	u_{i,j}^{l+1} = u_{i,j}^{l} + \alpha \left[u_{i+1,j}^{l} + u_{i-1,j}^{l} + u_{i,j+1}^{l} + u_{i,j-1}^{l} - 4u_{i,j}^{l}\right]
+\end{equation}
+where $u_{i,j}^l = u(i\Delta l, j \Delta l, l\Delta t)$ and $\alpha = \Delta t/\Delta l^2$.
+
+
+\subsection*{Implicit Backward Euler}
+
+The Backward Euler algorithm uses the same centered difference in space as Forward Euler to approximate the second derivative
+\begin{equation}
+  \label{eq:centered_2nd_deriv_space}
+	u_{xx} \approx \frac{u(x_i + \Delta x, t_j) - 2u(x_i,t_j) + u(x_i-\Delta x, t_j))}{\Delta x^2},
+\end{equation}
+but a backward formula for the time derivative:
+\begin{equation}
+  \label{eq:backward_deriv_time}
+  u_t \approx \frac{u(x_i, t_j) - u(x_i, t_j - \Delta t)}{\Delta t},
+\end{equation}
+which also has a local truncation error of $O(\Delta t)$ and $O(\Delta x ^2)$.
+Again, defining
+\begin{equation*}
+  \alpha = \frac{\Delta t}{(\Delta x)^2}
+\end{equation*}
+we obtain by inserting \eqref{eq:centered_2nd_deriv_space} and \eqref{eq:backward_deriv_time} into our differential equation the equation describing Backward Euler:
+\begin{equation}
+  \label{eq:backward_euler}
+  u_{i, j-1} = -\alpha u_{i-1, j} + (1 + 2 \alpha) u_{i, j} - \alpha u_{i+1, j}
+\end{equation}
+
+Written out for all $i$, equation \ref{eq:backward_euler} becomes
+\begin{align*}
+  - \alpha u_{0, j} + (1 + 2 \alpha) u_{1, j} - \alpha u_{2, j} &= u_{1, j-1} \\
+  - \alpha u_{1, j} + (1 + 2 \alpha) u_{2, j} - \alpha u_{3, j} &= u_{2, j-1} \\
+  ... \\
+  - \alpha u_{n-3, j} + (1 + 2 \alpha) u_{n-2, j} - \alpha u_{n-1, j} &= u_{n-2, j-1} \\
+  - \alpha u_{n-2, j} + (1 + 2 \alpha) u_{n-1, j} - \alpha u_{n, j} &= u_{n-1, j-1} \\
+\end{align*}
+In general, this can be rearranged slightly so that
+\begin{align*}
+  (1 + 2 \alpha) u_{1, j} -\alpha  u_{2, j} &= u_{1, j-1} + \alpha u_{0, j} \\
+  - \alpha u_{1, j} + (1 + 2 \alpha) u_{2, j} - \alpha u_{3, j} &= u_{2, j-1} \\
+  ... \\
+  - \alpha u_{n-3, j} + (1 + 2 \alpha) u_{n-2, j} - \alpha u_{n-1, j} &= u_{n-2, j-1} \\
+  - \alpha u_{n-2, j} + (1 + 2 \alpha) u_{n-1, j} &= u_{n-1, j-1} + \alpha u_{n, j} \\
+\end{align*}
+Let $\vc v_j$ be a vector containing the values of $u$ at $n - 1$ points in space at a time $t_j$
+\begin{equation}
+  \label{def:vector_v}
+  \vc v_j =
+  \begin{bmatrix}
+    u_{1, j} \\
+    u_{2, j} \\
+    \vdots \\
+    u_{n-2, j} \\
+    u_{n-1, j} \\
+  \end{bmatrix}
+\end{equation}
+and the vector $\vc b_j$ be defined as follows:
+\begin{equation}
+  \label{def:vector_b_BackwardEuler}
+  \vc b_j =
+  \begin{bmatrix}
+    u_{1, j-1} + \alpha u_{0, j} \\
+    u_{2, j-1} \\
+    \vdots \\
+    u_{n-2, j-1} \\
+    u_{n-1, j-1} + \alpha u_{n, j} \\
+  \end{bmatrix}
+\end{equation}
+As the boundary conditions $u_{0, j}$ and $u_{n, j}$ are specified, we already know every component of $\vc b_j$. We can then rewrite equation \eqref{eq:backward_euler} as the matrix equation
+\begin{equation}
+  \label{eq:backward_euler_matrix}
+  \vc A \vc v_j = \vc b_j
+\end{equation}
+where $\vc A$ is defined as
+\begin{equation}
+  \label{def:matrix_A}
+  A =
+  \begin{bmatrix}
+    (1 + 2 \alpha) & -\alpha         & 0       & 0      & \ldots         & 0 \\
+    -\alpha        & (1 + 2 \alpha)  & -\alpha & 0      & \ldots         & 0 \\
+    \vdots         &                 & \ddots  &        &                & \vdots \\
+    0              & \ldots          & 0       &-\alpha & (1 + 2 \alpha) & -\alpha  \\
+    0              & \ldots          & 0       & 0      &-\alpha         & (1 + 2 \alpha)  \\
+  \end{bmatrix}
+\end{equation}
+This is a tridiagonal matrix with $(1 + 2 \alpha)$ on the diagonal and $-\alpha$ directly above and below the diagonal.
+
+
+\subsection*{Implicit Crank-Nicolson}
+
+The Crank-Nicolson algorithm uses a time-centered scheme centered around $t + \Delta t/2$, with a truncation error of $O(\Delta t^2)$ and $O(\Delta x^2)$. The time derivative is given by
+\begin{equation}
+  \label{eq:forward_deriv_time}
+  u_t \approx \frac{u(x_i, t_j + \Delta t) - u(x_i, t_j)}{\Delta t}
+\end{equation}
+\begin{align*}
+	u_{xx} &\approx \frac{1}{2 \Delta x^2} \bigg(u(x_i+\Delta x, t_j) - 2u(x_i,t_j) + u(x_i-\Delta x, t_j) \\
+  	&\quad + u(x_i+\Delta x, t_j + \Delta t) - 2u(x_i, t_j + \Delta t) \\
+  	&\quad + u(x_i - \Delta x, t_j + \Delta t) \bigg)
+\end{align*}
+
+Inserting these two equations into our differential equation, we obtain (see Appendix, section \ref{sect:Crank-Nicolson_derivation} for derivation) that the equation describing the Crank-Nicolson algorithm can be written as a matrix equation
+\begin{equation}
+  \label{eq:Crank-Nicolson_matrix}
+  \vc A \vc v_j = \vc b_j
+\end{equation}
+The vector $\vc v_j$ is the same as in the case of Backward Euler, defined in \eqref{def:vector_v}. The matrix $\vc A$ is a tridiagonal matrix with $2 (1 + \alpha)$ on the diagonal and $-\alpha$ directly above and below the diagonal. The vector $\vc b_j$ is
+\begin{equation}
+  \label{def:vector_b_CrankNicolson}
+  \vc b_j =
+  \begin{bmatrix}
+    \alpha u_{0, j}  + 2 (1 - \alpha) u_{1,j} + \alpha u_{2, j} + \alpha u_{0, j+1} \\
+    \alpha u_{1, j}  + 2 (1 - \alpha) u_{2,j} + \alpha u_{3, j} \\
+      \vdots \\
+    \alpha u_{n-3, j}  + 2 (1 - \alpha) u_{n-2,j} + \alpha u_{n-1, j} \\
+    \alpha u_{n-2, j}  + 2 (1 - \alpha) u_{n-1,j} + \alpha u_{n, j} + \alpha u_{n, j+1}
+  \end{bmatrix}
+\end{equation}
+
+
+
+\section{Methods}
+
+\subsection{One dimension}
+We will start by solving the one dimensional diffusion equation
+\begin{equation*}
+  \frac{\partial^2 u(x,t)}{\partial x^2} = \frac{\partial u(x,t)}{\partial t}, \quad x \in [0, 1]
+\end{equation*}
+with initial conditions
+\begin{equation}
+	\label{eq:1D_init}
+  u(x, 0) = 0, \quad 0<x<1\\
+\end{equation}
+and boundary conditions
+\begin{align}
+	\label{eq:1D_bound}
+	\begin{split}
+  u(0, t) &= 0, \quad t \ge 0 \quad \text{and} \\
+  u(L, t) &= 1, \quad t \ge 0.	
+  \end{split}
+\end{align}
+As mentioned we use three methods, explicit forward Euler, implicit backward Euler and Crank-Nicolson. When using Explicit forward Euler, we only need to the difference-equation described by equation \eqref{eq:forward_euler}. When using Implicit backward Euler er Crank-Nicolson we need to solve the matrix-equations \eqref{eq:backward_euler_matrix} and \eqref{eq:Crank-Nicolson_matrix}. There are several methods for solving such tridiagonal matrix equations, however we will use the method covered in a previous project. see project\footnote{https://github.com/sigurdru/FYS3150/tree/master/Project1} page 2 (section A. Solve tridiagonal matrix equation).
+
+\subsection*{Analytic solution to the 1D diffusion equation}
+
+With the initial and boundary conditions described by equations \eqref{eq:1D_init} and \eqref{eq:1D_bound} we can find an analytical solution. We expect the heat distribution to converge to a stable state $u_E$ as $t \to \infty$:
+\begin{equation*}
+\lim_{t \to \infty} u(x, t) = u_E(x)
+\end{equation*}
+This final state should still satisfy our differential equation such that
+\begin{equation*}
+\frac{\partial^2 u_E(x)}{\partial x^2} = \ddpart{u_E(x)}{t} = 0
+\end{equation*}
+The solution to this equation is
+\begin{equation*}
+u_E(x) = A x + B,
+\end{equation*}
+and the boundary conditions give
+\begin{align*}
+u_E(0) &= B = 0 \\
+u_E(L) &= A L = 1 \quad \Rightarrow \quad u_E(x) = \frac{x}{L}
+\end{align*}
+
+Let us now define the function
+\begin{align*}
+v(x, t) &= u(x, t) - u_E(x) \quad \text{which gives} \\
+u(x, t) &= v(x, t) + u_E(x)
+\end{align*}
+We then have
+\begin{align*}
+\ddpart{u}{t} &= \ddpart{v}{t} + \ddpart{u_E}{t} = \ddpart{v}{t} \\
+\ddpartsq{u}{x} &= \ddpartsq{v}{x} + \ddpartsq{u_E}{x} = \ddpartsq{v}{x}
+\end{align*}
+Thus, $u(x, t)$ and $v(x, t)$ should both satisfy the same differential equation \eqref{eq:diffusion_equation_1D}. The intial and boundary conditions for $v(x, t)$ are
+\begin{align*}
+v(x, 0) &= u(x, 0) - u_E(x) = - u_E(x) \\
+v(0, t) &= u(0, t) - u_E(0) = 0 \\
+v(0, t) &= u(L, t) - u_E(L) = 0
+\end{align*}
+In other words, $v$ obeys the same equation as $u$, but with boundary conditions 0.
+
+It is rather straightforward to see that
+\begin{equation}
+\label{eq:analytic_part_sol_1D_diffusion_general}
+f_n(x, t) = e^{- C_n^2 t} \left( A \sin(C_n x) + B \cos(C_n x) \right)
+\end{equation}
+is a particular solution to the one dimensional diffusion equation:
+\begin{equation*}
+\frac{\partial f_n(x, t)}{\partial t} = \frac{\partial^2 f_n(x, t)}{\partial x^2} = -C_n^2 f_n(x, t)
+\end{equation*}
+The equation is linear and from the prinsiple of superposition we have that any sum of functions $f_n(x, t)$ with different values of $C_n$ is also a solution. The boundary conditions $v(0, t) = 0$ and $v(L, t) = 0$ give
+\begin{align*}
+f_n(0, t) &= B_n e^{- C_n^2 t} = 0 \quad \Rightarrow \quad B_n = 0 \\
+f_n(L, t) &= A_n e^{- C_n^2 t} \sin(C_n L) = 0 \quad \Rightarrow \quad C_n = \frac{n \pi}{L}, n \in \mathbb{Z}
+\end{align*}
+The solution $v(x, t)$ can then be written as sum
+\begin{equation*}
+v(x, t) = \sum_n A_n e^{- \left( \frac{n \pi}{L} \right)^2 t} \sin( \frac{n \pi}{L} x)
+\end{equation*}
+The coefficients $A_n$ are given by the initial condition $v(x, 0) = - u_E(x)$ and can be determined from (see Lecture Notes CITE)
+\begin{align*}
+A_n &= \frac{2}{L} \int_0^L - u_E(x) \; \sin( \frac{n \pi}{L} x) \; \mathrm dx \\
+&= - \frac{2}{L^2} \int_0^L x \; \sin( \frac{n \pi}{L} x) \; \mathrm dx
+\end{align*}
+The solution to this is
+\begin{equation}
+\label{eq:fourier_coeffs}
+A_n = \dfrac{2 \left( \pi n \cos(\pi n) - \sin(\pi n) \right)}{\pi^2 n^2}
+\end{equation}
+
+The complete solution to our differential equation is thus
+\begin{equation}
+\label{eq:exact_solution_1D}
+u(x, t) = \frac{x}{L} + \sum_{n=1}^\infty A_n e^{- \left( \frac{n \pi}{L} \right)^2 t} \sin( \frac{n \pi}{L} x),
+\end{equation}
+where the coefficients $A_n$ are given by equation \eqref{eq:fourier_coeffs}.
+
+\subsection{Two dimensions}
+Moving on to two dimensions we use explicit forward Euler. This means we need to solve the difference equation \eqref{eq:3dEuler}, for $x, y \in [0,1]$. We will use homogeneous Dirichlet boundary conditions
+\begin{align}
+	\label{eq:2D_bound}
+	\begin{split}
+	u(0, y, t) &= u(1, y, t) = 0, \quad 0\leq y \leq 1, \ \ t\geq 0 \text{ and}\\
+	u(x, 0, t) &= u(x, 1, t) = 0, \quad 0\leq x \leq 1, \ \ t\geq.
+	\end{split}
+\end{align}
+and initial conditions
+\begin{equation}
+\label{eq:2D_init}
+	u(x,y,0) = 
+	\begin{cases}
+	1\quad \text{if }0<y\leq \frac{1}{2}\text{ and } 0<x<1 \\
+	0\quad \text{if }\frac{1}{2}<y<1\text{ and } 0<x<1
+	\end{cases}
+\end{equation}
+
+\subsection*{Analytical solution to the 2D diffusion equation}
+with boundary and initial conditions described by equations \eqref{eq:2D_bound} and \eqref{eq:2D_init} we can find analytical solutions to the diffusion equation. Lets say $x\in[0,a]$ and $y\in[0,b]$, with homogeneous Dirichlet boundary and initial conditions defined by some function $f(x,y)$. Then, from \cite{2D_diffusion}, the general solution is given by equation \eqref{eq:2D_gen_sol}.
+\begin{equation}
+	\label{eq:2D_gen_sol}
+	u(x,y,t) = \sum_{m=1}^{\infty}\sum_{n=1}^{\infty}A_{mn}\sin(\mu_m x)\sin(\nu_n y)e^{-\lambda^2_{mn}t},
+\end{equation}
+where
+\begin{equation*}
+	\mu_m = \frac{m\pi}{a} \ \ \wedge \ \ \nu_n=\frac{n\pi}{b} \ \ \wedge \ \ \lambda_{mn} = \sqrt{\mu_m^2 + \nu_n^2},
+\end{equation*}
+for $m,n,\in\mathbb{N}$ and
+\begin{equation*}
+	A_{mn} = \frac{4}{ab}\int_{0}^{a}\int_{0}^{b}dydxf(x,y)\sin(\frac{m\pi}{a}x)\sin(\frac{n\pi}{b}).
+\end{equation*}
+Inserting our initial conditions \eqref{eq:2D_init} and $a=b=1$ into the equation above, we get the coefficients
+\begin{align*}
+	A_{mn} &= 4\int_{0}^{1}\int_{0}^{1}dydxu(x,y,0)\sin(m\pi x)\sin(n\pi y) \\
+	&= 4\int_{0}^{1}\sin(m\pi x)dx \int_{0}^{1/2}\sin(n\pi y)dy \\
+	&= 4\left[-\frac{\cos(m\pi x)}{m\pi}\right]_0^1\left[-\frac{\cos(n\pi y)}{n\pi}\right]_0^{1/2} \\
+	&= 4\left(-\frac{(-1)^{m} - 1}{m\pi}\right)\left(-\frac{\cos(\frac{n\pi}{2}) - 1}{n\pi}\right) \\
+	&= \frac{4}{\pi^2}\left(\frac{\left((-1)^m - 1\right)\left(\cos(\frac{n\pi}{2}) - 1\right)}{mn}\right)
+\end{align*}
+Inserting this into equation \eqref{eq:2D_gen_sol}
+\begin{align*}
+	u(x,y,t) =& \sum_{m=1}^{\infty}\sum_{n=1}^{\infty}\frac{4}{\pi^2}\left(\frac{\left((-1)^m - 1\right)\left(\cos(\frac{n\pi}{2}) - 1\right)}{mn}\right)\cdot\\
+	&\sin(m\pi x)\sin(n\pi y)\exp(-((m\pi)^2 + (n\pi)^2)t)
+\end{align*}
+\subsection*{parallelization}
+
+\subsection{Unit testing}
+
+
+\section{Results}
+
+Results
+
+\section{Discussion}
+
+LU-decomposition
+
+\section{Conclusion}
+
+Conclusion
+
+
+\onecolumngrid
+\vspace{1cm} % some extra space
+
+\begin{thebibliography}{}
+\bibitem[]{lectures2015} Morten Hjorth-Jensen, Computational Physics, Lecture Notes Fall 2015, August 2015, https://github.com/CompPhysics/ComputationalPhysics/blob/master/doc/Lectures/lectures2015.pdf.
+\bibitem[]{2D_diffusion} Ryan C. Daileda, Trinity University, Partial Differential Equations, March 6, 2012, http://ramanujan.math.trinity.edu/rdaileda/teach/s12/m3357/lectures/lecture\_3\_6\_short.pdf
+
+\end{thebibliography}
+
+
+\section{Appendix}
+
+\subsection{Derivation of equation for the Crank-Nicolson scheme} \label{sect:Crank-Nicolson_derivation}
+
+Again we define
+\begin{equation*}
+  \alpha = \frac{\Delta t}{(\Delta x)^2}
+\end{equation*}
+Inserting the approximations of $u_t$ and $u_{xx}$ stated in the Theory section into our differential equation, we get
+\begin{align*}
+  u_t &= u_{xx} \\
+  \frac{u_{i, j+1} - u_{i, j}}{\Delta t}
+    &= \frac{1}{2 \Delta x^2} \bigg(u_{i+1, j} - 2u_{i,j} + u_{i-1, j}
+      + u_{i+1, j + 1} - 2u_{i, j + 1} + u_{i - 1, j + 1} \bigg) \\
+  u_{i, j+1} - u_{i, j} &= \frac{\alpha}{2} \bigg(u_{i+1, j} - 2u_{i,j} + u_{i-1, j}
+      + u_{i+1, j+1} - 2u_{i, j+1} + u_{i-1, j+1} \bigg) \\
+  u_{i, j+1} - \frac{\alpha}{2} \bigg( u_{i+1, j+1} - 2u_{i, j+1} + u_{i-1, j+1} \bigg)
+    &= u_{i, j} + \frac{\alpha}{2} \bigg(u_{i+1, j}  - 2u_{i,j} + u_{i-1, j} \bigg) \\
+  2 u_{i, j+1} - \alpha u_{i+1, j+1} + 2 \alpha u_{i, j+1} - \alpha u_{i-1, j+1}
+    &= 2 u_{i, j} + \alpha u_{i+1, j}  - 2 \alpha u_{i,j} + \alpha u_{i-1, j} \\
+  - \alpha u_{i-1, j+1} + 2 (1 + \alpha) u_{i, j+1} - \alpha u_{i+1, j+1}
+    &= \alpha u_{i-1, j}  + 2 (1 - \alpha) u_{i,j} + \alpha u_{i+1, j}
+\end{align*}
+Written out explicitly for all $i$, the equation reads
+\begin{align*}
+  - \alpha u_{0, j+1} + 2 (1 + \alpha) u_{1, j+1} - \alpha u_{2, j+1}
+    &= \alpha u_{0, j}  + 2 (1 - \alpha) u_{1,j} + \alpha u_{2, j} \\
+  - \alpha u_{1, j+1} + 2 (1 + \alpha) u_{2, j+1} - \alpha u_{3, j+1}
+    &= \alpha u_{1, j}  + 2 (1 - \alpha) u_{2,j} + \alpha u_{3, j} \\
+    \vdots \\
+  - \alpha u_{n-3, j+1} + 2 (1 + \alpha) u_{n-2, j+1} - \alpha u_{n-1, j+1}
+    &= \alpha u_{n-3, j}  + 2 (1 - \alpha) u_{n-2,j} + \alpha u_{n-1, j} \\
+  - \alpha u_{n-2, j+1} + 2 (1 + \alpha) u_{n-1, j+1} - \alpha u_{n, j+1}
+    &= \alpha u_{n-2, j}  + 2 (1 - \alpha) u_{n-1,j} + \alpha u_{n, j}
+\end{align*}
+
+Similar to the case of Backward Euler, this set of equations can be rearranged as follows
+\begin{align*}
+  2 (1 + \alpha) u_{1, j+1} - \alpha u_{2, j+1}
+    &= \alpha u_{0, j}  + 2 (1 - \alpha) u_{1,j} + \alpha u_{2, j} + \alpha u_{0, j+1} \\
+  - \alpha u_{1, j+1} + 2 (1 + \alpha) u_{2, j+1} - \alpha u_{3, j+1}
+    &= \alpha u_{1, j}  + 2 (1 - \alpha) u_{2,j} + \alpha u_{3, j} \\
+    \vdots \\
+  - \alpha u_{n-3, j+1} + 2 (1 + \alpha) u_{n-2, j+1} - \alpha u_{n-1, j+1}
+    &= \alpha u_{n-3, j}  + 2 (1 - \alpha) u_{n-2,j} + \alpha u_{n-1, j} \\
+  - \alpha u_{n-2, j+1} + 2 (1 + \alpha) u_{n-1, j+1}
+    &= \alpha u_{n-2, j}  + 2 (1 - \alpha) u_{n-1,j} + \alpha u_{n, j} + \alpha u_{n, j+1}
+\end{align*}
+We can define the vector $\vc b_j$ to hold the values on the right side of each of these equations:
+\begin{equation}
+  \label{def:vector_b_CrankNicolson_appendix}
+  \vc b_j =
+  \begin{bmatrix}
+    \alpha u_{0, j}  + 2 (1 - \alpha) u_{1,j} + \alpha u_{2, j} + \alpha u_{0, j+1} \\
+    \alpha u_{1, j}  + 2 (1 - \alpha) u_{2,j} + \alpha u_{3, j} \\
+      \vdots \\
+    \alpha u_{n-3, j}  + 2 (1 - \alpha) u_{n-2,j} + \alpha u_{n-1, j} \\
+    \alpha u_{n-2, j}  + 2 (1 - \alpha) u_{n-1,j} + \alpha u_{n, j} + \alpha u_{n, j+1}
+  \end{bmatrix}
+\end{equation}
+Using this and the definition of the vector $\vc v_j$ from \eqref{def:vector_v}, we can write the set of equations as
+\begin{equation*}
+  \vc A \vc v_j = \vc b_j
+\end{equation*}
+where the matrix $\vc A$ is a tridiagonal matrix with $2 (1 + \alpha)$ on the diagonal and $-\alpha$ directly above and below the diagonal.
+
+
+\end{document}
