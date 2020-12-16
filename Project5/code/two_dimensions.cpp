@@ -1,13 +1,32 @@
-#include <omp.h>
-#include <unistd.h>
 #include <cmath>
+#include <iomanip>
+#include <unistd.h>
+#include <omp.h>        // parallelization
 #include "solvers.hpp"
 
-void TwoDimensions::ShouldIPrint(int i, int NumberOfPrints) {
-    // Should you print?
-    bool ShouldPrint;
-    ShouldPrint = i%(Nt/NumberOfPrints) == 0;
-    if (ShouldPrint) WriteToFile();
+TwoDimensions::TwoDimensions(
+    Parameters params,
+    double* InitialConditions,
+    int numCores
+) {
+    this->numCores = numCores;
+    Initialize(params);
+    u = new double*[numCores+1];
+    for (int core = 0; core <= numCores; core++) {
+        u[core] = new double[(Nx+1)*(Nx+1)];
+        for (int row = 0; row <= Nx; row++) {
+            for (int col = 0; col <= Nx; col++)
+                u[core][Index2D(row, Nx+1, col)] = 0.0;
+        }
+    }
+    for (int row = 0; row <= Nx; row++) {
+        for (int col = 0; col <= Nx; col++)
+            u[0][Index2D(row, Nx+1, col)]
+                = InitialConditions[Index2D(row, Nx+1, col)];
+    }
+    completed = new bool[numCores*(2*Nx-3)];
+    for (int i = 0; i <= numCores*(2*Nx-3)-1; i++)
+        completed[i] = false;
 }
 
 void TwoDimensions::WriteToFile() {
@@ -16,7 +35,8 @@ void TwoDimensions::WriteToFile() {
     if (!ResOutFile.good()){
         ResOutFile.open(ResOutFileName.c_str(), ofstream::out);
         if (!ResOutFile.good()) {
-            cout << "Error opening file " << ResOutFileName << ". Aborting!" << endl;
+            cout << "Error opening file "
+                << ResOutFileName << ". Aborting!" << endl;
             terminate();
         }
     }
@@ -25,106 +45,98 @@ void TwoDimensions::WriteToFile() {
     // Add the data of u
     for (int i = 0; i <= Nx; i++) {
         for (int j = 0; j <= Nx; j++) {
-            ResOutFile << "," << u[i];
+            ResOutFile << "," << u[0][Index2D(i, Nx+1, j)];
         }
     }
     ResOutFile << endl;
 }
 
-TwoDimensions::TwoDimensions(
-    Parameters params,
-    double** InitialConditions) 
+void TwoDimensions::Solve()
 {
-    Initialize(params);
-    u = new double**[num_cores + 1];
-    for (int i = 0; i<=num_cores; i++){
-        u[i] = new double*[Nx+1];
-        for (int j = 0; j<=Nx; j++){
-            u[i][j] = new double[Nx+1];
+    WriteToFile();
+    WriteToFile();
+    omp_set_num_threads(numCores); // set number of threads in parallel
+    for (int timestep = numCores; timestep <= Nt; timestep += numCores) {
+        t = timestep*dt;
+        #pragma omp parallel for
+        for (int core = 1; core <= numCores; core++) {
+            int edge;
+            // std::cout << "Core " << core << " started" << std::endl;
+            for (int diag = 2; diag <= 2*Nx-2; diag++) {
+                if (core > 1) {
+                    while (!completed[Index2D(core-2, numCores, diag-1)]) {
+                        // std::cout << "Core " << core << " sleeping" << std::endl;
+                        // WriteCompleted();
+                        usleep(1);
+                    }
+                }
+                edge = std::min(diag-1, Nx-1);
+                for (int i = edge; i >= diag-edge; i--) {
+                    int j = diag - i;
+                    u[core][Index2D(i, Nx+1, j)]
+                        = u[core-1][Index2D(i, Nx+1, j)]
+                            + alpha*(u[core-1][Index2D(i+1, Nx+1, j)]
+                            + u[core-1][Index2D(i-1, Nx+1, j)]
+                            + u[core-1][Index2D(i, Nx+1, j+1)]
+                            + u[core-1][Index2D(i, Nx+1, j-1)]
+                            - 4*u[core-1][Index2D(i, Nx+1, j)]);
+                }
+                completed[Index2D(core-1, numCores, diag-2)] = true;
+            }
         }
+        ResetMatrices();
+        // if (cycle%(Nt/numCores/10) == 0)
+            // WriteToFile();
     }
-    for (int i = 0; i<=Nx; i++){
-        for (int j = 0; j<=Nx; j++){
-            u[0][i][j] = InitialConditions[i][j];
+    WriteToFile();
+}
+
+void TwoDimensions::ResetMatrices()
+{
+    for (int i = 0; i <= numCores*(2*Nx-3)-1; i++)
+        completed[i] = false;
+    for (int row = 0; row <= Nx; row++) {
+        for (int col = 0; col <= Nx; col++)
+            u[0][Index2D(row, Nx, col)] = u[numCores][Index2D(row, Nx, col)];
+    }
+    for (int core = 1; core <= numCores; core++){
+        for (int row = 0; row <= Nx; row++) {
+            for (int col = 0; col<=Nx; col++)
+                u[core][Index2D(row, Nx, col)] = 0.0;
         }
     }
 }
 
-void TwoDimensions::Solve_TwoDimensions(int NumberOfPrints) {
-    double good_to_go[num_cores+1][2*Nx+1];
-    good_to_go[0][0] = 1;
-    omp_set_num_threads(num_cores);
-#pragma omp parallel for schedule(static, 1)
-    for (int l = 0; l < Nt; l++){
-        int cc = omp_get_thread_num();  //current core
-        std::cout << "core: " << cc << " does timestep: " << l << std::endl;
-        for (int i = 0; i<Nx; i++){
-            while (good_to_go[cc][i] != 1) usleep(5);
-            for (int j = i; j>1; j--){
-                u[cc+1][i][j] = u[cc][i][j] + alpha*(u[cc][i+1][j]
-                        + u[cc][i-1][j] + u[cc][i][j+1]
-                        + u[cc][i][j-1] - 4*u[cc][i][j]);
-            }
-        good_to_go[cc+1][i] = 1;
-        good_to_go[cc][i+1] = 1;
+
+void TwoDimensions::WriteMatrix()
+{
+    std::cout << "u:" << std::endl;
+    for (int core = 0; core <= numCores; core++) {
+        for (int i = 0; i <= Nx; i++) {
+            for (int j = 0; j <= Nx; j++)
+                std::cout << std::setw(10) << std::setprecision(3)
+                    << u[core][Index2D(i, Nx, j)];
         }
-        good_to_go[0][Nx] = 1;
-        for (int j = 1; j<Nx; j++){
-            while (good_to_go[cc][Nx + j - 1] != 1) usleep(5);
-            for (int i = Nx-1; i>=j; i--){
-                u[cc+1][i][j] = u[cc][i][j] + alpha*(u[cc][i+1][j]
-                        + u[cc][i-1][j] + u[cc][i][j+1]
-                        + u[cc][i][j-1] - 4*u[cc][i][j]);  
-            }
-        good_to_go[cc+1][Nx + j - 1] = 1;
-        good_to_go[cc][Nx + j] = 1;
-        }
-    if (cc == num_cores-1 ){
-        for (int i = 0; i<=num_cores; i++){
-            for (int j = 0; j<=2*Nx; j++){
-                good_to_go[i][j] = 0;
-            }
-        }
-        good_to_go[0][0] = 1;
+        std::cout << std::endl;
     }
-    }
+    std::cout << std::endl;
 }
-// void TwoDimensions::Solve_TwoDimensions(int NumberOfPrints) {
-//     double good_to_go[num_cores+1][2*Nx+1];
-//     good_to_go[0][0] = 1;
-//     omp_set_num_threads(num_cores);
-// #pragma omp parallel for schedule(static, 1)
-//     for (int l = 0; l < Nt; l++){
-//         int cc = omp_get_thread_num();  //current core
-//         std::cout << "core: " << cc << "does timestep: " << l << std::endl;
-//         for (int i = 0; i<Nx; i++){
-//             while (good_to_go[cc][i] != 1) usleep(5);
-//             for (int j = i; j>1; j--){
-//                 u[cc+1][i][j] = u[cc][i][j] + alpha*(u[cc][i+1][j]
-//                         + u[cc][i-1][j] + u[cc][i][j+1]
-//                         + u[cc][i][j-1] - 4*u[cc][i][j]);
-//             }
-//         good_to_go[cc+1][i] = 1;
-//         good_to_go[cc][i+1] = 1;
-//         }
-//         good_to_go[0][Nx] = 1;
-//         for (int j = 1; j<Nx; j++){
-//             while (good_to_go[cc][Nx + j - 1] != 1) usleep(5);
-//             for (int i = Nx-1; i>=j; i--){
-//                 u[cc+1][i][j] = u[cc][i][j] + alpha*(u[cc][i+1][j]
-//                         + u[cc][i-1][j] + u[cc][i][j+1]
-//                         + u[cc][i][j-1] - 4*u[cc][i][j]);  
-//             }
-//         good_to_go[cc+1][Nx + j - 1] = 1;
-//         good_to_go[cc][Nx + j] = 1;
-//         }
-//     if (good_to_go[num_cores-1][2*Nx-1] == 1){
-//         for (int i = 0; i<=num_cores; i++){
-//             for (int j = 0; j<=2*Nx; j++){
-//                 good_to_go[i][j] = 0;
-//             }
-//         }
-//     }
-//     good_to_go[0][0] = 1;
-//     }
-// }
+
+void TwoDimensions::WriteCompleted()
+{
+    std::cout << "completed:" << std::endl;
+    for (int core = 0; core <= numCores-1; core++) {
+        for (int diag = 0; diag <= 2*Nx-2; diag++)
+                std::cout << completed[Index2D(core, numCores, diag)] << " ";
+        std::cout << std::endl;
+    }
+    std::cout << std::endl;
+}
+
+TwoDimensions::~TwoDimensions()
+{
+    for (int i = 0; i <= numCores; i++)
+        delete[] u[i];
+    delete[] u;
+    delete[] completed;
+}

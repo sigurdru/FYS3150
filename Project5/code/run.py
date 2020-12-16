@@ -24,8 +24,9 @@ params.add_argument('-dt',
 )
 params.add_argument('-m',
     type=str,
+    choices=["ForwardEuler", "BackwardEuler", "CrankNicolson", "all"],
     default=1,
-    help='The metod you want to use (ForwardEuler, BackwardEuler, CrankNicolson, all).'
+    help='The method you want to use.'
 )
 
 args = parser.parse_args()

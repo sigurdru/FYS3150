@@ -133,3 +133,73 @@ TEST_CASE( "Checking that the CrankNicolson class works as expected" )
     }
     delete[] InitialCondition;
 }
+
+TEST_CASE( "Checking that the TwoDimensions class works as expected" )
+{
+    int Nx = 4;
+    double dx = 1.0/Nx;
+    // alpha = dt/dx^2 = 2
+    double dt = 2.0*dx*dx;
+    double L = 1.0;
+    std::string fname = "blabla";
+    for (int numCores = 1; numCores <= 2; numCores++) {
+        for (int Nt = numCores; Nt <= 2; Nt ++) {
+
+            double *initialCondition;
+            double *expected;
+
+            initialCondition = new double[(Nx+1)*(Nx+1)]
+                {   0.0, 0.0, 0.0, 0.0, 0.0,
+                    0.0, 1.0, 2.0, 3.0, 0.0,
+                    0.0, 4.0, 5.0, 6.0, 0.0,
+                    0.0, 7.0, 8.0, 9.0, 0.0,
+                    0.0, 0.0, 0.0, 0.0, 0.0
+            };
+            if (Nt == 1) {
+                expected = new double[(Nx+1)*(Nx+1)]
+                    {   0.0,   0.0,   0.0,   0.0, 0.0,
+                        0.0,   5.0,   4.0,  -5.0, 0.0,
+                        0.0,  -2.0,   5.0,  -8.0, 0.0,
+                        0.0, -25.0, -14.0, -35.0, 0.0,
+                        0.0,   0.0,   0.0,   0.0, 0.0
+                };
+            } else {
+                expected = new double[(Nx+1)*(Nx+1)]
+                    {   0.0,   0.0,   0.0,   0.0, 0.0,
+                        0.0, -31.0, -18.0,  27.0, 0.0,
+                        0.0, -16.0, -75.0, -14.0, 0.0,
+                        0.0, 143.0, -12.0, 201.0, 0.0,
+                        0.0,   0.0,   0.0,   0.0, 0.0
+                };
+            }
+            Parameters params { Nx, Nt, dt, L, fname };
+            TwoDimensions Solver(params, initialCondition, numCores);
+            std::cout << "Initialized ok" << std::endl;
+            SECTION( "Checking that the result array is initialized correctly" )
+            {
+                for (int i = 0; i <= (Nx+1)*(Nx+1)-1; i++)
+                    REQUIRE(
+                        Solver.u[0][i] == Approx(initialCondition[i]).epsilon(RelTol)
+                    );
+                for (int core = 1; core <= numCores; core++) {
+                    for (int i = 0; i <= (Nx+1)*(Nx+1)-1; i++)
+                        REQUIRE( Solver.u[core][i] == Approx(0.0).epsilon(RelTol) );
+                }
+            }
+            Solver.Solve();
+            SECTION( "Checking that the results are as expected" )
+            {
+                for (int i = 0; i <= (Nx+1)*(Nx+1)-1; i++)
+                    REQUIRE(
+                        Solver.u[0][i] == Approx(expected[i]).epsilon(RelTol)
+                    );
+                for (int core = 1; core <= numCores; core++) {
+                    for (int i = 0; i <= (Nx+1)*(Nx+1)-1; i++)
+                        REQUIRE( Solver.u[core][i] == Approx(0.0).epsilon(RelTol) );
+                }
+            }
+            delete[] initialCondition;
+            delete[] expected;
+        }
+    }
+}

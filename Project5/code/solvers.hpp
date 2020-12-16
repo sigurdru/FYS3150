@@ -59,13 +59,21 @@ public:
 };
 
 class TwoDimensions : public Solvers {
+private:
+    bool *completed;
+    int numCores;
+    void ResetMatrices();
+
 public:
-    int num_cores = 4;
-    double ***u;
+    double **u;
+    TwoDimensions(Parameters, double* InitialConditions, int numCores);
+    ~TwoDimensions();
     void WriteToFile();
-    void ShouldIPrint(int, int);
-    TwoDimensions(Parameters, double** InitialConditions);
-    void Solve_TwoDimensions(int);
+    static inline int Index2D(int row, int rowLength, int col)
+        { return row*rowLength + col; }
+    void Solve();
+    void WriteMatrix();
+    void WriteCompleted();
 };
 
 #endif //SOLVERS_HPP
