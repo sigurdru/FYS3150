@@ -60,9 +60,10 @@ public:
 
 class TwoDimensions : public Solvers {
 public:
-    double **u;
-    double **b;
+    int num_cores = 4;
+    double ***u;
     void WriteToFile();
+    void ShouldIPrint(int, int);
     TwoDimensions(Parameters, double** InitialConditions);
     void Solve_TwoDimensions(int);
 };

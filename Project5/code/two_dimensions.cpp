@@ -1,23 +1,7 @@
-#include "solvers.hpp"
+#include <omp.h>
+#include <unistd.h>
 #include <cmath>
-
-TwoDimensions::TwoDimensions(
-    Parameters params,
-    double** InitialConditions
-) {
-    Initialize(params);
-    u = new double*[Nx+1];
-    b = new double*[Nx+1];
-    for (int i = 0; i<=Nx; i++){
-        u[i] = new double[Nx+1];
-        b[i] = new double[Nx+1];
-    }
-    for (int i = 0; i<=Nx; i++){
-        for (int j = 0; j<=Nx; j++){
-            u[i][j] = InitialConditions[i][j];
-        }
-    }
-}
+#include "solvers.hpp"
 
 void TwoDimensions::ShouldIPrint(int i, int NumberOfPrints) {
     // Should you print?
@@ -47,23 +31,100 @@ void TwoDimensions::WriteToFile() {
     ResOutFile << endl;
 }
 
-void TwoDimensions::Solve_TwoDimensions(int NumberOfPrints) {
-    WriteToFile();
-    for (int l = 0; l < Nt; l++){
-        ShouldIPrint(l, NumberOfPrints);
-        for (int i = 0; i <= Nx; i++){
-            for (int j = 0; j <= Nx; j++){
-                b[i][j] = u[i][j];
-            }
-        }
-        for (int i = 0; i <= Nx; i++){
-            for (int j = 0; j <= Nx; j++){
-                u[i][j] = b[i][j] + alpha*(b[i+1][j]
-                        + b[i-1][j] + b[i][j+1]
-                        + b[i][j-1] - 4*b[i][j]);
-            }
+TwoDimensions::TwoDimensions(
+    Parameters params,
+    double** InitialConditions) 
+{
+    Initialize(params);
+    u = new double**[num_cores + 1];
+    for (int i = 0; i<=num_cores; i++){
+        u[i] = new double*[Nx+1];
+        for (int j = 0; j<=Nx; j++){
+            u[i][j] = new double[Nx+1];
         }
     }
-    WriteToFile();
+    for (int i = 0; i<=Nx; i++){
+        for (int j = 0; j<=Nx; j++){
+            u[0][i][j] = InitialConditions[i][j];
+        }
+    }
 }
 
+void TwoDimensions::Solve_TwoDimensions(int NumberOfPrints) {
+    double good_to_go[num_cores+1][2*Nx+1];
+    good_to_go[0][0] = 1;
+    omp_set_num_threads(num_cores);
+#pragma omp parallel for schedule(static, 1)
+    for (int l = 0; l < Nt; l++){
+        int cc = omp_get_thread_num();  //current core
+        std::cout << "core: " << cc << " does timestep: " << l << std::endl;
+        for (int i = 0; i<Nx; i++){
+            while (good_to_go[cc][i] != 1) usleep(5);
+            for (int j = i; j>1; j--){
+                u[cc+1][i][j] = u[cc][i][j] + alpha*(u[cc][i+1][j]
+                        + u[cc][i-1][j] + u[cc][i][j+1]
+                        + u[cc][i][j-1] - 4*u[cc][i][j]);
+            }
+        good_to_go[cc+1][i] = 1;
+        good_to_go[cc][i+1] = 1;
+        }
+        good_to_go[0][Nx] = 1;
+        for (int j = 1; j<Nx; j++){
+            while (good_to_go[cc][Nx + j - 1] != 1) usleep(5);
+            for (int i = Nx-1; i>=j; i--){
+                u[cc+1][i][j] = u[cc][i][j] + alpha*(u[cc][i+1][j]
+                        + u[cc][i-1][j] + u[cc][i][j+1]
+                        + u[cc][i][j-1] - 4*u[cc][i][j]);  
+            }
+        good_to_go[cc+1][Nx + j - 1] = 1;
+        good_to_go[cc][Nx + j] = 1;
+        }
+    if (cc == num_cores-1 ){
+        for (int i = 0; i<=num_cores; i++){
+            for (int j = 0; j<=2*Nx; j++){
+                good_to_go[i][j] = 0;
+            }
+        }
+        good_to_go[0][0] = 1;
+    }
+    }
+}
+// void TwoDimensions::Solve_TwoDimensions(int NumberOfPrints) {
+//     double good_to_go[num_cores+1][2*Nx+1];
+//     good_to_go[0][0] = 1;
+//     omp_set_num_threads(num_cores);
+// #pragma omp parallel for schedule(static, 1)
+//     for (int l = 0; l < Nt; l++){
+//         int cc = omp_get_thread_num();  //current core
+//         std::cout << "core: " << cc << "does timestep: " << l << std::endl;
+//         for (int i = 0; i<Nx; i++){
+//             while (good_to_go[cc][i] != 1) usleep(5);
+//             for (int j = i; j>1; j--){
+//                 u[cc+1][i][j] = u[cc][i][j] + alpha*(u[cc][i+1][j]
+//                         + u[cc][i-1][j] + u[cc][i][j+1]
+//                         + u[cc][i][j-1] - 4*u[cc][i][j]);
+//             }
+//         good_to_go[cc+1][i] = 1;
+//         good_to_go[cc][i+1] = 1;
+//         }
+//         good_to_go[0][Nx] = 1;
+//         for (int j = 1; j<Nx; j++){
+//             while (good_to_go[cc][Nx + j - 1] != 1) usleep(5);
+//             for (int i = Nx-1; i>=j; i--){
+//                 u[cc+1][i][j] = u[cc][i][j] + alpha*(u[cc][i+1][j]
+//                         + u[cc][i-1][j] + u[cc][i][j+1]
+//                         + u[cc][i][j-1] - 4*u[cc][i][j]);  
+//             }
+//         good_to_go[cc+1][Nx + j - 1] = 1;
+//         good_to_go[cc][Nx + j] = 1;
+//         }
+//     if (good_to_go[num_cores-1][2*Nx-1] == 1){
+//         for (int i = 0; i<=num_cores; i++){
+//             for (int j = 0; j<=2*Nx; j++){
+//                 good_to_go[i][j] = 0;
+//             }
+//         }
+//     }
+//     good_to_go[0][0] = 1;
+//     }
+// }

@@ -31,7 +31,6 @@ int main(int charc, char* argv[])
     int NumberOfPrints = 5;
     method = argv[4];
     ResOutFileName = argv[5];
-
     // Define initial conditions
     double *initialCondition;
     double **InitialConditions2D;
