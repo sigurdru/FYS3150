@@ -29,6 +29,7 @@
 \usepackage{verbatim}
 \usepackage{adjustbox}
 \usepackage{dsfont}
+\usepackage{mathtools}
 
 % defines the color of hyperref objects
 % Blending two colors:  blue!80!black  =  80% blue and 20% black
@@ -90,16 +91,13 @@
 \end{titlepage}
 
 \begin{abstract}
-  Vegard sitt abstract
+  note to self: kanskje ikke helt fornøyd med siste del av metode 1D og 2D? si noe om stability i 2D? Ellers burde alt være ganske nais. Unit testing mangler
 \end{abstract}
 \maketitle                              % creates the title
 
 
 \section{Introduction}
 The diffusion equation is used in many areas. Everything from how heat is transferred through a stick, to how an oil spill will spread. In this report we will try to solve the diffusion equation for one and two dimensions, and using different algorithms. We are going to study the diffusion equation with a constant collective diffusion coefficient, giving us a linear differential equation identical to the heat equation.
-\begin{equation*}
-\frac{\partial u}{\partial t} = \nabla^2u(\mathbf{r}, t)
-\end{equation*}
 
 For our one dimensional problem, we use three different algorithms, explicit forward Euler, implicit backward Euler and implicit Crank-Nicolson.
 
@@ -124,7 +122,7 @@ or
 \end{equation}
 in cartesian coordinates. In this report we are mainly going to work with the diffusion equation in one and two dimensions, i.e.
 \begin{align*}
-	 \scriptsize\frac{\partial^2 u(x,t)}{\partial x^2} &= \frac{\partial u(x,t)}{\partial t} \\ &\wedge \\ \frac{\partial^2u(x, y,t)}{\partial x^2} + \frac{\partial^2u(x, y,t)}{\partial y^2} &= \frac{\partial u(x, y,t)}{\partial t}.
+	 \frac{\partial^2 u(x,t)}{\partial x^2} &= \frac{\partial u(x,t)}{\partial t} \\ &\wedge \\ \frac{\partial^2u(x, y,t)}{\partial x^2} + \frac{\partial^2u(x, y,t)}{\partial y^2} &= \frac{\partial u(x, y,t)}{\partial t}.
 \end{align*}
 
 \subsection*{Discretization}
@@ -143,17 +141,12 @@ we can approximate the solution by discretization. First introducing $\Delta x =
 \begin{equation*}
 t_j = j\Delta t, \ \ j\in \mathbb{N}_0 \ \ \wedge \ \ x_i = i\Delta x, \ \ \{i \in \mathbb{N}_0 | i \leq n + 1\}.
 \end{equation*}
-Where $n + 1$ is the number of points at which we evaluate $u(x,t)$.
-
 
 \subsection*{Explicit and implicit schemes}
 
-It is common divide numerical algorithms for integration into explicit and implicit schemes. When perfoming a numerical integration, we iterate over a discrete set of grid points at which we evaluate the function in question. In explicit schemes, the value at the next grid point is determined entirely by the value at the current grid point. In implicit schemes, the value at a later stage is determined by solving a system of equations containing both the current state and later states.
+It is common to divide numerical algorithms into explicit and implicit schemes. When performing numerical integration, we iterate over a discrete set of grid points at which we evaluate the function in question. In explicit schemes, the value at the next grid point is determined entirely by known or previously calculated values. In implicit schemes, the value is determined by solving a coupled set of equations, often involving matrix or iterative techniques.
 
-Using an implicit method instead of an explicit method usually requires more computation in every step, and they are often harder to implement. It can, in turn, save computation by allowing larger step sizes. Implicit methods can be (ARE?) unconditionally stable, meaning they are stable for any choice of step sizes. Explicit schemes are conditionally stable, meaning there is a relation between the step sizes in time and position that must be fulfilled in order to achieve stability. Of course, in order to achieve a desired  \textit{accuracy}, the step sizes can not be arbitrarily large for either the explicit or implicit schemes. It is generally the case, though, that implicit schemes allow for larger step sizes than explicit schemes.
-
-REFERENCES, Intro to PDEs book, Wiki
-
+Using an implicit method instead of an explicit method usually requires more computation in every step, and they are often harder to implement. It can, in turn, save computation by allowing larger step sizes. Explicit methods are always conditionally stable, however the implicit methods we will use in this report are unconditionally stable. Of course, in order to achieve a desired \textit{accuracy}, the step sizes can not be arbitrarily large for either the explicit or implicit schemes. It is generally the case, though, that implicit schemes allow for larger step sizes than explicit schemes.
 
 \subsection*{Explicit forward Euler}
 
@@ -339,7 +332,7 @@ and boundary conditions
   u(L, t) &= 1, \quad t \ge 0.
   \end{split}
 \end{align}
-As mentioned we use three methods, explicit forward Euler, implicit backward Euler and Crank-Nicolson. When using Explicit forward Euler, we only need to the difference-equation described by equation \eqref{eq:forward_euler}. When using Implicit backward Euler er Crank-Nicolson we need to solve the matrix-equations \eqref{eq:backward_euler_matrix} and \eqref{eq:Crank-Nicolson_matrix}. There are several methods for solving such tridiagonal matrix equations, however we will use the method covered in a previous project. see project\footnote{https://github.com/sigurdru/FYS3150/tree/master/Project1} page 2 (section A. Solve tridiagonal matrix equation).
+As mentioned we use three methods, explicit forward Euler, implicit backward Euler and Crank-Nicolson. When using Explicit forward Euler, we only need to solve the difference-equation described by equation \eqref{eq:forward_euler}. When using Implicit backward Euler er Crank-Nicolson we need to solve the matrix-equations \eqref{eq:backward_euler_matrix} and \eqref{eq:Crank-Nicolson_matrix}. There are several methods for solving such tridiagonal matrix equations, however we will use the method covered in a previous project. see project\footnote{https://github.com/sigurdru/FYS3150/tree/master/Project1} page 2 (section A. Solve tridiagonal matrix equation). We will use $\Delta x = 1/10$, $\Delta x = 1/100$ and $\Delta t$ decided by equation \eqref{eq:von_neumann_stability}. We then study compare our results with analytical ones (derived below), at two points in time. First $t_1$ where our solution is smooth but curved, then $t_2$ where we have a linear (stable) solution. Hopefully we will be able to decide on what method is best.
 
 \subsection*{Analytic solution to the 1D diffusion equation}
 
@@ -433,6 +426,7 @@ and initial conditions given by
 	0\quad \text{if }\frac{1}{2}<y<1\text{ and } 0<x<1
 	\end{cases}
 \end{equation}
+We will test for different $\Delta l$ and $\Delta t$, and compare it to the closed form solution covered bellow. We also parallelized the, which is also covered below.
 
 \subsection*{parallelization}
 When solving the difference equation \eqref{eq:3dEuler} we parallelize the program using OpenMp. While calculating $u_{i,j}^l$ we only need to worry about the surrounding points for the previous step, namely $u_{i,j}^{l-1}$ and $u_{i\pm 1,j\pm 1}^{l-1}$. In a grid pattern this would look something like:
@@ -446,9 +440,10 @@ When solving the difference equation \eqref{eq:3dEuler} we parallelize the progr
 	& u_{i,j-1}^{l-1} &
 	\end{matrix}$}
 \end{equation*}
-This means that whenever we are done calculating $u_{i,j}^{l}$ and $u_{i\pm 1,j\pm 1}^{l}$ we can start calculating the next time step $u_{i,j}^{l+1}$. We found that if we run through $u_{i,j}^{l}$ diagonally, we can start calculating the next time step ($u_{i,j}^{l+1}$) one diagonal behind. A visual representation of this can be seen in figure \ref{fig:parallelization}.
+This means that whenever we are done calculating $u_{i,j}^{l}$ and $u_{i\pm 1,j\pm 1}^{l}$ we can start calculating the next time step $u_{i,j}^{l+1}$. We found that if we run through $u_{i,j}^{l}$ diagonally, we can start calculating the next time step ($u_{i,j}^{l+1}$) one diagonal behind. A visual representation of this can be seen in figure \ref{fig:parallelization}. The red and black dots represent values of $u_{i,j}^l$ we have and haven't calculated respectively. We can then make sure one thread is calculating $u_{i,j}^l$ for one value of $l$ diagonally, another core the next time step one diagonal behind, and so forth.
 
 \begin{figure}[!h]
+	\textbf{\scalebox{1.2}{Representation of $\mathbf{u}_{i,j}^l$}}\par\medskip
 \begin{tikzpicture}[scale=2.5, tdplot_main_coords,axis/.style={->},thick]  
 
 \foreach \x in {0,1,2}
@@ -460,9 +455,11 @@ This means that whenever we are done calculating $u_{i,j}^{l}$ and $u_{i\pm 1,j\
 	\draw[thick,opacity=1] (\x,\y,0) -- (\x,\y,2);
 }
 
-\draw (2.5,0,1) node[below] {\Large $t_l$};
-\draw (1.5,0,0.25) node[below] {\Large $y_j$};
-\draw (1.5,0.5,-0.2) node[below] {\Large $x_i$};
+\draw (2.5,0,1) node[below] {\Large $l \rotatebox{90}{$\xrightarrow{\makebox[2cm]{}}$}$};
+\draw (1,0,0.45) node[below] {\Large $j
+\rotatebox{18}{$\xrightarrow{\makebox[1.5cm]{}}$}$};
+\draw (1.5,0.4,-0.1) node[below] {\Large $i
+\rotatebox{-8}{$\xrightarrow{\makebox[1.5cm]{}}$}$};
 
 % --- labels for vertices
 \foreach \x in {0,1,2}
@@ -507,7 +504,7 @@ This means that whenever we are done calculating $u_{i,j}^{l}$ and $u_{i\pm 1,j\
 {\draw[fill=black] (\x,\y,\z) circle (0.3em);}  
 
 \end{tikzpicture}
-\caption{Visualization of how the parallelization works.
+\caption{Visualization of how the parallelization works. $i$, $j$ and $l$ represent the indexes of $u_{i,j}^{l}$ and the red and black dots represent the values of $u_{i,j}^{l}$ we have and haven't calculated.
 \label{fig:parallelization}}
 \end{figure}
 
