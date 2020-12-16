@@ -1,4 +1,4 @@
-import subprocess
+import subprocess, math
 import plot
 
 def run_simulation(params, fname):
@@ -14,14 +14,35 @@ def run_simulation(params, fname):
     command += [str(arg) for arg in parameter_list] + [fname]
     subprocess.call(command)
 
-def plot_solution(fname, method):
-    plot.plot_evolution(fname, method)
+def plot_solution(params, fname):
+    plot.plot_evolution(params, fname)
+
+def compare_one_dimensional():
+    """Run the 1D simulation with all algorithms and compare results to analytical.
+
+    """
+    methods = ['ForwardEuler']#, 'BackwardEuler', 'CrankNicolson']
+    Nxs = [10, 100]    # actual Nx is 10 and 10^2=100
+    for method in methods:
+        for Nx in Nxs:
+            dx = 1.0/Nx
+            dt = 0.5*dx*dx
+            Nt = int(1.0/dt)
+            params = Parameters(Nx, Nt, dt, method)
+            fname = params.create_filename()
+            run_simulation(params, fname)
+            plot.plot_evolution(params, fname)
 
 class Parameters:
     def __init__(self, Nx, Nt, dt, method, num_cores=1):
-        self.Nx = Nx
-        self.Nt = Nt
-        self.dt = dt
+        assert isinstance(Nx, int)
+        assert isinstance(Nt, int)
+        assert isinstance(dt, float)
+        assert isinstance(method, str)
+        assert isinstance(num_cores, int)
+        self.Nx = int(math.log10(Nx))
+        self.Nt = int(math.log10(Nt))
+        self.dt = -math.log10(dt)
         self.method = method
         self.num_cores = num_cores
 
@@ -29,12 +50,11 @@ class Parameters:
         """
         Create a filename based on the parameters to the simulation.
         """
-        import math
         Nx = self.Nx
         Nt = self.Nt
         dt = self.dt
         method = self.method
-        fname = f'{method}-Nt{Nt}-dt{dt}-Nx{Nx}'
+        fname = f'{method}-Nt{Nt}-dt{dt:.5f}-Nx{Nx}'
         fname = fname.replace('.', '_')
         return fname
 
@@ -42,16 +62,10 @@ class Parameters:
         """
         parameter (list): a list of all the parameters
         """
-        return [self.Nx, self.Nt, self.dt, self.method]
+        return [self.Nx, self.Nt, self.dt, self.method, self.num_cores]
 
 if __name__ == '__main__':
     """
     TESTING
     """
-    Nx = 2
-    Nt = 4
-    dt = 6
-    method = "ForwardEuler"
-    params = Parameters(Nx, Nt, dt, method)
-    print(params.create_filename())
-    # run_simulation(parameters_list(params), params.create_filename())
+    compare_one_dimensional()

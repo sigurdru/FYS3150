@@ -6,6 +6,11 @@ parser = argparse.ArgumentParser(
     formatter_class=argparse.ArgumentDefaultsHelpFormatter
 )
 
+parser.add_argument('-a', '--all',
+    action='store_true',
+    help='Produce all the results in the report'
+)
+
 params = parser.add_argument_group('simulation parameters')
 params.add_argument('-Nx',
     type=float,
@@ -24,13 +29,12 @@ params.add_argument('-dt',
 )
 params.add_argument('-m',
     type=str,
-    choices=["ForwardEuler", "BackwardEuler", "CrankNicolson", "all"],
-    default=1,
+    choices=["ForwardEuler", "BackwardEuler", "CrankNicolson", "TwoDimensions"],
+    default='ForwardEuler',
     help='The method you want to use.'
 )
 
 args = parser.parse_args()
-
 
 if args.m == 'all':
     m_list = ['ForwardEuler', 'BackwardEuler', 'CrankNicolson']
