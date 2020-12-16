@@ -1,13 +1,15 @@
 compile:
-	g++ -o main.exe -Wall main.cpp forward_euler.cpp backward_euler.cpp crank_nicolson.cpp solvers.cpp tridiag.cpp two_dimensions.cpp
+	g++ -o main.exe -Wall main.cpp forward_euler.cpp backward_euler.cpp crank_nicolson.cpp solvers.cpp tridiag.cpp two_dimensions.cpp -fopenmp
 # Her ser du eksempler på hvordan man kjører koden
 runcn:
 	python3 run.py -Nx 2 -Nt 5 -dt 6 -m CrankNicolson
 runall:
 	python3 run.py -Nx 2 -Nt 5 -dt 6 -m all
 #
+# compile_test:
+# 	g++ -o unit_test.exe -Wall unit_test.cpp tridiag.cpp solvers.cpp forward_euler.cpp backward_euler.cpp crank_nicolson.cpp two_dimensions.cpp -fopenmp
 compile_test:
-	g++ -o unit_test.exe -Wall unit_test.cpp tridiag.cpp solvers.cpp forward_euler.cpp backward_euler.cpp crank_nicolson.cpp two_dimensions.cpp -fopenmp
+	g++ -o unit_test.exe -Wall unit_test.cpp tridiag.cpp solvers.cpp forward_euler.cpp backward_euler.cpp crank_nicolson.cpp two_dimensions_copy.cpp -fopenmp
 
 run_test:
 	./unit_test.exe

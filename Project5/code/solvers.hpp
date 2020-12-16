@@ -69,7 +69,7 @@ public:
     TwoDimensions(Parameters, double* InitialConditions, int numCores);
     ~TwoDimensions();
     void WriteToFile();
-    static inline int Index2D(int row, int rowLength, int col) 
+    static inline int Index2D(int row, int rowLength, int col)
         { return row*rowLength + col; }
     void Solve();
     void WriteMatrix();

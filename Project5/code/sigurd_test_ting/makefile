@@ -1,2 +1,2 @@
 compile:
-	g++ -o main.exe -Wall test_main.cpp
+	g++ -o main.exe -Wall test_main.cpp -fopenmp

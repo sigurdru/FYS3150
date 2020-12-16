@@ -1,8 +1,8 @@
+#include "solvers.hpp"
 #include <cmath>
 #include <iomanip>
 #include <unistd.h>
 #include <omp.h>        // parallelization
-#include "solvers.hpp"
 
 TwoDimensions::TwoDimensions(
     Parameters params,
@@ -28,6 +28,11 @@ TwoDimensions::TwoDimensions(
     for (int i = 0; i <= numCores*(2*Nx-3)-1; i++)
         completed[i] = false;
 }
+
+// inline int TwoDimensions::Index2D(int row, int rowLength, int col)
+// {
+    // return row*rowLength + col;
+// }
 
 void TwoDimensions::WriteToFile() {
     using namespace std;
@@ -56,6 +61,7 @@ void TwoDimensions::Solve()
     WriteToFile();
     WriteToFile();
     omp_set_num_threads(numCores); // set number of threads in parallel
+    int edge;
     for (int cycle = 1; cycle <= Nt/numCores; cycle++) {
         t = cycle*numCores*dt;
         // std::cout << std::endl << "t = " << t << std::endl;
@@ -64,7 +70,6 @@ void TwoDimensions::Solve()
         // std::cout << std::endl << "Running " << numCores << " cores" << std::endl;
         #pragma omp parallel for
         for (int core = 1; core <= numCores; core++) {
-            int edge;
             // std::cout << "Core " << core << " started" << std::endl;
             for (int diag = 2; diag <= 2*Nx-2; diag++) {
                 if (core > 1) {
