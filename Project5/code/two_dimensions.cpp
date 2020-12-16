@@ -56,12 +56,8 @@ void TwoDimensions::Solve()
     WriteToFile();
     WriteToFile();
     omp_set_num_threads(numCores); // set number of threads in parallel
-    for (int cycle = 1; cycle <= Nt/numCores; cycle++) {
-        t = cycle*numCores*dt;
-        // std::cout << std::endl << "t = " << t << std::endl;
-        // WriteMatrix();
-        // WriteCompleted();
-        // std::cout << std::endl << "Running " << numCores << " cores" << std::endl;
+    for (int timestep = numCores; timestep <= Nt; timestep += numCores) {
+        t = timestep*dt;
         #pragma omp parallel for
         for (int core = 1; core <= numCores; core++) {
             int edge;
@@ -89,8 +85,8 @@ void TwoDimensions::Solve()
             }
         }
         ResetMatrices();
-        if (cycle%(Nt/numCores/10) == 0)
-            WriteToFile();
+        // if (cycle%(Nt/numCores/10) == 0)
+            // WriteToFile();
     }
     WriteToFile();
 }
