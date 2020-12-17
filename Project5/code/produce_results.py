@@ -34,7 +34,7 @@ def compare_one_dimensional():
 
 def compare_two_dimensional(num_cores=1):
     """
-    Run the 2D simulation with all algorithms adn compare results to analytical. 
+    Run the 2D simulation with all algorithms adn compare results to analytical.
     """
     method = "TwoDimensions"
     Nx = 50

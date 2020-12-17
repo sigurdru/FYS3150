@@ -129,6 +129,7 @@ def plot_evolution_2D(params, fname):
             ax = fig.add_subplot(2, 2, 1+i+j, projection='3d')
             row = df.loc[i+j].to_numpy()
             t = row[0]
+            X_ana, Y_ana = exact(X,Y,t)
             temp = row[1:]
             temp = temp.reshape(Nx+1, Nx+1)
             step = 10
@@ -216,12 +217,10 @@ class Exact2D:
         """
         self.N_fourier = N_fourier
         self.L = L
-        self.n = np.arange(1, N_fourier+1)
-        self.fourier_coeffs = 2*(np.pi*self.n*np.cos(np.pi*self.n)
-                                 - np.sin(np.pi*self.n))/(np.pi*np.pi*self.n*self.n)
-        assert len(self.fourier_coeffs) == N_fourier
-
-    def __call__(self, x_arr, t):
+        n = np.arange(1, N_fourier+1)
+        self.N, self.M = np.meshgrid(n,n)
+        self.Anm = 4/np.pi**2*((np.cos(self.N*np.pi/2) - 1)*((-1)**self.M - 1))/(self.N*self.M)
+    def __call__(self, X, Y,t):
         """Description
 
         Args:
@@ -235,12 +234,12 @@ class Exact2D:
             value (float): the function value
 
         """
-        value = np.zeros_like(x_arr)
-        for i in range(len(x_arr)):
-            x = x_arr[i]
-            value[i] = x/L
-            C = self.n*np.pi/L
-            value[i] += np.sum(self.fourier_coeffs*np.exp(-C*C*t)*np.sin(C*x))
+        value = np.zeros_like(X)
+        for i in range(len(X.flat())):
+            for j in range(len(Y.flat())):
+                x = X.flat()[i]
+                y = Y.flat()[j]
+                value[i][j] = np.sum(self.Anm*np.sin(self.M*np.pi*x)*np.sin(self.N*np.pi*y)*np.exp(-(self.M**2*np.pi**2 + self.N**2*np.pi**2)*t))
         return value
 
 
