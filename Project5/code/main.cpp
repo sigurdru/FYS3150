@@ -43,7 +43,7 @@ int main(int charc, char* argv[])
         }
         for (int i = 1; i <= Nx-1; i++) {
             for (int j = 1; j <= Nx/2; j++)
-                initialCondition[TwoDimensions::Index2D(i, Nx+1, j)] = 1.0;
+                initialCondition[TwoDimensions::Index2D(i, Nx+1, j)] = 10.0;
         }
     } else {
         initialCondition = new double[Nx + 1];

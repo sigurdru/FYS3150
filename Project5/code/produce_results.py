@@ -39,7 +39,7 @@ def compare_two_dimensional(num_cores=1):
     method = "TwoDimensions"
     Nx = 100
     dt = 0.4/Nx**2
-    Nt = int(0.01/dt)
+    Nt = int(0.2/dt)
     params = Parameters(Nx, Nt, dt, method, num_cores)
     fname = params.create_filename()
     run_simulation(params, fname)
