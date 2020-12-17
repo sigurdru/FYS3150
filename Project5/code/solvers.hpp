@@ -71,7 +71,7 @@ public:
     void WriteToFile();
     static inline int Index2D(int row, int rowLength, int col)
         { return row*rowLength + col; }
-    void Solve();
+    void Solve(int NumberOfprints);
     void WriteMatrix();
     void WriteCompleted();
 };

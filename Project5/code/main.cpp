@@ -70,7 +70,7 @@ int main(int charc, char* argv[])
     } else if (method == "TwoDimensions") {
         // Solve two dimensional problem using Forward Euler
         TwoDimensions TwoDimensionsSolver(params, initialCondition, numCores);
-        TwoDimensionsSolver.Solve();
+        TwoDimensionsSolver.Solve(2);
     } else {
         std::cout << "Error: unknown method " << method << std::endl;
         std::cout << "Acceptable method args:" << std::endl

@@ -51,7 +51,7 @@ void TwoDimensions::WriteToFile() {
     ResOutFile << endl;
 }
 
-void TwoDimensions::Solve()
+void TwoDimensions::Solve(int NumberOfprints)
 {
     WriteToFile();
     WriteToFile();
@@ -83,8 +83,8 @@ void TwoDimensions::Solve()
             }
         }
         ResetMatrices();
-        // if (cycle%(Nt/numCores/10) == 0)
-            // WriteToFile();
+        if ((NumberOfprints > 0) && (timestep/numCores%(Nt/numCores/NumberOfprints) == 0))
+            WriteToFile();
     }
     WriteToFile();
 }

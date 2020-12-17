@@ -14,12 +14,9 @@ def run_simulation(params, fname):
     command += [str(arg) for arg in parameter_list] + [fname]
     subprocess.call(command)
 
-def plot_solution(params, fname):
-    plot.plot_evolution(params, fname)
-
 def compare_one_dimensional():
-    """Run the 1D simulation with all algorithms and compare results to analytical.
-
+    """
+    Run the 1D simulation with all algorithms and compare results to analytical.
     """
     methods = ['ForwardEuler', 'BackwardEuler', 'CrankNicolson']
     Nxs = [10, 100]
@@ -34,6 +31,19 @@ def compare_one_dimensional():
                 run_simulation(params, fname)
                 plot.plot_evolution(params, fname)
                 plot.plot_evolution_error(params, fname)
+
+def compare_two_dimensional(num_cores=1):
+    """
+    Run the 2D simulation with all algorithms adn compare results to analytical. 
+    """
+    method = "TwoDimensions"
+    Nx = 100
+    dt = 0.4/Nx**2
+    Nt = int(0.01/dt)
+    params = Parameters(Nx, Nt, dt, method, num_cores)
+    fname = params.create_filename()
+    run_simulation(params, fname)
+    plot.plot_evolution_2D(params, fname)
 
 class Parameters:
     def __init__(self, Nx, Nt, dt, method, num_cores=1):
@@ -70,4 +80,5 @@ if __name__ == '__main__':
     """
     TESTING
     """
-    compare_one_dimensional()
+    # compare_one_dimensional()
+    compare_two_dimensional(8)
