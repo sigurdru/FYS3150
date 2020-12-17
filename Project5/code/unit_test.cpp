@@ -5,6 +5,7 @@
 #include <string>
 
 double RelTol = 1E-6;
+std::string fname = "TestResults";
 
 TEST_CASE("Checking that the TriDiagSolver class works as expected")
 {
@@ -53,7 +54,6 @@ TEST_CASE( "Checking that the ForwardEuler class works as expected" )
     // alpha = dt/dx^2 = 2
     double dt = 2.0*dx*dx;
     double L = 1.0;
-    std::string fname = "blabla";
 
     double *InitialCondition = new double[Nx+1]
         {0, 1, 2, 3, 4, 5, 3, 2, 1, 4, 6};
@@ -84,7 +84,6 @@ TEST_CASE( "Checking that the BackwardEuler class works as expected" )
     // alpha = dt/dx^2 = 2
     double dt = 2.0*dx*dx;
     double L = 1.0;
-    std::string fname = "blabla";
 
     double *InitialCondition = new double[Nx+1] {1, 14, -10, 18, 4, 2};
     double Expected[Nx+1] = {1, 4, 2, 6, 4, 2};
@@ -113,7 +112,6 @@ TEST_CASE( "Checking that the CrankNicolson class works as expected" )
     // alpha = dt/dx^2 = 2
     double dt = 2.0*dx*dx;
     double L = 1.0;
-    std::string fname = "blabla";
 
     double *InitialCondition = new double[Nx+1] {1, 6, 14, 4, 2, 2};
     double Expected[Nx+1] = {1, 4, 2, 6, 4, 2};
@@ -141,7 +139,6 @@ TEST_CASE( "Checking that the TwoDimensions class works as expected" )
     // alpha = dt/dx^2 = 2
     double dt = 2.0*dx*dx;
     double L = 1.0;
-    std::string fname = "blabla";
     for (int numCores = 1; numCores <= 2; numCores++) {
         for (int Nt = numCores; Nt <= 2; Nt ++) {
 
