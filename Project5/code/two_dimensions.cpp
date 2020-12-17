@@ -65,7 +65,7 @@ void TwoDimensions::Solve(int NumberOfprints)
             for (int diag = 2; diag <= 2*Nx-2; diag++) {
                 if (core > 1) {
                     while (!completed[Index2D(core-2, numCores, diag-1)]) {
-                        usleep(1);
+                        // usleep(100);
                     }
                 }
                 edge = std::min(diag-1, Nx-1);
