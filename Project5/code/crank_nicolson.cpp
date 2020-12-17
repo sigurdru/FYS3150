@@ -15,9 +15,10 @@ void CrankNicolson::Solve(
     int NumberOfPrints
 ) {
     WriteToFile();
+    WriteToFile();
     TriDiagSolver Solver(-alpha, (2+2*alpha), -alpha, Nx);
     bool ShouldPrint;
-    for (int j=0; j<Nt; j++) {
+    for (int j = 1; j <= Nt; j++) {
         // store the current values for later use before updating
         for (int i=0; i<=Nx-2; i++)
             b[i] = alpha*u[i] + (2-2*alpha)*u[i+1] + alpha*u[i+2];

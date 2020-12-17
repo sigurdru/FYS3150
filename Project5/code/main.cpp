@@ -31,7 +31,7 @@ int main(int charc, char* argv[])
     numCores = atoi(argv[5]);
     ResOutFileName = argv[6];
     double L = 1.0;
-    int NumberOfPrints = 5;
+    int NumberOfPrints = 3;
 
     // Define initial conditions
     double *initialCondition;

@@ -40,25 +40,45 @@ def plot_evolution(params, fname):
         fname (str): name of the file containing the desired data
 
     """
+    N_fourier = 200
     df = read_data(fname)
     NumRows = len(df.loc[:,0])
     NumCols = len(df.loc[0,:])
     xa = np.linspace(0, L, NumCols-1)
-    exact = Exact1D(100, 1.0)
+    exact = Exact1D(N_fourier, 1.0)
     fig, ax = plt.subplots()
-    ax.set_title(method)
+    title = f'{params.method}, ' + r'$N_x = 10^{' + f'{params.Nx}' + r'}$'
+    title += r', $\Delta t = 10^{-' + f'{params.dt}' + r'}$'
+    title += f'\n{N_fourier} Fourier addends'
     for i in range(NumRows):
         t = df.loc[i, 0]
         analytical = exact(xa, t)
         color = colors[i]
-        label = f't = {t:f}'
-        ax.plot(xa, df.loc[i, 1:], color, label='Computed, '+label)
-        ax.plot(xa, analytical, color+'--', color, label='Analytical, '+label)
-    ax.legend()
-    ax.set_xlabel("L")
-    ax.set_ylabel("u")
+        label = f'$t = {t:.3f}$'
+        linestyle = '-o' if params.Nx <= 1 else '-'
+        ax.plot(xa, df.loc[i, 1:], linestyle, color=color, label=label)
+        ax.plot(xa, analytical, linestyle='--', color=color)
+    xlabel = '$x$'
+    ylabel = '$u(x, t)$'
+    set_ax_info(ax, title, xlabel, ylabel)
     fig.tight_layout()
     fig.savefig(os.path.join(path_plots, fname + '.pdf'))
+
+def set_ax_info(ax, title, xlabel, ylabel):
+    """Write title and labels on an axis with the correct fontsizes.
+
+    Args:
+        ax (matplotlib.axis): the axis on which to display information
+        title (str): the desired title on the axis
+        xlabel (str): the desired lab on the x-axis
+        ylabel (str): the desired lab on the y-axis
+
+    """
+    ax.set_title(title, fontsize=20)
+    ax.legend(fontsize=15)
+    ax.set_xlabel(xlabel, fontsize=20)
+    ax.set_ylabel(ylabel, fontsize=20)
+    ax.tick_params(axis='both', which='major', labelsize=15)
 
 class Exact1D:
     def __init__(self, N_fourier, L):

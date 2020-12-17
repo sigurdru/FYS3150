@@ -15,8 +15,9 @@ void ForwardEuler::Solve(
     int NumberOfPrints
 ) {
     WriteToFile();
+    WriteToFile();
     bool ShouldPrint;
-    for (int j = 0; j < Nt; j++) {
+    for (int j = 1; j <= Nt; j++) {
         // store the current values for later use before updating
         for (int i = 0; i <= Nx; i++)
           b[i] = u[i];
@@ -29,7 +30,7 @@ void ForwardEuler::Solve(
                    + alpha * b[i + 1];
         ShouldPrint = (j%(Nt/NumberOfPrints + 1) == 0);
         if (ShouldPrint) WriteToFile();
-        }
+    }
     WriteToFile();
 }
 

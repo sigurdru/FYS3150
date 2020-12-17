@@ -21,8 +21,8 @@ def compare_one_dimensional():
     """Run the 1D simulation with all algorithms and compare results to analytical.
 
     """
-    methods = ['ForwardEuler']#, 'BackwardEuler', 'CrankNicolson']
-    Nxs = [10, 100]    # actual Nx is 10 and 10^2=100
+    methods = ['ForwardEuler', 'BackwardEuler', 'CrankNicolson']
+    Nxs = [10, 100]
     for method in methods:
         for Nx in Nxs:
             dx = 1.0/Nx
@@ -54,7 +54,7 @@ class Parameters:
         Nt = self.Nt
         dt = self.dt
         method = self.method
-        fname = f'{method}-Nt{Nt}-dt{dt:.5f}-Nx{Nx}'
+        fname = f'{method}-Nt{Nt}-dt{dt:.1f}-Nx{Nx}'
         fname = fname.replace('.', '_')
         return fname
 
