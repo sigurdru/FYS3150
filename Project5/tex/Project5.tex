@@ -148,7 +148,7 @@ It is common to divide numerical algorithms into explicit and implicit schemes. 
 
 Using an implicit method instead of an explicit method usually requires more computation in every step, and they are often harder to implement. It can, in turn, save computation by allowing larger step sizes. Explicit methods are always conditionally stable, however the implicit methods we will use in this report are unconditionally stable. Of course, in order to achieve a desired \textit{accuracy}, the step sizes can not be arbitrarily large for either the explicit or implicit schemes. It is generally the case, though, that implicit schemes allow for larger step sizes than explicit schemes.
 
-\subsection*{Explicit forward Euler}
+\subsection*{Explicit Forward Euler}
 
 The algorithm for explicit forward Euler in one dimension (from \cite{lectures2015} chapter 10.2.1) reads
 \begin{equation}
@@ -428,7 +428,7 @@ and initial conditions given by
 \end{equation}
 We will test for different $\Delta l$ and $\Delta t$, and compare it to the closed form solution covered bellow. We also parallelized the, which is also covered below.
 
-\subsection*{parallelization}
+\subsection*{Parallelization}
 When solving the difference equation \eqref{eq:3dEuler} we parallelize the program using OpenMp. While calculating $u_{i,j}^l$ we only need to worry about the surrounding points for the previous step, namely $u_{i,j}^{l-1}$ and $u_{i\pm 1,j\pm 1}^{l-1}$. In a grid pattern this would look something like:
 \begin{equation*}
 \scalebox{1.5}{
@@ -444,7 +444,7 @@ This means that whenever we are done calculating $u_{i,j}^{l}$ and $u_{i\pm 1,j\
 
 \begin{figure}[!h]
 	\textbf{\scalebox{1.2}{Representation of $\mathbf{u}_{i,j}^l$}}\par\medskip
-\begin{tikzpicture}[scale=2.5, tdplot_main_coords,axis/.style={->},thick]  
+\begin{tikzpicture}[scale=2.5, tdplot_main_coords,axis/.style={->},thick]
 
 \foreach \x in {0,1,2}
 \foreach \y in {0,1,2}
@@ -465,43 +465,43 @@ This means that whenever we are done calculating $u_{i,j}^{l}$ and $u_{i\pm 1,j\
 \foreach \x in {0,1,2}
 \foreach \y in {0,1,2}
 \foreach \z in {0,1,2}
-{\draw[fill=red] (\x,\y,\z) circle (0.3em);}    
+{\draw[fill=red] (\x,\y,\z) circle (0.3em);}
 %top level
 \foreach \x in {0,1}
 \foreach \y in {0,1,2}
 \foreach \z in {2}
-{\draw[fill=black] (\x,\y,\z) circle (0.3em);} 
+{\draw[fill=black] (\x,\y,\z) circle (0.3em);}
 
 \foreach \x in {2}
 \foreach \y in {1,2}
 \foreach \z in {2}
-{\draw[fill=black] (\x,\y,\z) circle (0.3em);}  
+{\draw[fill=black] (\x,\y,\z) circle (0.3em);}
 %middle level
 \foreach \x in {0,1,2}
 \foreach \y in {2}
 \foreach \z in {1}
-{\draw[fill=black] (\x,\y,\z) circle (0.3em);}  
+{\draw[fill=black] (\x,\y,\z) circle (0.3em);}
 
 \foreach \x in {0,1}
 \foreach \y in {1}
 \foreach \z in {1}
-{\draw[fill=black] (\x,\y,\z) circle (0.3em);}  
+{\draw[fill=black] (\x,\y,\z) circle (0.3em);}
 
 \foreach \x in {0}
 \foreach \y in {0}
 \foreach \z in {1}
-{\draw[fill=black] (\x,\y,\z) circle (0.3em);} 
+{\draw[fill=black] (\x,\y,\z) circle (0.3em);}
 
 %bottom level
 \foreach \x in {0,1}
 \foreach \y in {2}
 \foreach \z in {0}
-{\draw[fill=black] (\x,\y,\z) circle (0.3em);}  
+{\draw[fill=black] (\x,\y,\z) circle (0.3em);}
 
 \foreach \x in {0}
 \foreach \y in {1}
 \foreach \z in {0}
-{\draw[fill=black] (\x,\y,\z) circle (0.3em);}  
+{\draw[fill=black] (\x,\y,\z) circle (0.3em);}
 
 \end{tikzpicture}
 \caption{Visualization of how the parallelization works. $i$, $j$ and $l$ represent the indexes of $u_{i,j}^{l}$ and the red and black dots represent the values of $u_{i,j}^{l}$ we have and haven't calculated.
@@ -536,7 +536,79 @@ Inserting this into equation \eqref{eq:2D_gen_sol}
 	&\sin(m\pi x)\sin(n\pi y)\exp(-((m\pi)^2 + (n\pi)^2)t)
 \end{align*}
 
+
 \subsection{Unit testing}
+
+There are many moving parts in the code we use to produce the results. In order to make sure that our implementation is correct and to help track down potential errors, we have developed specific tests for the different parts of the code. To facilitate testing we have structured our code in distinct units with separate classes for the tridiagonal matrix solver, each of the three different one-dimensional solvers, and the two-dimensional solver.
+
+\subsubsection*{Tridiagonal matrix solver}
+
+This class solves a matrix equation $\vc A \vc u = \vc b$ for $\vc u$ when $\vc A$ is a tridiagonal matrix. The test case we have used is
+\begin{equation*}
+  \vc A =
+  \input{inputs/mat_for_tridiag.tex}, \quad
+  \vc b =
+  \input{inputs/vec_for_tridiag.tex}
+\end{equation*}
+which has the analytic solution
+\begin{equation*}
+  \vc u = [6, \; 11, \; 14, \; 14, \; 10]^{\text T}
+\end{equation*}
+
+\subsubsection*{Explicit Forward Euler}
+
+Equation \eqref{eq:forward_euler} describes how the vector $\vc u$ changes from one time step to the next with Forward Euler. The test case we have used for this class is that with \(\alpha = 2\)
+\begin{equation*}
+  \vc u_j = [0, \; 1, \; 2, \; 3, \; 4, \; 5, \; 3, \; 2, \; 1, \; 4, \; 6]^{\text T}
+\end{equation*}
+should give
+\begin{equation*}
+  \vc u_{j+1} = [1, \; 1, \; 2, \; 3, \; 4, \; -1, \; 5, \; 2, \; 9, \; 2, \; 2]^{\text T}
+\end{equation*}
+in the next time step.
+
+\subsubsection*{Implicit Backward Euler}
+
+Equation \eqref{eq:backward_euler} describes how the vector $\vc u$ changes from one time step to the next with Backward Euler. Here, the test verifies that with \(\alpha = 2\)
+\begin{equation*}
+  \vc u_j = [1, \; 14, \; -10, \; 18, \; 4, \; 2]^{\text T}
+\end{equation*}
+gives
+\begin{equation*}
+  \vc u_{j+1} = [1, \; 4, \; 2, \; 6, \; 4, \; 2]^{\text T}
+\end{equation*}
+in the next time step
+
+\subsubsection*{Implicit Crank-Nicolson}
+
+Using equation \eqref{eq:CrankNicolson}, which describes the Crank-Nicolson algorithm, we have developed the test case that  with \(\alpha = 2\), the initial state
+\begin{equation*}
+  \vc u_j = [1, \; 6, \; 14, \; 4, \; 2, \; 2]^{\text T}
+\end{equation*}
+should give
+\begin{equation*}
+  \vc u_{j+1} = [1, \; 4, \; 2, \; 6, \; 4, \; 2]^{\text T}
+\end{equation*}
+in the next time step.
+
+\subsubsection*{Two dimensions}
+
+In the two-dimensional case, knowing the state $\vc u^j$ in one time step, equation \eqref{eq:3dEuler} directly gives the state $\vc u^{j+1}$ in the next time step. Starting from a state
+\begin{equation*}
+  \vc u^j =
+  \input{inputs/init_for_2D.tex},
+\end{equation*}
+we have solved the equation for two time steps with \(\alpha = 2\), giving us the following:
+\begin{equation*}
+  \vc u^{j+1} =
+  \input{inputs/fin1_for_2D.tex}
+\end{equation*}
+\begin{equation*}
+  \vc u^{j+2} =
+  \input{inputs/fin2_for_2D.tex}
+\end{equation*}
+We run the 2D-solver using both one and two cores and verify that the computed results match the expected.
+
 
 
 \section{Results}
@@ -583,7 +655,7 @@ Inserting the approximations of $u_t$ and $u_{xx}$ stated in the Theory section 
   2 u_{i, j+1} - \alpha u_{i+1, j+1} + 2 \alpha u_{i, j+1} - \alpha u_{i-1, j+1}
     &= 2 u_{i, j} + \alpha u_{i+1, j}  - 2 \alpha u_{i,j} + \alpha u_{i-1, j} \\
   - \alpha u_{i-1, j+1} + 2 (1 + \alpha) u_{i, j+1} - \alpha u_{i+1, j+1}
-    &= \alpha u_{i-1, j}  + 2 (1 - \alpha) u_{i,j} + \alpha u_{i+1, j}
+    &= \alpha u_{i-1, j}  + 2 (1 - \alpha) u_{i,j} + \alpha u_{i+1, j} \numberthis \label{eq:CrankNicolson}
 \end{align*}
 Written out explicitly for all $i$, the equation reads
 \begin{align*}
