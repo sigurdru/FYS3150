@@ -39,10 +39,11 @@ def compare_two_dimensional(num_cores=1):
     method = "TwoDimensions"
     Nx = 50
     dt = 0.4/Nx**4
-    Nt = int(0.00002/dt)
+    # Nt = int(0.1/dt) denne tar litt tid
+    Nt = int(0.01/dt)
     params = Parameters(Nx, Nt, dt, method, num_cores)
     fname = params.create_filename()
-    run_simulation(params, fname)
+    # run_simulation(params, fname)
     plot.plot_evolution_2D(params, fname)
 
 class Parameters:

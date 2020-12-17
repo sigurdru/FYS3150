@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 import pandas as pd
+from matplotlib import cm
 from numba import jit
 import sys, os
 
@@ -113,7 +114,7 @@ def plot_evolution_2D(params, fname):
         fname (str): name of the file containing the desired data
 
     """
-    N_fourier = 200
+    N_fourier = 50
     exact = Exact2D(N_fourier, 1.0)
     df = read_data(fname)
     # NumCols = len(df.loc[0, :])
@@ -124,20 +125,31 @@ def plot_evolution_2D(params, fname):
     xlabel = '$x$'
     ylabel = '$y$'
     zlabel = '$z$'
+    k = 0
+    step = 10
     for i in range(2):
         for j in range(2):
-            ax = fig.add_subplot(2, 2, 1+i+j, projection='3d')
-            row = df.loc[i+j].to_numpy()
+            ax = fig.add_subplot(2, 2, 1+k, projection='3d')
+            if (k == 3):
+                k = 4
+            row = df.loc[k].to_numpy()
             t = row[0]
-            X_ana, Y_ana = exact(X,Y,t)
+            temp_ana = exact(X,Y,t)
             temp = row[1:]
             temp = temp.reshape(Nx+1, Nx+1)
-            step = 10
-            ax.plot_surface(X[::step], Y[::step], temp[::step], label=f't={t}')
+            surf = ax.plot_wireframe(X[::step], Y[::step], temp_ana[::step], 
+                                alpha=0.5, color='black')
+            surf = ax.plot_surface(X[::step], Y[::step], temp[::step], 
+                                alpha=0.7, label = f"t = {t:.6f}", cmap=cm.coolwarm)
+            surf._facecolors2d=surf._facecolors3d
+            surf._edgecolors2d=surf._edgecolors3d
+            ax.legend()
             set_ax_info(ax, xlabel, ylabel, zlabel = zlabel)
+            k += 1
     title = f'Forward Euler, $N_x = {params.Nx}$'
     title += f', $\Delta t = {params.dt:f}$'
     title += f'\n{N_fourier} Fourier addends'
+    fig.suptitle(title)
     fig.tight_layout()
     fig.savefig(os.path.join(path_plots, fname + '.pdf'))
 
@@ -224,9 +236,9 @@ class Exact2D:
         """Description
 
         Args:
-            x (float or np.1darray):
+            x (float or np.2darray):
                 the position(s) at which to evaluate the analytical function
-            y (float or np.1darray):
+            y (float or np.2darray):
                 the position(s) at which to evaluate the analytical function
             t (float): the time at which to evaluate the analytical function
 
@@ -235,11 +247,11 @@ class Exact2D:
 
         """
         value = np.zeros_like(X)
-        for i in range(len(X.flat())):
-            for j in range(len(Y.flat())):
-                x = X.flat()[i]
-                y = Y.flat()[j]
-                value[i][j] = np.sum(self.Anm*np.sin(self.M*np.pi*x)*np.sin(self.N*np.pi*y)*np.exp(-(self.M**2*np.pi**2 + self.N**2*np.pi**2)*t))
+        for i in range(len(X)):
+            for j in range(len(Y)):
+                x = X[i][j]
+                y = Y[i][j]
+                value[j][i] = np.sum(self.Anm*np.sin(self.M*np.pi*x)*np.sin(self.N*np.pi*y)*np.exp(-(self.M**2*np.pi**2 + self.N**2*np.pi**2)*t))
         return value
 
 
