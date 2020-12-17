@@ -23,15 +23,17 @@ def compare_one_dimensional():
     """
     methods = ['ForwardEuler', 'BackwardEuler', 'CrankNicolson']
     Nxs = [10, 100]
-    for method in methods:
-        for Nx in Nxs:
-            dx = 1.0/Nx
-            dt = 0.5*dx*dx
-            Nt = int(1.0/dt)
-            params = Parameters(Nx, Nt, dt, method)
-            fname = params.create_filename()
-            run_simulation(params, fname)
-            plot.plot_evolution(params, fname)
+    dts = [0.4, 0.5]
+    for dti in dts:
+        for method in methods:
+            for Nx in Nxs:
+                dt = dti/Nx**2
+                Nt = int(0.5/dt)
+                params = Parameters(Nx, Nt, dt, method)
+                fname = params.create_filename()
+                run_simulation(params, fname)
+                plot.plot_evolution(params, fname)
+                plot.plot_evolution_error(params, fname)
 
 class Parameters:
     def __init__(self, Nx, Nt, dt, method, num_cores=1):
@@ -40,9 +42,9 @@ class Parameters:
         assert isinstance(dt, float)
         assert isinstance(method, str)
         assert isinstance(num_cores, int)
-        self.Nx = int(math.log10(Nx))
-        self.Nt = int(math.log10(Nt))
-        self.dt = -math.log10(dt) #
+        self.Nx = Nx
+        self.Nt = Nt
+        self.dt = dt
         self.method = method
         self.num_cores = num_cores
 
@@ -54,7 +56,7 @@ class Parameters:
         Nt = self.Nt
         dt = self.dt
         method = self.method
-        fname = f'{method}-Nt{Nt}-dt{dt:.1f}-Nx{Nx}'# og main
+        fname = f'{method}-Nt{Nt}-dt{dt}-Nx{Nx}'
         fname = fname.replace('.', '_')
         return fname
 

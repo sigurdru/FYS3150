@@ -17,7 +17,8 @@ colors = [
     '#73f939',
     '#4285f3',
     '#c669f1',
-    '#fa477d'
+    '#fa477d',
+    '#000000'
 ]
 
 def read_data(fname):
@@ -47,15 +48,15 @@ def plot_evolution(params, fname):
     xa = np.linspace(0, L, NumCols-1)
     exact = Exact1D(N_fourier, 1.0)
     fig, ax = plt.subplots()
-    title = f'{params.method}, ' + r'$N_x = 10^{' + f'{params.Nx}' + r'}$'
-    title += r', $\Delta t = 10^{-' + f'{params.dt}' + r'}$'
+    title = f'{params.method}, $N_x = {params.Nx}$'
+    title += f', $\Delta t = {params.dt:f}$'
     title += f'\n{N_fourier} Fourier addends'
     for i in range(NumRows):
         t = df.loc[i, 0]
         analytical = exact(xa, t)
         color = colors[i]
         label = f'$t = {t:.3f}$'
-        linestyle = '-o' if params.Nx <= 1 else '-'
+        linestyle = '-o' if params.Nx <= 10 else '-'
         ax.plot(xa, df.loc[i, 1:], linestyle, color=color, label=label)
         ax.plot(xa, analytical, linestyle='--', color=color)
     xlabel = '$x$'
@@ -63,6 +64,38 @@ def plot_evolution(params, fname):
     set_ax_info(ax, title, xlabel, ylabel)
     fig.tight_layout()
     fig.savefig(os.path.join(path_plots, fname + '.pdf'))
+    plt.close()
+
+def plot_evolution_error(params, fname):
+    N_fourier = 200
+    df = read_data(fname)
+    NumCols = len(df.loc[0, :])
+    NumRows = len(df.loc[:, 0])
+    exact = Exact1D(N_fourier, 1.0)
+    xa = np.linspace(0, L, NumCols-1)[1:]
+    fig, ax = plt.subplots()
+    square_diff_list = []
+    for i in [1, NumRows-1]:
+        t = df.loc[i, 0]
+        analytical = exact(xa, t)
+        color = colors[i]
+        label = f'$t = {t:.3f}$'
+        computed = df.loc[i, 2:]
+        difference = analytical - computed
+        square_diff = 1/len(difference)*sum(abs(difference/analytical))
+        square_diff_list.append([square_diff, t])
+        ax.plot(xa, difference, color=color, label=label)
+    title = f'{params.method}, $N_x = {params.Nx}$'
+    title += f', $\Delta t = {params.dt:f}$'
+    title += f'\n{N_fourier} Fourier addends'
+    for i in range(len(square_diff_list)):
+        title += f'\nMean absolute percentage error: {square_diff_list[i][0]*100:.4f}\% (t={square_diff_list[i][1]})'
+    xlabel = '$x$'
+    ylabel = r'$|u_t - u_c|$'
+    set_ax_info(ax, title, xlabel, ylabel)
+    fig.tight_layout()
+    fig.savefig(os.path.join(path_plots, fname + '-Error' + '.pdf'))
+
 
 def set_ax_info(ax, title, xlabel, ylabel):
     """Write title and labels on an axis with the correct fontsizes.
@@ -78,6 +111,7 @@ def set_ax_info(ax, title, xlabel, ylabel):
     ax.legend(fontsize=15)
     ax.set_xlabel(xlabel, fontsize=20)
     ax.set_ylabel(ylabel, fontsize=20)
+    ax.ticklabel_format(style='plain')
     ax.tick_params(axis='both', which='major', labelsize=15)
 
 class Exact1D:
