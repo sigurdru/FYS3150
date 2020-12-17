@@ -24,14 +24,14 @@ int main(int charc, char* argv[])
                   << "- TwoDimensions" << std::endl;
         exit(1);
     }
-    Nx = std::pow(10, atof(argv[1]));
-    Nt = std::pow(10, atof(argv[2]));
-    dt = std::pow(10, -atof(argv[3]));
+    Nx = atoi(argv[1]);
+    Nt = atoi(argv[2]);
+    dt = atof(argv[3]);
     method = argv[4];
     numCores = atoi(argv[5]);
     ResOutFileName = argv[6];
     double L = 1.0;
-    int NumberOfPrints = 3;
+    int NumberOfPrints = 6;
 
     // Define initial conditions
     double *initialCondition;
@@ -43,7 +43,7 @@ int main(int charc, char* argv[])
         }
         for (int i = 1; i <= Nx-1; i++) {
             for (int j = 1; j <= Nx/2; j++)
-                initialCondition[TwoDimensions::Index2D(i, Nx+1, j)] = 1.0;
+                initialCondition[TwoDimensions::Index2D(i, Nx+1, j)] = 10.0;
         }
     } else {
         initialCondition = new double[Nx + 1];
@@ -70,7 +70,7 @@ int main(int charc, char* argv[])
     } else if (method == "TwoDimensions") {
         // Solve two dimensional problem using Forward Euler
         TwoDimensions TwoDimensionsSolver(params, initialCondition, numCores);
-        TwoDimensionsSolver.Solve();
+        TwoDimensionsSolver.Solve(2);
     } else {
         std::cout << "Error: unknown method " << method << std::endl;
         std::cout << "Acceptable method args:" << std::endl

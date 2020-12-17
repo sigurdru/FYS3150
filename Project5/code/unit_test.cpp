@@ -185,7 +185,7 @@ TEST_CASE( "Checking that the TwoDimensions class works as expected" )
                         REQUIRE( Solver.u[core][i] == Approx(0.0).epsilon(RelTol) );
                 }
             }
-            Solver.Solve();
+            Solver.Solve(0);
             SECTION( "Checking that the results are as expected" )
             {
                 for (int i = 0; i <= (Nx+1)*(Nx+1)-1; i++)
