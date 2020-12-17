@@ -37,7 +37,7 @@ def compare_two_dimensional(num_cores=1):
     Run the 2D simulation with all algorithms adn compare results to analytical. 
     """
     method = "TwoDimensions"
-    Nx = 4
+    Nx = 10
     dt = 0.4/Nx**4
     Nt = int(0.2/dt)
     params = Parameters(Nx, Nt, dt, method, num_cores)
@@ -81,4 +81,4 @@ if __name__ == '__main__':
     TESTING
     """
     # compare_one_dimensional()
-    compare_two_dimensional(2)
+    compare_two_dimensional(3)

@@ -24,9 +24,12 @@ TwoDimensions::TwoDimensions(
             u[0][Index2D(row, Nx+1, col)]
                 = InitialConditions[Index2D(row, Nx+1, col)];
     }
-    completed = new bool[numCores*(2*Nx-3)];
-    for (int i = 0; i <= numCores*(2*Nx-3)-1; i++)
-        completed[i] = false;
+    completed = new bool[numCores*(2*Nx-2)];
+    for (int i = 0; i <= numCores-1; i++) {
+        for (int j = 0; j <= 2*Nx-4; j++)
+            completed[Index2D(i, 2*Nx-2, j)] = false;
+        completed[Index2D(i, 2*Nx-2, 2*Nx-3)] = true;
+    }
 }
 
 void TwoDimensions::WriteToFile() {
@@ -61,16 +64,15 @@ void TwoDimensions::Solve(int NumberOfprints)
     std::cout << alpha << std::endl;
     WriteToFile();
     WriteToFile();
-    // omp_set_num_threads(numCores); // set number of threads in parallel
+    omp_set_num_threads(numCores); // set number of threads in parallel
     for (int timestep = numCores; timestep <= Nt; timestep += numCores) {
         t = timestep*dt;
-        // #pragma omp parallel for
+        #pragma omp parallel for shared(u, completed)
         for (int core = 1; core <= numCores; core++) {
             int edge;
-            // std::cout << "Core " << core << " started" << std::endl;
             for (int diag = 2; diag <= 2*Nx-2; diag++) {
                 if (core > 1) {
-                    while (!completed[Index2D(core-2, numCores, diag-1)]) {
+                    while (!completed[Index2D(core-2, 2*Nx-2, diag-1)]) {
                         usleep(1);
                     }
                 }
@@ -86,7 +88,7 @@ void TwoDimensions::Solve(int NumberOfprints)
                                 + u[core-1][Index2D(i, Nx+1, j-1)]
                                 - 4*u[core-1][Index2D(i, Nx+1, j)]);
                 }
-                completed[Index2D(core-1, numCores, diag-2)] = true;
+                completed[Index2D(core-1, 2*Nx-2, diag-2)] = true;
             }
         }
         ResetMatrices();
@@ -98,16 +100,18 @@ void TwoDimensions::Solve(int NumberOfprints)
 
 void TwoDimensions::ResetMatrices()
 {
-    for (int i = 0; i <= numCores*(2*Nx-3)-1; i++)
-        completed[i] = false;
+    for (int i = 0; i <= numCores-1; i++) {
+        for (int j = 0; j <= 2*Nx-4; j++)
+            completed[Index2D(i, 2*Nx-2, j)] = false;
+    }
     for (int row = 0; row <= Nx; row++) {
         for (int col = 0; col <= Nx; col++)
-            u[0][Index2D(row, Nx, col)] = u[numCores][Index2D(row, Nx, col)];
+            u[0][Index2D(row, Nx+1, col)] = u[numCores][Index2D(row, Nx+1, col)];
     }
     for (int core = 1; core <= numCores; core++){
         for (int row = 0; row <= Nx; row++) {
             for (int col = 0; col<=Nx; col++)
-                u[core][Index2D(row, Nx, col)] = 0.0;
+                u[core][Index2D(row, Nx+1, col)] = 0.0;
         }
     }
 }
