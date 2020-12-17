@@ -2,8 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 import pandas as pd
-from numba import jit
-import sys, os
+import sys, os, re
 
 plt.style.use('seaborn')
 plt.rc('text', usetex=True)
@@ -47,22 +46,22 @@ def plot_evolution(params, fname):
     NumRows = len(df.loc[:,0])
     NumCols = len(df.loc[0,:])
     xa = np.linspace(0, L, NumCols-1)
-    exact = Exact1D(N_fourier, 1.0)
+    exact = Exact1D(N_fourier, L)
     fig, ax = plt.subplots()
-    title = f'{params.method}, $N_x = {params.Nx}$'
-    title += f', $\Delta t = {params.dt:f}$'
-    title += f'\n{N_fourier} Fourier addends'
+    linestyle = '-o' if params.Nx <= 10 else '-'
     for i in range(NumRows):
         t = df.loc[i, 0]
         analytical = exact(xa, t)
         color = colors[i]
         label = f'$t = {t:.3f}$'
-        linestyle = '-o' if params.Nx <= 10 else '-'
         ax.plot(xa, df.loc[i, 1:], linestyle, color=color, label=label)
         ax.plot(xa, analytical, linestyle='--', color=color)
+    title = f'{params.method}, $N_x = {params.Nx}$'
+    title += f', $\Delta t = {params.dt:.1e}$'
+    title += f'\n{N_fourier} Fourier addends'
     xlabel = '$x$'
     ylabel = '$u(x, t)$'
-    set_ax_info(ax, xlabel, ylabel, title=title)
+    set_ax_info(ax, xlabel, ylabel, title)
     fig.tight_layout()
     fig.savefig(os.path.join(path_plots, fname + '.pdf'))
     plt.close()
@@ -152,19 +151,24 @@ def set_ax_info(ax, xlabel, ylabel, title=None, zlabel=None):
         ylabel (str): the desired lab on the y-axis
 
     """
-    if zlabel != None:
+    if zlabel == None:
+        ax.set_xlabel(xlabel, fontsize=20)
+        ax.set_ylabel(ylabel, fontsize=20)
+    else:
         ax.set_xlabel(xlabel, fontsize=15)
         ax.set_ylabel(ylabel, fontsize=15)
         ax.set_zlabel(zlabel, fontsize=15)
-        ax.ticklabel_format(style='plain')
-        ax.tick_params(axis='both', which='major', labelsize=15)
     if title != None:
+        # replace calculator notation for standard form and set title
+        # match digit followed by e, optional minus and digits
+        pattern = r'(\d)e(-?\d+)'
+        title = re.sub(pattern, r'\1 \\cdot 10^{\2}', title)
+        title = title.replace(r'10^{0', r'10^{')
+        title = title.replace(r'10^{-0', r'10^{-')
         ax.set_title(title, fontsize=20)
-        ax.set_xlabel(xlabel, fontsize=20)
-        ax.set_ylabel(ylabel, fontsize=20)
-        ax.ticklabel_format(style='plain')
-        ax.tick_params(axis='both', which='major', labelsize=15)
-        ax.legend(fontsize=15)
+    ax.ticklabel_format(style='plain')
+    ax.tick_params(axis='both', which='major', labelsize=15)
+    ax.legend(fontsize=15)
 
 
 

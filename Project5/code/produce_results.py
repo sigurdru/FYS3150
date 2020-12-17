@@ -59,20 +59,23 @@ class Parameters:
         self.num_cores = num_cores
 
     def create_filename(self):
-        """
-        Create a filename based on the parameters to the simulation.
+        """ Create a filename based on the parameters to the simulation.
+
         """
         Nx = self.Nx
         Nt = self.Nt
         dt = self.dt
         method = self.method
-        fname = f'{method}-Nt{Nt}-dt{dt}-Nx{Nx}'
+        fname = f'{method}-Nt{Nt}-dt{dt:.1e}-Nx{Nx}'
         fname = fname.replace('.', '_')
         return fname
 
     def produce_params_list(self):
-        """
-        parameter (list): a list of all the parameters
+        """Return, in the correct order, a list of the parameters to the simulation.
+
+        Returns:
+            parameters (list): a list of all the parameters
+
         """
         return [self.Nx, self.Nt, self.dt, self.method, self.num_cores]
 
@@ -80,5 +83,5 @@ if __name__ == '__main__':
     """
     TESTING
     """
-    # compare_one_dimensional()
-    compare_two_dimensional(8)
+    compare_one_dimensional()
+    # compare_two_dimensional(8)
