@@ -43,8 +43,8 @@ def compare_two_dimensional(num_cores=1):
     Nt = int(0.01/dt)
     params = Parameters(Nx, Nt, dt, method, num_cores)
     fname = params.create_filename()
-    # run_simulation(params, fname)
-    plot.plot_evolution_2D(params, fname)
+    run_simulation(params, fname)
+    # plot.plot_evolution_2D(params, fname)
 
 class Parameters:
     def __init__(self, Nx, Nt, dt, method, num_cores=1):
@@ -67,7 +67,7 @@ class Parameters:
         Nt = self.Nt
         dt = self.dt
         method = self.method
-        fname = f'{method}-Nt{Nt}-dt{dt:.1e}-Nx{Nx}'
+        fname = f'{method}-Nt{Nt}-dt{dt:.1e}-Nx{Nx}-test'
         fname = fname.replace('.', '_')
         return fname
 

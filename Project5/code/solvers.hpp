@@ -65,7 +65,6 @@ private:
     void ResetMatrices();
 
 public:
-    double **u;
     TwoDimensions(Parameters, double *InitialConditions, int numCores);
     ~TwoDimensions();
     void WriteToFile();

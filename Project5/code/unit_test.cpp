@@ -139,8 +139,10 @@ TEST_CASE( "Checking that the TwoDimensions class works as expected" )
     // alpha = dt/dx^2 = 2
     double dt = 2.0*dx*dx;
     double L = 1.0;
-    for (int numCores = 1; numCores <= 2; numCores++) {
-        for (int Nt = numCores; Nt <= 2; Nt ++) {
+    // for (int numCores = 1; numCores <= 2; numCores++) {
+        // for (int Nt = numCores; Nt <= 2; Nt ++) {
+    for (int numCores = 1; numCores <= 1; numCores++) {
+        for (int Nt = numCores; Nt <= 1; Nt ++) {
 
             double *initialCondition;
             double *expected;
@@ -171,15 +173,21 @@ TEST_CASE( "Checking that the TwoDimensions class works as expected" )
             }
             Parameters params { Nx, Nt, dt, L, fname };
             TwoDimensions Solver(params, initialCondition, numCores);
+
             SECTION( "Checking that the result array is initialized correctly" )
             {
                 for (int i = 0; i <= (Nx+1)*(Nx+1)-1; i++)
                     REQUIRE(
-                        Solver.u[0][i] == Approx(initialCondition[i]).epsilon(RelTol)
+                        Solver.u[
+                            TwoDimensions::Index2D(0, (Nx+1)*(Nx+1), i)
+                        ] == Approx(initialCondition[i]).epsilon(RelTol)
                     );
                 for (int core = 1; core <= numCores; core++) {
                     for (int i = 0; i <= (Nx+1)*(Nx+1)-1; i++)
-                        REQUIRE( Solver.u[core][i] == Approx(0.0).epsilon(RelTol) );
+                        REQUIRE(
+                            Solver.u[
+                                TwoDimensions::Index2D(core, (Nx+1)*(Nx+1), i)
+                            ] == Approx(0.0).epsilon(RelTol) );
                 }
             }
             Solver.Solve(0);
@@ -187,11 +195,16 @@ TEST_CASE( "Checking that the TwoDimensions class works as expected" )
             {
                 for (int i = 0; i <= (Nx+1)*(Nx+1)-1; i++)
                     REQUIRE(
-                        Solver.u[0][i] == Approx(expected[i]).epsilon(RelTol)
+                        Solver.u[
+                            TwoDimensions::Index2D(0, (Nx+1)*(Nx+1), i)
+                        ] == Approx(expected[i]).epsilon(RelTol)
                     );
                 for (int core = 1; core <= numCores; core++) {
                     for (int i = 0; i <= (Nx+1)*(Nx+1)-1; i++)
-                        REQUIRE( Solver.u[core][i] == Approx(0.0).epsilon(RelTol) );
+                        REQUIRE(
+                            Solver.u[
+                                TwoDimensions::Index2D(core, (Nx+1)*(Nx+1), i)
+                            ] == Approx(0.0).epsilon(RelTol) );
                 }
             }
             delete[] initialCondition;
