@@ -43,7 +43,7 @@ int main(int charc, char* argv[])
         }
         for (int i = 1; i <= Nx-1; i++) {
             for (int j = 1; j <= Nx/2; j++)
-                initialCondition[TwoDimensions::Index2D(i, Nx+1, j)] = 10.0;
+                initialCondition[TwoDimensions::Index2D(i, Nx+1, j)] = 1.0;
         }
     } else {
         initialCondition = new double[Nx + 1];
@@ -70,7 +70,7 @@ int main(int charc, char* argv[])
     } else if (method == "TwoDimensions") {
         // Solve two dimensional problem using Forward Euler
         TwoDimensions TwoDimensionsSolver(params, initialCondition, numCores);
-        TwoDimensionsSolver.Solve(2);
+        TwoDimensionsSolver.Solve(3);
     } else {
         std::cout << "Error: unknown method " << method << std::endl;
         std::cout << "Acceptable method args:" << std::endl
