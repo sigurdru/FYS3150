@@ -42,7 +42,7 @@ class Parameters:
         assert isinstance(num_cores, int)
         self.Nx = int(math.log10(Nx))
         self.Nt = int(math.log10(Nt))
-        self.dt = -math.log10(dt)
+        self.dt = -math.log10(dt) #
         self.method = method
         self.num_cores = num_cores
 
@@ -54,7 +54,7 @@ class Parameters:
         Nt = self.Nt
         dt = self.dt
         method = self.method
-        fname = f'{method}-Nt{Nt}-dt{dt:.1f}-Nx{Nx}'
+        fname = f'{method}-Nt{Nt}-dt{dt:.1f}-Nx{Nx}'# og main
         fname = fname.replace('.', '_')
         return fname
 
