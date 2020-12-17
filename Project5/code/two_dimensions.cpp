@@ -41,24 +41,30 @@ void TwoDimensions::WriteToFile() {
         }
     }
     // Add current time
-    ResOutFile << t;
+    ResOutFile << t << endl;
     // Add the data of u
-    for (int i = 0; i <= Nx; i++) {
-        for (int j = 0; j <= Nx; j++) {
-            ResOutFile << "," << u[0][Index2D(i, Nx+1, j)];
+    for (int core = 0; core <= numCores; core++) {
+        ResOutFile << endl << core << endl;
+        for (int i = 0; i <= Nx; i++) {
+            for (int j = 0; j <= Nx; j++) {
+                ResOutFile << setw(5) << setprecision(2) << u[core][Index2D(i, Nx+1, j)];
+            }
+            ResOutFile << endl;
         }
+        ResOutFile << endl;
     }
     ResOutFile << endl;
 }
 
 void TwoDimensions::Solve(int NumberOfprints)
 {
+    std::cout << alpha << std::endl;
     WriteToFile();
     WriteToFile();
-    omp_set_num_threads(numCores); // set number of threads in parallel
+    // omp_set_num_threads(numCores); // set number of threads in parallel
     for (int timestep = numCores; timestep <= Nt; timestep += numCores) {
         t = timestep*dt;
-        #pragma omp parallel for
+        // #pragma omp parallel for
         for (int core = 1; core <= numCores; core++) {
             int edge;
             // std::cout << "Core " << core << " started" << std::endl;
@@ -73,17 +79,18 @@ void TwoDimensions::Solve(int NumberOfprints)
                     int j = diag - i;
                     u[core][Index2D(i, Nx+1, j)]
                         = u[core-1][Index2D(i, Nx+1, j)]
-                            + alpha*(u[core-1][Index2D(i+1, Nx+1, j)]
-                            + u[core-1][Index2D(i-1, Nx+1, j)]
-                            + u[core-1][Index2D(i, Nx+1, j+1)]
-                            + u[core-1][Index2D(i, Nx+1, j-1)]
-                            - 4*u[core-1][Index2D(i, Nx+1, j)]);
+                            + alpha*(
+                                u[core-1][Index2D(i+1, Nx+1, j)]
+                                + u[core-1][Index2D(i-1, Nx+1, j)]
+                                + u[core-1][Index2D(i, Nx+1, j+1)]
+                                + u[core-1][Index2D(i, Nx+1, j-1)]
+                                - 4*u[core-1][Index2D(i, Nx+1, j)]);
                 }
                 completed[Index2D(core-1, numCores, diag-2)] = true;
             }
         }
         ResetMatrices();
-        if ((NumberOfprints > 0) && (timestep/numCores%(Nt/numCores/NumberOfprints) == 0))
+        // if ((NumberOfprints > 0) && (timestep/numCores%(Nt/numCores/NumberOfprints) == 0))
             WriteToFile();
     }
     WriteToFile();
