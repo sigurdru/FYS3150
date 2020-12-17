@@ -81,4 +81,4 @@ if __name__ == '__main__':
     TESTING
     """
     # compare_one_dimensional()
-    compare_two_dimensional(8)
+    compare_two_dimensional(1)
