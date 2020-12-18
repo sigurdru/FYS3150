@@ -23,7 +23,8 @@ colors = [
 ]
 
 def read_data(fname):
-    """
+    """Read the results om the computation from file.
+
     Args:
         fname (str): name of file containing the desired data
 
@@ -35,7 +36,7 @@ def read_data(fname):
     return df
 
 def plot_evolution(params, fname):
-    """The function plots and saves the figures
+    """Plot and save the 1D results along with the analytic Fourier solution.
 
     Args:
         params (Parameters): the simulation parameters for the data
@@ -68,7 +69,7 @@ def plot_evolution(params, fname):
     plt.close()
 
 def plot_evolution_error(params, fname):
-    """The function plots and saves the error figures
+    """Plot and save the error in the solution to the 1D equation.
 
     Args:
         params (Parameters): the simulation parameters for the data

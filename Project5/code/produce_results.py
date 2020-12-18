@@ -2,11 +2,13 @@ import subprocess, math
 import plot
 
 def run_simulation(params, fname):
-    """
-    Run the c++ simultion with the input given as argument to this function.
+    """Run the c++ simultion with the input given as argument to this function.
+
     Args:
-        params (Parameters): an instance containing the parameters for this simulation
+        params (Parameters):
+            an instance containing the parameters for this simulation
         fname (str): the filename used for saving data and plots
+
     """
     print(f'Simulating...\n    Result file: {fname}')
     command = ['./main.exe']
@@ -15,8 +17,8 @@ def run_simulation(params, fname):
     subprocess.call(command)
 
 def compare_one_dimensional():
-    """
-    Run the 1D simulation with all algorithms and compare results to analytical.
+    """ Run the 1D simulation with all algorithms and compare results to analytical.
+
     """
     methods = ['ForwardEuler', 'BackwardEuler', 'CrankNicolson']
     Nxs = [10, 100]
@@ -33,9 +35,7 @@ def compare_one_dimensional():
                 plot.plot_evolution_error(params, fname)
 
 def compare_two_dimensional(num_cores=1):
-    """
-    Run the 2D simulation with all algorithms adn compare results to analytical.
-    """
+    """Run the 2D simulation with all algorithms adn compare results to analytical."""
     method = "TwoDimensions"
     Nx = 50
     dt = 0.4/Nx**4

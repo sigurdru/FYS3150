@@ -54,23 +54,12 @@ if args.results:
         produce_results.compare_one_dimensional()
         produce_results.compare_two_dimensional(args.num_cores)
 else:
-    if args.m == 'all':
-        m_list = ['ForwardEuler', 'BackwardEuler', 'CrankNicolson']
-        for method in m_list:
-            params = produce_results.Parameters(
-                args.Nx,
-                args.Nt,
-                args.dt,
-                method
-            )
-            produce_results.run_simulation(params, params.create_filename())
-            produce_results.plot_solution(params.create_filename(), method)
-    else:
-        params = produce_results.Parameters(
-            args.Nx,
-            args.Nt,
-            args.dt,
-            args.m
-        )
-        produce_results.run_simulation(params, params.create_filename())
-        produce_results.plot_solution(params.create_filename(), args.m)
+    params = produce_results.Parameters(
+        args.Nx,
+        args.Nt,
+        args.dt,
+        args.method,
+        args.num_cores
+    )
+    produce_results.run_simulation(params, params.create_filename())
+    produce_results.plot_solution(params, params.create_filename())

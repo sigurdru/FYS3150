@@ -35,13 +35,13 @@ python3 run.py -r 1D    # for the results to the 1D equation
 python3 run.py -r 2D    # for the results to the 2D equation
 
 # and equivalent to running both the above commands one after the other
-python3 run.py -t all   # to produce all the results in the report
+python3 run.py -r all   # to produce all the results in the report
 ```
 
 **Note:** Running `run.py` with the `-r` flag will ignore all others except for
 the `-Nc` (`--num-cores`) flag.
 
-## Code tests
+### Code tests
 All code tests are implemented in the program `unit_test.cpp`. They can be
 compiled and run with one command:
 ```
@@ -70,4 +70,7 @@ The following will reproduce all the results in the report:
 cd code
 make compile
 python3 run.py -r all
+
+# to run a specific calulation, for example
+python3 run.py -Nx 2 -Nt 5 -dt 6 -m CrankNicolson
 ```
