@@ -66,7 +66,7 @@
 \newcommand{\ddtotsq}[2]{\frac{\mathrm d^2 #1}{\mathrm d #2^2}}
 \newcommand{\vc}[1]{\mathbf{#1}}
 
-\graphicspath{{../output/}} % search for figures in this dir
+\graphicspath{{../output/plots/}} % search for figures in this dir
 
 \begin{document}
 
@@ -99,7 +99,7 @@
 \section{Introduction}
 The diffusion equation is used in many areas. Everything from how heat is transferred through a stick, to how an oil spill will spread. In this report we will try to solve the diffusion equation for one and two dimensions, and using different algorithms. We are going to study the diffusion equation with a constant collective diffusion coefficient, giving us a linear differential equation identical to the heat equation.
 
-For our one dimensional problem, we use three different algorithms, explicit forward Euler, implicit backward Euler and implicit Crank-Nicolson.
+For our one dimensional problem, we use three different algorithms, explicit Forward Euler, implicit Backward Euler and implicit Crank-Nicolson.
 
 For our studies we have used c++ for heavy computation, python for visualization and automation. All the code along with instructions on how to run it, can be cloned from our GitHub repository\footnote{github.com/sigurdru/FYS3150/tree/master/Project5}.
 
@@ -302,11 +302,11 @@ The vector $\vc v_j$ is the same as in the case of Backward Euler, defined in \e
   \label{def:vector_b_CrankNicolson}
   \vc b_j =
   \begin{bmatrix}
-    \alpha u_{0, j}  + 2 (1 - \alpha) u_{1,j} + \alpha u_{2, j} + \alpha u_{0, j+1} \\
-    \alpha u_{1, j}  + 2 (1 - \alpha) u_{2,j} + \alpha u_{3, j} \\
+    \alpha u_{0, j-1}  + 2 (1 - \alpha) u_{1,j-1} + \alpha u_{2, j-1} + \alpha u_{0, j} \\
+    \alpha u_{1, j-1}  + 2 (1 - \alpha) u_{2,j-1} + \alpha u_{3, j-1} \\
       \vdots \\
-    \alpha u_{n-3, j}  + 2 (1 - \alpha) u_{n-2,j} + \alpha u_{n-1, j} \\
-    \alpha u_{n-2, j}  + 2 (1 - \alpha) u_{n-1,j} + \alpha u_{n, j} + \alpha u_{n, j+1}
+    \alpha u_{n-3, j-1}  + 2 (1 - \alpha) u_{n-2,j-1} + \alpha u_{n-1, j-1} \\
+    \alpha u_{n-2, j-1}  + 2 (1 - \alpha) u_{n-1,j-1} + \alpha u_{n, j-1} + \alpha u_{n, j}
   \end{bmatrix}
 \end{equation}
 
@@ -539,7 +539,7 @@ Inserting this into equation \eqref{eq:2D_gen_sol}
 
 \subsection{Unit testing}
 
-There are many moving parts in the code we use to produce the results. In order to make sure that our implementation is correct and to help track down potential errors, we have developed specific tests for the different parts of the code. To facilitate testing we have structured our code in distinct units with separate classes for the tridiagonal matrix solver, each of the three different one-dimensional solvers, and the two-dimensional solver.
+There are many moving parts in the code we use to produce the results. In order to make sure that our implementation is correct and to help track down potential errors, we have developed specific tests for the different parts of the code. To facilitate testing we have structured our code in distinct units with separate classes for the tridiagonal matrix solver, each of the three different one-dimensional solvers, and the two-dimensional solver. We use Catch2\footnote{https://github.com/catchorg/Catch2} to assert that the computed results match the expected and Valgrind\footnote{https://valgrind.org/} to verify that our implementation does not suffer from memory leakage.
 
 \subsubsection*{Tridiagonal matrix solver}
 
@@ -613,7 +613,30 @@ We run the 2D-solver using both one and two cores and verify that the computed r
 
 \section{Results}
 
-Results
+Figure \ref{fig:ForwardEuler} shows the results produced by the Forward Euler algorithm for a few select time steps. The dashed lines show the analytic solution using 200 addends in the Fourier sum in equation \eqref{eq:exact_solution_1D}. The top two figures show the solution with $N_x = 10$, that is, eleven grid points with a distance \(\Delta x = 1/10\) between. The bottom figure shows \(N_x = 100\), giving \(\Delta x = 1/100\). The first and third figure are produced with the stability condition satisfied (\(\Delta t / \Delta x^2 = 0.4\)), whereas the second has \(\Delta t / \Delta x^2 = 0.6\).
+\begin{figure}
+  \includegraphics[width=\linewidth]{ForwardEuler-Nt125-dt4_0e-03-Nx10.pdf}
+  \includegraphics[width=\linewidth]{ForwardEuler-Nt83-dt6_0e-03-Nx10.pdf}
+  \includegraphics[width=\linewidth]{ForwardEuler-Nt12499-dt4_0e-05-Nx100.pdf}
+  \caption{The results produced by the Forward Euler algorithm. The dashed lines show the analytical results, calculated with 200 addends in the Fourier sum in equation \eqref{eq:exact_solution_1D}. The different colors denote the solution at different times. The top two figures show the solution with $N_x = 10$, that is, eleven grid points with a distance \(\Delta x = 1/10\) between. The bottom figure shows \(N_x = 100\), giving \(\Delta x = 1/100\). The first and third figure are produced with the stability condition satisfied (\(\Delta t / \Delta x^2 = 0.4\)), whereas the second has \(\Delta t / \Delta x^2 = 0.6\).}
+  \label{fig:ForwardEuler}
+\end{figure}
+
+Figure \ref{fig:ForwardEuler_error} shows the error for different number of integration points and values of \(\Delta t\). Since the error for \(\Delta x = 1/10\) and \(\Delta t / \Delta x^2 = 0.6\) is obviously very large (see the second plot in figure \ref{fig:ForwardEuler}), we have chosen to include here the errors for \(\Delta t / \Delta x^2 = 0.4\) (the first and third plot) and \(\Delta t / \Delta x^2 = 0.5\) (the second plot). The first two plots have \(N_x = 10\), i.e. eleven integration points, and the third plot has \(N_x = 100\). Different colors correspond to different times. The mean absolute percentage error (MAPE) can be read from the title for the different times.
+\begin{figure}
+  \includegraphics[width=\linewidth]{ForwardEuler-Nt125-dt4_0e-03-Nx10-Error.pdf}
+  \includegraphics[width=\linewidth]{ForwardEuler-Nt100-dt5_0e-03-Nx10-Error.pdf}
+  \includegraphics[width=\linewidth]{ForwardEuler-Nt12499-dt4_0e-05-Nx100-Error.pdf}
+  \caption{The error for different number of integration points and values of \(\Delta t\) for the Forward Euler algorithm. Different colors correspond to different times. The mean absolute percentage error (MAPE) can be read from the title for the different times. The first and third plot have \(\Delta t / \Delta x^2 = 0.4\) and the second has \(\Delta t / \Delta x^2 = 0.5\). The first two plots have \(N_x = 10\), i.e. eleven integration points, and the third plot has \(N_x = 100\).}
+  \label{fig:ForwardEuler_error}
+\end{figure}
+
+
+Forward
+  10 og 100
+  Error 100, dt = 4 og 5
+
+To plots for 3D, en med stabilitetsbet. oppfylt, en uten
 
 \section{Discussion}
 

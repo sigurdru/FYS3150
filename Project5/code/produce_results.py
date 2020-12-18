@@ -22,10 +22,13 @@ def compare_one_dimensional():
     """
     methods = ['ForwardEuler', 'BackwardEuler', 'CrankNicolson']
     Nxs = [10, 100]
-    dts = [0.4, 0.5]
-    for dti in dts:
-        for method in methods:
-            for Nx in Nxs:
+    for method in methods:
+        if method == 'ForwardEuler':
+            dts = [0.4, 0.5, 0.6]
+        else:
+            dts = [0.4, 0.6]
+        for Nx in Nxs:
+            for dti in dts:
                 dt = dti/Nx**2
                 Nt = int(0.5/dt)
                 params = Parameters(Nx, Nt, dt, method)
