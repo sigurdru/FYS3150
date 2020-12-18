@@ -455,6 +455,7 @@ When solving the difference equation \eqref{eq:3dEuler} we parallelize the progr
 	\end{matrix}$}
 \end{equation*}
 This means that whenever we are done calculating $u_{i,j}^{l}$ and $u_{i\pm 1,j\pm 1}^{l}$ we can start calculating the next time step $u_{i,j}^{l+1}$. We found that if we run through $u_{i,j}^{l}$ diagonally, we can start calculating the next time step ($u_{i,j}^{l+1}$) one diagonal behind. A visual representation of this can be seen in figure \ref{fig:parallelization}. The red and black dots represent values of $u_{i,j}^l$ we have and haven't calculated respectively. We can then make sure one thread is calculating $u_{i,j}^l$ for one value of $l$ diagonally, another core the next time step one diagonal behind, and so forth.
+We will be timing our code for a selected few runs to determine the effect of parallelization.
 
 \begin{figure}[!h]
 	\textbf{\scalebox{1.2}{Representation of $\mathbf{u}_{i,j}^l$}}\par\medskip
@@ -714,13 +715,18 @@ The results produced by the Backward Euler and Crank-Nicolson schemes were not a
 
 We did see a significant speed-up from the parallelization, but our implementation seems far from optimal. Given more time, there are several avenues we could have explored to improve on our solution, both to reduce memory consumption and computing time.
 
-The first
+One possibility is to use only one-dimensional arrays for storing our results. We have done this to some extent in our code by representing the three-dimensional array of results (\(\text{timesteps} \times x \times y\)) as a two-dimensional array. Here, one 1D sub-array represents the matrix in the \(x, y\)-plane at one time step. We could have gone further and represented the entire result array with a one-dimensional array, which is generally thought to reduce in shorter computing times. We have made a working attempt at this, which can be viewed on a developmental branch in our GitHub repository\footnote{https://github.com/sigurdru/FYS3150/tree/vegard\_test/Project5/code}. We were surprised to find that this code was actually slower than our first implementation. Simple timing indicated that the computing time was around 50\% greater. It is possible that our way of indexing this one-dimensional array was sub-optimal and it is definitely something that would be interesting to investigate further.
+
+A possible improvement, mainly with regard to memory usage, is the way we keep track of which diagonals have been calculated by the different cores. This is now implemented as a boolean array with one value for each diagonal of each time step that is simultaneously being calculated. This is possibly ineff SKAL DETTE MED?
+
+
 
 
 
 \section{Conclusion}
 
 Conclusion
+
 
 
 \onecolumngrid

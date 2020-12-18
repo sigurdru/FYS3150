@@ -1,6 +1,7 @@
 #include <iostream>
 #include <cmath>
 #include "solvers.hpp"
+#include <chrono>
 
 // Left boundary condition
 double BoundaryLeft(double);
@@ -70,7 +71,13 @@ int main(int charc, char* argv[])
     } else if (method == "TwoDimensions") {
         // Solve two dimensional problem using Forward Euler
         TwoDimensions TwoDimensionsSolver(params, initialCondition, numCores);
+        auto start = std::chrono::high_resolution_clock::now();
         TwoDimensionsSolver.Solve(3);
+        auto stop = std::chrono::high_resolution_clock::now();
+        auto duration =
+            std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
+        std::cout << "Duration of solve: "
+            << duration.count() << " milliseconds" << std::endl;
     } else {
         std::cout << "Error: unknown method " << method << std::endl;
         std::cout << "Acceptable method args:" << std::endl
