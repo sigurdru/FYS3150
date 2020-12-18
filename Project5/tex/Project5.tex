@@ -125,6 +125,15 @@ in cartesian coordinates. In this report we are mainly going to work with the di
 	 \frac{\partial^2 u(x,t)}{\partial x^2} &= \frac{\partial u(x,t)}{\partial t} \\ &\wedge \\ \frac{\partial^2u(x, y,t)}{\partial x^2} + \frac{\partial^2u(x, y,t)}{\partial y^2} &= \frac{\partial u(x, y,t)}{\partial t}.
 \end{align*}
 
+\subsection*{Mean absolute percentage error}
+
+The mean absolute percentage error (MAPE), is used to predict the accuracy of a prediction. We will use it to measure how good our numerical methods are, compared to theoretical values. Equation \eqref{eq:MAPE} shows how to calculate MAPE in percentage,
+\begin{equation}
+	\label{eq:MAPE}
+	M = \left(\frac{1}{n}\sum_{n=1}^{n}\abs{\frac{A_\text{t} - A_\text{c}}{A_\text{t}}}\right)\cdot 100\%.
+\end{equation}
+Here $A_\text{t}$ and $A_\text{c}$ are the theoretical and computed values, $n$ number of data points and $M$ MAPE in percent.
+
 \subsection*{Discretization}
 
 Equation \eqref{eq:diffusion_equation} in one dimension reads
@@ -625,8 +634,8 @@ Figure \ref{fig:ForwardEuler} shows the results produced by the Forward Euler al
 Figure \ref{fig:ForwardEuler_error} shows the error for different number of integration points and values of \(\Delta t\). Since the error for \(\Delta x = 1/10\) and \(\Delta t / \Delta x^2 = 0.6\) is obviously very large (see the second plot in figure \ref{fig:ForwardEuler}), we have chosen to include here the errors for \(\Delta t / \Delta x^2 = 0.4\) (the first and third plot) and \(\Delta t / \Delta x^2 = 0.5\) (the second plot). The first two plots have \(N_x = 10\), i.e. eleven integration points, and the third plot has \(N_x = 100\). Different colors correspond to different times. The mean absolute percentage error (MAPE) can be read from the title for the different times.
 \begin{figure}
   \includegraphics[width=\linewidth]{ForwardEuler-Nt125-dt4_0e-03-Nx10-Error.pdf}
-  \includegraphics[width=\linewidth]{ForwardEuler-Nt100-dt5_0e-03-Nx10-Error.pdf}
   \includegraphics[width=\linewidth]{ForwardEuler-Nt12499-dt4_0e-05-Nx100-Error.pdf}
+  \includegraphics[width=\linewidth]{ForwardEuler-Nt10000-dt5_0e-05-Nx100-Error.pdf}
   \caption{The error for different number of integration points and values of \(\Delta t\) for the Forward Euler algorithm. Different colors correspond to different times. The mean absolute percentage error (MAPE) can be read from the title for the different times. The first and third plot have \(\Delta t / \Delta x^2 = 0.4\) and the second has \(\Delta t / \Delta x^2 = 0.5\). The first two plots have \(N_x = 10\), i.e. eleven integration points, and the third plot has \(N_x = 100\).}
   \label{fig:ForwardEuler_error}
 \end{figure}

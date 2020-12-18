@@ -5,6 +5,10 @@ import pandas as pd
 import sys, os, re
 from matplotlib import cm
 
+# to suppress warnings from fig.tight_layout() in some plots
+import warnings
+warnings.filterwarnings("ignore")
+
 plt.style.use('seaborn')
 plt.rc('text', usetex=True)
 plt.rc('font', family='DejaVu Sans')
@@ -104,6 +108,8 @@ def plot_evolution_error(params, fname):
     set_ax_info(ax, xlabel, ylabel, title=title)
     fig.tight_layout()
     fig.savefig(os.path.join(path_plots, fname + '-Error' + '.pdf'))
+    plt.close()
+
 
 
 def plot_evolution_2D(params, fname):
@@ -114,10 +120,10 @@ def plot_evolution_2D(params, fname):
         fname (str): name of the file containing the desired data
 
     """
+    plt.style.use('classic')
     N_fourier = 50
     exact = Exact2D(N_fourier, 1.0)
     df = read_data(fname)
-    # NumCols = len(df.loc[0, :])
     Nx = params.Nx
     xa = np.linspace(0, L, Nx+1)
     X, Y = np.meshgrid(xa, xa)
@@ -137,21 +143,78 @@ def plot_evolution_2D(params, fname):
             temp_ana = exact(X,Y,t)
             temp = row[1:]
             temp = temp.reshape(Nx+1, Nx+1)
-            surf = ax.plot_wireframe(X[::step], Y[::step], temp_ana[::step],
-                                alpha=0.5, color='black')
-            surf = ax.plot_surface(X[::step], Y[::step], temp[::step],
-                                alpha=0.7, label = f"t = {t:.6f}", cmap=cm.coolwarm)
+            surf = ax.plot_wireframe(X[1:-1, 1:-1], Y[1:-1, 1:-1], temp_ana[1:-1, 1:-1],
+                                alpha=0.3 if k==0 else 0.7, color='black')
+            surf = ax.plot_surface(X[1:-1, 1:-1], Y[1:-1, 1:-1], temp[1:-1, 1:-1],
+                                alpha=0.6, label = f"t = {t:.3f}", cmap=cm.coolwarm)
             surf._facecolors2d=surf._facecolors3d
             surf._edgecolors2d=surf._edgecolors3d
             ax.legend()
             set_ax_info(ax, xlabel, ylabel, zlabel = zlabel)
             k += 1
     title = f'Forward Euler, $N_x = {params.Nx}$'
-    title += f', $\Delta t = {params.dt:f}$'
+    title += f', $\Delta t = {params.dt:.1e}' + r'}$'
     title += f'\n{N_fourier} Fourier addends'
+    title = title.replace(r'e-0', r'\cdot 10^{-')
     fig.suptitle(title)
-    fig.tight_layout()
+    fig.tight_layout(pad=2.5)
     fig.savefig(os.path.join(path_plots, fname + '.pdf'))
+    plt.close()
+
+
+
+def plot_evolution_2D_error(params, fname):
+    """The function plots and saves the figures for two dimensions
+
+    Args:
+        params (Parameters): the simulation parameters for the data
+        fname (str): name of the file containing the desired data
+
+    """
+    plt.style.use('classic')
+    N_fourier = 50
+    exact = Exact2D(N_fourier, 1.0)
+    df = read_data(fname)
+    Nx = params.Nx
+    xa = np.linspace(0, L, Nx+1)
+    X, Y = np.meshgrid(xa, xa)
+    fig = plt.figure()
+    xlabel = '$x$'
+    ylabel = '$y$'
+    zlabel = '$z$'
+    k = 0
+    step = 10
+    print('------------------------------')
+    for i in range(2):
+        for j in range(2):
+            ax = fig.add_subplot(2, 2, 1+k, projection='3d')
+            if (k == 3):
+                k = 4
+            row = df.loc[k].to_numpy()
+            t = row[0]
+            temp_ana = exact(X, Y, t)
+            temp = row[1:]
+            temp = temp.reshape(Nx+1, Nx+1)
+            difference = temp_ana-temp
+            surf = ax.plot_surface(X[1:-1, 1:-1], Y[1:-1, 1:-1], difference[1:-1, 1:-1],
+                                   alpha=0.6, label=f"t = {t:.3f}", cmap=cm.coolwarm)
+            surf._facecolors2d = surf._facecolors3d
+            surf._edgecolors2d = surf._edgecolors3d
+            ax.legend()
+            set_ax_info(ax, xlabel, ylabel, zlabel=zlabel)
+            k += 1
+            MAPE = 1/(len(temp_ana)**2)*np.sum(np.abs(difference))
+            print(f'|MAPE = {MAPE:9.2e}%| t = {t:4.3f}|')
+    title = f'Forward Euler, $N_x = {params.Nx}$'
+    title += f', $\Delta t = {params.dt:.1e}' + r'}$'
+    title += f'\n{N_fourier} Fourier addends'
+    title = title.replace(r'e-0', r'\cdot 10^{-')
+    fig.suptitle(title)
+    fig.tight_layout(pad=2.5)
+    fig.savefig(os.path.join(path_plots, fname + '-Error' + '.pdf'))
+    plt.close()
+    print('------------------------------')
+
 
 
 def set_ax_info(ax, xlabel, ylabel, title=None, zlabel=None):
@@ -167,10 +230,14 @@ def set_ax_info(ax, xlabel, ylabel, title=None, zlabel=None):
     if zlabel == None:
         ax.set_xlabel(xlabel, fontsize=20)
         ax.set_ylabel(ylabel, fontsize=20)
+        ax.tick_params(axis='both', which='major', labelsize=15)
+        ax.ticklabel_format(style='plain')
     else:
-        ax.set_xlabel(xlabel, fontsize=15)
-        ax.set_ylabel(ylabel, fontsize=15)
-        ax.set_zlabel(zlabel, fontsize=15)
+        ax.set_xlabel(xlabel, fontsize=18)
+        ax.set_ylabel(ylabel, fontsize=18)
+        ax.set_zlabel(zlabel, fontsize=18)
+        ax.tick_params(axis='both', which='major', labelsize=12)
+        ax.ticklabel_format(style='scientific', scilimits = (-2, 2))
     if title != None:
         # replace calculator notation for standard form and set title
         # match digit followed by e, optional minus and digits
@@ -179,8 +246,6 @@ def set_ax_info(ax, xlabel, ylabel, title=None, zlabel=None):
         title = title.replace(r'10^{0', r'10^{')
         title = title.replace(r'10^{-0', r'10^{-')
         ax.set_title(title, fontsize=20)
-    ax.ticklabel_format(style='plain')
-    ax.tick_params(axis='both', which='major', labelsize=15)
     ax.legend(fontsize=15)
 
 
