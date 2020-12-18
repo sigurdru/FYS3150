@@ -37,14 +37,18 @@ def compare_one_dimensional():
 def compare_two_dimensional(num_cores=1):
     """Run the 2D simulation with all algorithms adn compare results to analytical."""
     method = "TwoDimensions"
+    dts = [0.6, 0.4]
     Nx = 50
-    dt = 0.4/Nx**4
-    # Nt = int(0.1/dt) denne tar litt tid
-    Nt = int(0.01/dt)
-    params = Parameters(Nx, Nt, dt, method, num_cores)
-    fname = params.create_filename()
-    run_simulation(params, fname)
-    # plot.plot_evolution_2D(params, fname)
+    for dti in dts:
+        dt = dti/(2*Nx**2)
+        Nt = int(0.1/dt) # denne tar litt tid
+        params = Parameters(Nx, Nt, dt, method, num_cores)
+        fname = params.create_filename()
+        run_simulation(params, fname)
+        print(f"      - Plotting evolution for dt = {dt:.2e}")
+        plot.plot_evolution_2D(params, fname)
+        print(f"      - Plotting error for dt = {dt:.2e}")
+        plot.plot_evolution_2D_error(params, fname)
 
 class Parameters:
     def __init__(self, Nx, Nt, dt, method, num_cores=1):
@@ -84,5 +88,5 @@ if __name__ == '__main__':
     """
     TESTING
     """
-    compare_one_dimensional()
-    # compare_two_dimensional(8)
+    # compare_one_dimensional()
+    compare_two_dimensional(8)

@@ -61,7 +61,6 @@ void TwoDimensions::Solve(int NumberOfprints)
     omp_set_num_threads(numCores); // set number of threads in parallel
     for (int timestep = numCores; timestep <= Nt; timestep += numCores) {
         t = timestep*dt;
-        // #pragma omp parallel for shared(u, completed)
         #pragma omp parallel for
         for (int core = 1; core <= numCores; core++) {
             int edge;
