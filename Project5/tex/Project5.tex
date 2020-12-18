@@ -622,12 +622,14 @@ We run the 2D-solver using both one and two cores and verify that the computed r
 
 \section{Results}
 
-Figure \ref{fig:ForwardEuler} shows the results produced by the Forward Euler algorithm for a few select time steps. The dashed lines show the analytic solution using 200 addends in the Fourier sum in equation \eqref{eq:exact_solution_1D}. The top two figures show the solution with $N_x = 10$, that is, eleven grid points with a distance \(\Delta x = 1/10\) between. The bottom figure shows \(N_x = 100\), giving \(\Delta x = 1/100\). The first and third figure are produced with the stability condition satisfied (\(\Delta t / \Delta x^2 = 0.4\)), whereas the second has \(\Delta t / \Delta x^2 = 0.6\).
+For all results in this section, we have used 200 addends in the Fourier sum in equation \eqref{eq:exact_solution_1D} for the analytic solution.
+
+Figure \ref{fig:ForwardEuler} shows \(u(x, t)\) as a function of \(x\) calculated using the Forward Euler algorithm for a few select time steps. The dashed lines show the analytic solution. The top two figures show the solution with $N_x = 10$, that is, eleven grid points with a distance \(\Delta x = 1/10\) between. The bottom figure shows \(N_x = 100\), giving \(\Delta x = 1/100\). The first and third figure are produced with the stability condition satisfied (\(\Delta t / \Delta x^2 = 0.4\)), whereas the second has \(\Delta t / \Delta x^2 = 0.6\).
 \begin{figure}
   \includegraphics[width=\linewidth]{ForwardEuler-Nt125-dt4_0e-03-Nx10.pdf}
   \includegraphics[width=\linewidth]{ForwardEuler-Nt83-dt6_0e-03-Nx10.pdf}
   \includegraphics[width=\linewidth]{ForwardEuler-Nt12499-dt4_0e-05-Nx100.pdf}
-  \caption{The results produced by the Forward Euler algorithm. The dashed lines show the analytical results, calculated with 200 addends in the Fourier sum in equation \eqref{eq:exact_solution_1D}. The different colors denote the solution at different times. The top two figures show the solution with $N_x = 10$, that is, eleven grid points with a distance \(\Delta x = 1/10\) between. The bottom figure shows \(N_x = 100\), giving \(\Delta x = 1/100\). The first and third figure are produced with the stability condition satisfied (\(\Delta t / \Delta x^2 = 0.4\)), whereas the second has \(\Delta t / \Delta x^2 = 0.6\).}
+  \caption{\(u(x, t)\) as a function of \(x\) calculated using the Forward Euler algorithm. The dashed lines show the analytical results, calculated with 200 addends in the Fourier sum in equation \eqref{eq:exact_solution_1D}. The different colors denote the solution at different times. The top two figures show the solution with $N_x = 10$, that is, eleven grid points with a distance \(\Delta x = 1/10\) between. The bottom figure shows \(N_x = 100\), giving \(\Delta x = 1/100\). The first and third figure are produced with the stability condition satisfied (\(\Delta t / \Delta x^2 = 0.4\)), whereas the second has \(\Delta t / \Delta x^2 = 0.6\).}
   \label{fig:ForwardEuler}
 \end{figure}
 
@@ -640,16 +642,35 @@ Figure \ref{fig:ForwardEuler_error} shows the error for different number of inte
   \label{fig:ForwardEuler_error}
 \end{figure}
 
+Figure \ref{fig:BackwardEuler} shows the difference between the computed values \(u_c(x, t)\) and the theoretical values \(u_t(x, t)\) as a function of \(x\) calculated using the Backward Euler algorithm. The first plot is made with \(N_x = 10\) and thus \(\Delta x = 1/10\). For the second and third plot, we have \(N_x = 100\) and \(\Delta x = 1/100\). For the first two plots we have used a value of \(\Delta t\) such that \(\Delta t / \Delta x^2 = 0.4\), i.e. the stability conditions for the explicit scheme were satisfied. In the third plot, we used a value of \(\Delta t\) such that \(\Delta t / \Delta x^2 = 0.6\) and the stability condition was not satisfied. Different colors correspond to different times. The mean absolute percentage error (MAPE) can be read from the title for the different times.
+Figure \ref{fig:CrankNicolson} shows the same for the Crank-Nicolson scheme.
 
-Forward
-  10 og 100
-  Error 100, dt = 4 og 5
+\begin{figure}
+  \includegraphics[width=\linewidth]{BackwardEuler-Nt125-dt4_0e-03-Nx10-Error.pdf}
+  \includegraphics[width=\linewidth]{BackwardEuler-Nt12499-dt4_0e-05-Nx100-Error.pdf}
+  \includegraphics[width=\linewidth]{BackwardEuler-Nt8333-dt6_0e-05-Nx100-Error.pdf}
+  \caption{The difference between the computed values \(u_c(x, t)\) and the theoretical values \(u_t(x, t)\) as a function of \(x\) calculated using the Backward Euler algorithm. The first plot is made with \(N_x = 10\) and thus \(\Delta x = 1/10\). For the second and third plot, we have \(N_x = 100\) and \(\Delta x = 1/100\). For the first two plots we have used a value of \(\Delta t\) such that \(\Delta t / \Delta x^2 = 0.4\). In the third plot, we used a value of \(\Delta t\) such that \(\Delta t / \Delta x^2 = 0.6\). Different colors correspond to different times. The mean absolute percentage error (MAPE) can be read from the title for the different times.}
+  \label{fig:BackwardEuler}
+\end{figure}
+\begin{figure}
+  \includegraphics[width=\linewidth]{CrankNicolson-Nt125-dt4_0e-03-Nx10-Error.pdf}
+  \includegraphics[width=\linewidth]{CrankNicolson-Nt12499-dt4_0e-05-Nx100-Error.pdf}
+  \includegraphics[width=\linewidth]{CrankNicolson-Nt8333-dt6_0e-05-Nx100-Error.pdf}
+  \caption{The difference between the computed values \(u_c(x, t)\) and the theoretical values \(u_t(x, t)\) as a function of \(x\) calculated using the Crank-Nicolson algorithm. The first plot is made with \(N_x = 10\) and thus \(\Delta x = 1/10\). For the second and third plot, we have \(N_x = 100\) and \(\Delta x = 1/100\). For the first two plots we have used a value of \(\Delta t\) such that \(\Delta t / \Delta x^2 = 0.4\). In the third plot, we used a value of \(\Delta t\) such that \(\Delta t / \Delta x^2 = 0.6\). Different colors correspond to different times. The mean absolute percentage error (MAPE) can be read from the title for the different times.}
+  \label{fig:CrankNicolson}
+\end{figure}
+
+Plots showing the actual values of \(u(x, t)\) as a function of \(x\) are not included in the report as they are visually indistinguishable from the last plot in figure \ref{fig:ForwardEuler}. The can be viewed in our GitHub repository previously linked to, and will be automatically produced by the code.
 
 To plots for 3D, en med stabilitetsbet. oppfylt, en uten
 
+
+
 \section{Discussion}
 
-LU-decomposition
+From figure \ref{fig:ForwardEuler} we see very clearly the importance of satisfying the stability condition for the explicit Forward Euler scheme. The first and third plots show exaclty what we expect
+
+
 
 \section{Conclusion}
 

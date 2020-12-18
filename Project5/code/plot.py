@@ -102,7 +102,7 @@ def plot_evolution_error(params, fname):
     title += f', $\Delta t = {params.dt:.1e}$'
     title += f'\n{N_fourier} Fourier addends'
     for i in range(len(square_diff_list)):
-        title += f'\nMAPE: {square_diff_list[i][0]*100:.4f}\% (t={square_diff_list[i][1]})'
+        title += f'\nMAPE: {square_diff_list[i][0]*100:.4f}\% ($t={square_diff_list[i][1]:.3f}$)'
     xlabel = '$x$'
     ylabel = r'$u_t - u_c$'
     set_ax_info(ax, xlabel, ylabel, title=title)
