@@ -1,5 +1,5 @@
 import argparse
-import produce_results
+import produce_results, plot
 
 parser = argparse.ArgumentParser(
     description='Solve numerically the 1D and 2D diffusion equation'\
@@ -22,12 +22,12 @@ parser.add_argument('-Nc', '--num-cores',
 
 params = parser.add_argument_group('simulation parameters')
 params.add_argument('-Nx',
-    type=float,
+    type=int,
     default=1.0,
     help='The number of integration points'
 )
 params.add_argument('-Nt',
-    type=float,
+    type=int,
     default=1.0,
     help='The number of time steps'
 )
@@ -58,8 +58,13 @@ else:
         args.Nx,
         args.Nt,
         args.dt,
-        args.method,
+        args.m,
         args.num_cores
     )
     produce_results.run_simulation(params, params.create_filename())
-    produce_results.plot_solution(params, params.create_filename())
+    if params.method == 'TwoDimensions':
+        plot.plot_evolution_2D(params, params.create_filename())
+        plot.plot_evolution_2D_error(params, params.create_filename())
+    else:
+        plot.plot_evolution(params, params.create_filename())
+        plot.plot_evolution_error(params, params.create_filename())
