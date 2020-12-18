@@ -202,7 +202,12 @@ In two dimensions ($u(x,y)$) the method for solving is similar. Assuming the sam
 	\label{eq:3dEuler}
 	u_{i,j}^{l+1} = u_{i,j}^{l} + \alpha \left[u_{i+1,j}^{l} + u_{i-1,j}^{l} + u_{i,j+1}^{l} + u_{i,j-1}^{l} - 4u_{i,j}^{l}\right]
 \end{equation}
-where $u_{i,j}^l = u(i\Delta l, j \Delta l, l\Delta t)$ and $\alpha = \Delta t/\Delta l^2$.
+where $u_{i,j}^l = u(i\Delta l, j \Delta l, l\Delta t)$ and $\alpha = \Delta t/\Delta l^2$. With this algorithm we will get slightly different stability conditions. The Von Neumann stability analysis gives
+\begin{equation}
+	\label{eq:2D_von_neumann_stability}
+	\frac{\Delta t}{\Delta l^2} \leq \frac{1}{4}
+\end{equation}
+see \cite{MiT} for derivation.
 
 
 \subsection*{Implicit Backward Euler}
@@ -341,7 +346,7 @@ and boundary conditions
   u(L, t) &= 1, \quad t \ge 0.
   \end{split}
 \end{align}
-As mentioned we use three methods, explicit forward Euler, implicit backward Euler and Crank-Nicolson. When using Explicit forward Euler, we only need to solve the difference-equation described by equation \eqref{eq:forward_euler}. When using Implicit backward Euler er Crank-Nicolson we need to solve the matrix-equations \eqref{eq:backward_euler_matrix} and \eqref{eq:Crank-Nicolson_matrix}. There are several methods for solving such tridiagonal matrix equations, however we will use the method covered in a previous project. see project\footnote{https://github.com/sigurdru/FYS3150/tree/master/Project1} page 2 (section A. Solve tridiagonal matrix equation). We will use $\Delta x = 1/10$, $\Delta x = 1/100$ and $\Delta t$ decided by equation \eqref{eq:von_neumann_stability}. We then study compare our results with analytical ones (derived below), at two points in time. First $t_1$ where our solution is smooth but curved, then $t_2$ where we have a linear (stable) solution. Hopefully we will be able to decide on what method is best.
+As mentioned we use three methods, explicit forward Euler, implicit backward Euler and Crank-Nicolson. When using Explicit forward Euler, we only need to solve the difference-equation described by equation \eqref{eq:forward_euler}. When using Implicit backward Euler er Crank-Nicolson we need to solve the matrix-equations \eqref{eq:backward_euler_matrix} and \eqref{eq:Crank-Nicolson_matrix}. There are several methods for solving such tridiagonal matrix equations, however we will use the method covered in a previous project. see project\footnote{https://github.com/sigurdru/FYS3150/tree/master/Project1} page 2 (section A. Solve tridiagonal matrix equation). We will use $\Delta x = 1/10$, $\Delta x = 1/100$ and $\Delta t$ decided by equation \eqref{eq:von_neumann_stability}. We then study compare our results with analytical ones (analytical results are derived below), at two points in time. First $t_1$ where our solution is smooth but curved, then $t_2$ where we have a linear (stable) solution. Hopefully we will be able to decide on what method is best. We also check what happens when the difference in equation \eqref{eq:von_neumann_stability} is not satisfied. For all our results we also plot the difference between the results, as well as calculate the MAPE in percent (see equation \eqref{eq:MAPE}).
 
 \subsection*{Analytic solution to the 1D diffusion equation}
 
@@ -381,7 +386,7 @@ v(0, t) &= u(L, t) - u_E(L) = 0
 \end{align*}
 In other words, $v$ obeys the same equation as $u$, but with boundary conditions 0.
 
-It is rather straightforward to see that
+It is rather straightforward to see that (however see \cite{PDE_book} chapter 3 for a more thorough derivation)
 \begin{equation}
 \label{eq:analytic_part_sol_1D_diffusion_general}
 f_n(x, t) = e^{- C_n^2 t} \left( A \sin(C_n x) + B \cos(C_n x) \right)
@@ -399,7 +404,7 @@ The solution $v(x, t)$ can then be written as sum
 \begin{equation*}
 v(x, t) = \sum_n A_n e^{- \left( \frac{n \pi}{L} \right)^2 t} \sin( \frac{n \pi}{L} x)
 \end{equation*}
-The coefficients $A_n$ are given by the initial condition $v(x, 0) = - u_E(x)$ and can be determined from (see Lecture Notes CITE)
+The coefficients $A_n$ are given by the initial condition $v(x, 0) = - u_E(x)$ and can be determined from (see \cite{lectures2015} chapter 10.2.4)
 \begin{align*}
 A_n &= \frac{2}{L} \int_0^L - u_E(x) \; \sin( \frac{n \pi}{L} x) \; \mathrm dx \\
 &= - \frac{2}{L^2} \int_0^L x \; \sin( \frac{n \pi}{L} x) \; \mathrm dx
@@ -435,7 +440,7 @@ and initial conditions given by
 	0\quad \text{if }\frac{1}{2}<y<1\text{ and } 0<x<1
 	\end{cases}
 \end{equation}
-We will test for different $\Delta l$ and $\Delta t$, and compare it to the closed form solution covered bellow. We also parallelized the, which is also covered below.
+As for the one we will test for different $\Delta t$'s, and compare it to the closed form solution covered bellow. We do one case where the difference in equation \eqref{eq:2D_von_neumann_stability} is satisfied and one where it's not. We then plot the result and difference between them, also calculating MAPE in percent (equation \eqref{eq:MAPE}). For all cases we used $\Delta x= \Delta y = 1/50$.
 
 \subsection*{Parallelization}
 When solving the difference equation \eqref{eq:3dEuler} we parallelize the program using OpenMp. While calculating $u_{i,j}^l$ we only need to worry about the surrounding points for the previous step, namely $u_{i,j}^{l-1}$ and $u_{i\pm 1,j\pm 1}^{l-1}$. In a grid pattern this would look something like:
@@ -682,7 +687,9 @@ Conclusion
 
 \begin{thebibliography}{}
 \bibitem[]{lectures2015} Morten Hjorth-Jensen, Computational Physics, Lecture Notes Fall 2015, August 2015, https://github.com/CompPhysics/ComputationalPhysics/blob/master/doc/Lectures/lectures2015.pdf.
-\bibitem[]{2D_diffusion} Ryan C. Daileda, Trinity University, Partial Differential Equations, March 6, 2012, http://ramanujan.math.trinity.edu/rdaileda/teach/s12/m3357/lectures/lecture\_3\_6\_short.pdf
+\bibitem[]{2D_diffusion} Ryan C. Daileda, Trinity University, Partial Differential Equations, March 6, 2012, http://ramanujan.math.trinity.edu/rdaileda/teach/s12/m3357/lectures/lecture\_3\_6\_short.pdf.
+\bibitem[]{MiT} massachusetts institute of technology, Numerical Methods for Partial Differential Equations, March 31. 2009, https://ocw.mit.edu/courses/mathematics/18-336-numerical-methods-for-partial-differential-equations-spring-2009/lecture-notes/MIT18\_336S09\_lec14.pdf.
+\bibitem{PDE_book} Tveito, Aslak and Winther, Ragnar, Introduction to Partial Differential Equations A Computational Approach, 2005.
 
 \end{thebibliography}
 
