@@ -80,7 +80,7 @@ def plot_evolution_error(params, fname):
         fname (str): name of the file containing the desired data
 
     """
-    N_fourier = 200
+    N_fourier = 400
     df = read_data(fname)
     NumCols = len(df.loc[0, :])
     NumRows = len(df.loc[:, 0])

@@ -647,22 +647,22 @@ Figure \ref{fig:ForwardEuler_error} shows the error for different number of inte
   \label{fig:ForwardEuler_error}
 \end{figure}
 
-Figure \ref{fig:BackwardEuler} shows the difference between the computed values \(u_c(x, t)\) and the theoretical values \(u_t(x, t)\) as a function of \(x\) calculated using the Backward Euler algorithm. The first plot is made with \(N_x = 10\) and thus \(\Delta x = 1/10\). For the second and third plot, we have \(N_x = 100\) and \(\Delta x = 1/100\). For the first two plots we have used a value of \(\Delta t\) such that \(\Delta t / \Delta x^2 = 0.4\), i.e. the stability conditions for the explicit scheme were satisfied. In the third plot, we used a value of \(\Delta t\) such that \(\Delta t / \Delta x^2 = 0.6\) and the stability condition was not satisfied. Different colors correspond to different times. The mean absolute percentage error (MAPE) can be read from the title for the different times.
-Figure \ref{fig:CrankNicolson} shows the same for the Crank-Nicolson scheme.
+Figure \ref{fig:BackwardEuler_error} shows the difference between the computed values \(u_c(x, t)\) and the theoretical values \(u_t(x, t)\) as a function of \(x\) calculated using the Backward Euler algorithm. The first plot is made with \(N_x = 10\) and thus \(\Delta x = 1/10\). For the second and third plot, we have \(N_x = 100\) and \(\Delta x = 1/100\). For the first two plots we have used a value of \(\Delta t\) such that \(\Delta t / \Delta x^2 = 0.4\), i.e. the stability conditions for the explicit scheme were satisfied. In the third plot, we used a value of \(\Delta t\) such that \(\Delta t / \Delta x^2 = 0.6\) and the stability condition was not satisfied. Different colors correspond to different times. The mean absolute percentage error (MAPE) can be read from the title for the different times.
+Figure \ref{fig:CrankNicolson_error} shows the same for the Crank-Nicolson scheme.
 
 \begin{figure}
   \includegraphics[width=\linewidth]{BackwardEuler-Nt125-dt4_0e-03-Nx10-Error.pdf}
   \includegraphics[width=\linewidth]{BackwardEuler-Nt12499-dt4_0e-05-Nx100-Error.pdf}
   \includegraphics[width=\linewidth]{BackwardEuler-Nt8333-dt6_0e-05-Nx100-Error.pdf}
   \caption{The difference between the computed values \(u_c(x, t)\) and the theoretical values \(u_t(x, t)\) as a function of \(x\) calculated using the Backward Euler algorithm. The first plot is made with \(N_x = 10\) and thus \(\Delta x = 1/10\). For the second and third plot, we have \(N_x = 100\) and \(\Delta x = 1/100\). For the first two plots we have used a value of \(\Delta t\) such that \(\Delta t / \Delta x^2 = 0.4\). In the third plot, we used a value of \(\Delta t\) such that \(\Delta t / \Delta x^2 = 0.6\). Different colors correspond to different times. The mean absolute percentage error (MAPE) can be read from the title for the different times.}
-  \label{fig:BackwardEuler}
+  \label{fig:BackwardEuler_error}
 \end{figure}
 \begin{figure}
   \includegraphics[width=\linewidth]{CrankNicolson-Nt125-dt4_0e-03-Nx10-Error.pdf}
   \includegraphics[width=\linewidth]{CrankNicolson-Nt12499-dt4_0e-05-Nx100-Error.pdf}
   \includegraphics[width=\linewidth]{CrankNicolson-Nt8333-dt6_0e-05-Nx100-Error.pdf}
   \caption{The difference between the computed values \(u_c(x, t)\) and the theoretical values \(u_t(x, t)\) as a function of \(x\) calculated using the Crank-Nicolson algorithm. The first plot is made with \(N_x = 10\) and thus \(\Delta x = 1/10\). For the second and third plot, we have \(N_x = 100\) and \(\Delta x = 1/100\). For the first two plots we have used a value of \(\Delta t\) such that \(\Delta t / \Delta x^2 = 0.4\). In the third plot, we used a value of \(\Delta t\) such that \(\Delta t / \Delta x^2 = 0.6\). Different colors correspond to different times. The mean absolute percentage error (MAPE) can be read from the title for the different times.}
-  \label{fig:CrankNicolson}
+  \label{fig:CrankNicolson_error}
 \end{figure}
 
 Plots showing the actual values of \(u(x, t)\) as a function of \(x\) are not included in the report as they are visually indistinguishable from the last plot in figure \ref{fig:ForwardEuler}. The can be viewed in our GitHub repository previously linked to, and will be automatically produced by the code.
@@ -673,7 +673,19 @@ To plots for 3D, en med stabilitetsbet. oppfylt, en uten
 
 \section{Discussion}
 
-From figure \ref{fig:ForwardEuler} we see very clearly the importance of satisfying the stability condition for the explicit Forward Euler scheme. The first and third plots show exaclty what we expect
+From figure \ref{fig:ForwardEuler} we see very clearly the importance of satisfying the stability condition for the explicit Forward Euler scheme. The first and third plots show the function changing rapidly in the initial stage and then converging more and more slowly to a stationary state (which is a linear function of \(x\)), exactly as we expected. The second plot shows disastrous oscillations that leave the computed solution entirely useless. The function values oscillate between \(\pm 6 \cdot 10^8\), when we know for certain that the correct solution should always be in the range [0, 1]. This was caused by simply increasing the value of \(\Delta t\) by 50\% such that \(\Delta t / \Delta x^2\) changes from 0.4 to 0.6. It is therefore very important to be aware of and consider the stability condition when using the Forward Euler algorithm.
+
+We see from figure \ref{fig:ForwardEuler_error} that the error is reduced by approximately a factor of 100 when increasing the number of integration steps from 10 to 100, while also adjusting \(\Delta t\) such that \(\Delta t / \Delta x^2 = 0.4\) in both cases. This also seems to hold true for the mean absolute percentage error. The bottom plot, where \(\Delta t / \Delta x^2 = 0.5\) just satisfies the stability condition, we already see the start of the oscillations so clearly visible in figure \ref{fig:ForwardEuler}. The oscillations cause mean absolute percentage error to be over twice as large for \(t = 0.083\) (0.0350\% vs. 0.0155\%). We have verified that the error is not caused by too few addends in the Fourier sum by increasing the number from 200 to 400. To the degree of precision with which we have presented our results, the values for the errors were identical.
+From the stability condition, one might presume that \(\Delta t / \Delta x^2 = 0.5\) would be a safe choice. Indeed, the results are nowhere near as bad as with \(\Delta t / \Delta x^2 = 0.6\), but we do see the a tendency of the same problem with oscillations. It seems therefore that the wise approach is to make sure that you strictly satisfy the stability condition (\(\Delta t / \Delta x^2 < 0.5\)) in order to be confident in your results.
+
+The results produced by the Backward Euler and Crank-Nicolson schemes were not affected by the value of \(\Delta t / \Delta x^2\) in the same way as the Forward Euler algorithm. From figures \ref{fig:BackwardEuler_error} and \ref{fig:CrankNicolson_error} we see that all the values for the error is decreased by a factor of approximately 80-100 when increasing the number of integration points from 10 to 100 while keeping the value \(\Delta t / \Delta x^2 = 0.4\) constant. 
+
+
+\subsection*{Computing speed}
+
+We did see a significant speed-up from the parallelization, but our implementation seems far from optimal. Given more time, there are several avenues we could have explored to improve on our solution, both to reduce memory consumption and computing time.
+
+The first
 
 
 
