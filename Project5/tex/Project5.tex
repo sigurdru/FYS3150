@@ -97,11 +97,13 @@
 
 
 \section{Introduction}
-The diffusion equation is used in many areas. Everything from how heat is transferred through a stick, to how an oil spill will spread. In this report we will try to solve the diffusion equation for one and two dimensions, and using different algorithms. We are going to study the diffusion equation with a constant collective diffusion coefficient, giving us a linear differential equation identical to the heat equation.
+The diffusion equation is used in many areas. Everything from how heat is transferred through a stick, to how an oil spill will spread. In this report we will try to solve the diffusion equation for one and two dimensions, and using different algorithms. We are going to study the diffusion equation with a constant collective diffusion coefficient, giving us a linear differential equation identical to the heat equation. All central theory is covered in the theory section, and we recommend reading it even before the introduction.
 
-For our one dimensional problem, we use three different algorithms, explicit Forward Euler, implicit Backward Euler and implicit Crank-Nicolson.
+For our one dimensional problem we are using dirichlet boundary conditions. We use three different algorithms, explicit Forward Euler, implicit Backward Euler and implicit Crank-Nicolson. The situation we are looking at is $x\in[0,1]$, zero in one end and one in the other as boundary conditions. We implement the aforementioned algorithms for $N_x = 10, 100$ steps in x-direction. The $\Delta t$ is decided by the stability condition of forward Euler. We try a $\Delta t$ just above and below the stability condition, looking at how the algorithms differ. Since forward Euler is conditionally stable (the condition mentioned above) we expect large errors. However since backward Euler and Crank-Nicolson is unconditionally stable, they should still give sensible results. We also look at how the errors vary between the methods, plotting the closed solution above the computed values. To further investigate the performance we also plot the difference between closed and computed results, calculating mean absolute percentage error while we are at it.
 
-For our studies we have used c++ for heavy computation, python for visualization and automation. All the code along with instructions on how to run it, can be cloned from our GitHub repository\footnote{github.com/sigurdru/FYS3150/tree/master/Project5}.
+In our two dimensional problem we use forward Euler as a solver, with homogeneous dirichlet boundary conditions (zero along all edges). Similarly to the one dimensional problem we also use $x,y\in [0,1]$ and the same number of grid points in x- and y-direction ($N_x = N_y = 50$). The $\Delta t$ is again decided by the stability conditions, running for $\Delta t$ just above and below the condition. We then look at how the results compare with the closed solution. Like we did in the one dimensional we plot the difference as a plane, and calculate the mean percentage error. Again we expect worse results when the stability condition is broken, however it is interesting to see how much. 
+
+For those interested we have included our methods of implementation, as well as discussion. For our studies we have used c++ for heavy computation, python for visualization and automation. All the code along with instructions on how to run it, can be cloned from our GitHub repository\footnote{github.com/sigurdru/FYS3150/tree/master/Project5}. In our code we have done extensive unit-tests in order to make sure our code is running correctly. The tests performed are covered in the method section under Unit-tests. We also parallelized our two dimensional solver. How this is done is also covered in the method section (under Parallelization), as well as extensive discussion on optimization of our parallelization in the discussion-section.
 
 \section{Theory}
 
@@ -730,9 +732,11 @@ There are also possible improvements to be made with the way we reset the values
 
 \section{Conclusion}
 
-Conclusion
+In one dimension, forward and backward Euler performed similarly when stability conditions were complied with. Looking both at the error-plots and MAPE, they oscillated between which was best, however close to each other in all cases. This was expected. Crank-Nicolson, like we predicted theoretically, outperformed them both across the board. However always within an order of magnitude, both when looking at MAPE and the error-plots. When we used $\Delta t$ above the stability conditions, we saw slight improvements in backward Euler and no changes in Crank-Nicolson. Forward Euler on the other hand became unstable and produced values in the order of magnitude $10^8$ which makes no sense.
 
+For our two dimensional problem we used forward Euler as our solver. Here we also tested right above and below the stability conditions. As we saw in the one dimensional case, when below stability conditions we got good results (MAPE of around $10^{-3}\%$). When above the condition however, the solver produced results in the order of $10^{35-116}$, and MAPE in the same order.
 
+When it comes to which algorithm to use, there are some things to consider. Crank-Nicolson has better results, however is harder to implement. Backward Euler is easy to implement and unconditionally stable. Forward Euler is conditionally stable, and if these conditions are not met, the results does not correspond with the closed solution.
 
 \onecolumngrid
 \vspace{1cm} % some extra space
