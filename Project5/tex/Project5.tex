@@ -91,7 +91,13 @@
 \end{titlepage}
 
 \begin{abstract}
-  note to self: kanskje ikke helt fornøyd med siste del av metode 1D og 2D? si noe om stability i 2D? Ellers burde alt være ganske nais. Unit testing mangler. diskutere at de første tidsstegene så er computed best? Derfor ser vi på midt i og stationary state.
+	The diffusion equation is used to predict the evolution of many phenomena. In this report we are working with a constiant collective diffusion coefficient, giving us a linear differential equation identical to the heat equation. We study it in both one an two dimensions. In one dimension we use explicit forward Euler, implicit backward Euler and implicit Crank-Nicolson, and in two dimensions only forward Euler.
+	
+	Crank-Nicolson outperformed both algorithms in one dimension. both when looking at mean absolute percentage error (MAPE) and when looking at the pure difference between the closed form and computed result. Forward and backward Euler performed similarly when stability conditions were complied with. When they weren't, forward Euler became unstable and produced values in the order of magnitude $10^8$ (expected values in the range 0-10).
+	
+	For our two dimensional problem we used forward Euler as our solver. Here we also tested above and below the stability conditions. As we saw in the one dimensional case, when below stability conditions we got good results (MAPE of around $10^{-3}\%$). When above the condition however, the solver produced results in the order of $10^{35-116}$, and MAPE in the same order.
+
+	In this report we explain ways to implement and optimize code for solving the algorithms. We did not arrive at the best algorithm, however we have discussed this extensively in the discussion-section.
 \end{abstract}
 \maketitle                              % creates the title
 
@@ -636,59 +642,17 @@ We run the 2D-solver using both one and two cores and verify that the computed r
 For all results in this section, we have used 200 addends in the Fourier sum in equation \eqref{eq:exact_solution_1D} for the analytic solution.
 
 Figure \ref{fig:ForwardEuler} shows \(u(x, t)\) as a function of \(x\) calculated using the Forward Euler algorithm for a few select time steps. The dashed lines show the analytic solution. The top two figures show the solution with $N_x = 10$, that is, eleven grid points with a distance \(\Delta x = 1/10\) between. The bottom figure shows \(N_x = 100\), giving \(\Delta x = 1/100\). The first and third figure are produced with the stability condition satisfied (\(\Delta t / \Delta x^2 = 0.4\)), whereas the second has \(\Delta t / \Delta x^2 = 0.6\).
-\begin{figure}
-  \includegraphics[width=\linewidth]{ForwardEuler-Nt125-dt4_0e-03-Nx10.pdf}
-  \includegraphics[width=\linewidth]{ForwardEuler-Nt83-dt6_0e-03-Nx10.pdf}
-  \includegraphics[width=\linewidth]{ForwardEuler-Nt12499-dt4_0e-05-Nx100.pdf}
-  \caption{\(u(x, t)\) as a function of \(x\) calculated using the Forward Euler algorithm. The dashed lines show the analytical results, calculated with 200 addends in the Fourier sum in equation \eqref{eq:exact_solution_1D}. The different colors denote the solution at different times. The top two figures show the solution with $N_x = 10$, that is, eleven grid points with a distance \(\Delta x = 1/10\) between. The bottom figure shows \(N_x = 100\), giving \(\Delta x = 1/100\). The first and third figure are produced with the stability condition satisfied (\(\Delta t / \Delta x^2 = 0.4\)), whereas the second has \(\Delta t / \Delta x^2 = 0.6\).}
-  \label{fig:ForwardEuler}
-\end{figure}
 
 Figure \ref{fig:ForwardEuler_error} shows the error for different number of integration points and values of \(\Delta t\). Since the error for \(\Delta x = 1/10\) and \(\Delta t / \Delta x^2 = 0.6\) is obviously very large (see the second plot in figure \ref{fig:ForwardEuler}), we have chosen to include here the errors for \(\Delta t / \Delta x^2 = 0.4\) (the first and third plot) and \(\Delta t / \Delta x^2 = 0.5\) (the second plot). The first two plots have \(N_x = 10\), i.e. eleven integration points, and the third plot has \(N_x = 100\). Different colors correspond to different times. The mean absolute percentage error (MAPE) can be read from the title for the different times.
-\begin{figure}
-  \includegraphics[width=\linewidth]{ForwardEuler-Nt125-dt4_0e-03-Nx10-Error.pdf}
-  \includegraphics[width=\linewidth]{ForwardEuler-Nt12499-dt4_0e-05-Nx100-Error.pdf}
-  \includegraphics[width=\linewidth]{ForwardEuler-Nt10000-dt5_0e-05-Nx100-Error.pdf}
-  \caption{The error for different number of integration points and values of \(\Delta t\) for the Forward Euler algorithm. Different colors correspond to different times. The mean absolute percentage error (MAPE) can be read from the title for the different times. The first and third plot have \(\Delta t / \Delta x^2 = 0.4\) and the second has \(\Delta t / \Delta x^2 = 0.5\). The first two plots have \(N_x = 10\), i.e. eleven integration points, and the third plot has \(N_x = 100\).}
-  \label{fig:ForwardEuler_error}
-\end{figure}
 
 Figure \ref{fig:BackwardEuler_error} shows the difference between the computed values \(u_c(x, t)\) and the theoretical values \(u_t(x, t)\) as a function of \(x\) calculated using the Backward Euler algorithm. The first plot is made with \(N_x = 10\) and thus \(\Delta x = 1/10\). For the second and third plot, we have \(N_x = 100\) and \(\Delta x = 1/100\). For the first two plots we have used a value of \(\Delta t\) such that \(\Delta t / \Delta x^2 = 0.4\), i.e. the stability conditions for the explicit scheme were satisfied. In the third plot, we used a value of \(\Delta t\) such that \(\Delta t / \Delta x^2 = 0.6\) and the stability condition was not satisfied. Different colors correspond to different times. The mean absolute percentage error (MAPE) can be read from the title for the different times.
 Figure \ref{fig:CrankNicolson_error} shows the same for the Crank-Nicolson scheme.
-
-\begin{figure}
-  \includegraphics[width=\linewidth]{BackwardEuler-Nt125-dt4_0e-03-Nx10-Error.pdf}
-  \includegraphics[width=\linewidth]{BackwardEuler-Nt12499-dt4_0e-05-Nx100-Error.pdf}
-  \includegraphics[width=\linewidth]{BackwardEuler-Nt8333-dt6_0e-05-Nx100-Error.pdf}
-  \caption{The difference between the computed values \(u_c(x, t)\) and the theoretical values \(u_t(x, t)\) as a function of \(x\) calculated using the Backward Euler algorithm. The first plot is made with \(N_x = 10\) and thus \(\Delta x = 1/10\). For the second and third plot, we have \(N_x = 100\) and \(\Delta x = 1/100\). For the first two plots we have used a value of \(\Delta t\) such that \(\Delta t / \Delta x^2 = 0.4\). In the third plot, we used a value of \(\Delta t\) such that \(\Delta t / \Delta x^2 = 0.6\). Different colors correspond to different times. The mean absolute percentage error (MAPE) can be read from the title for the different times.}
-  \label{fig:BackwardEuler_error}
-\end{figure}
-\begin{figure}
-  \includegraphics[width=\linewidth]{CrankNicolson-Nt125-dt4_0e-03-Nx10-Error.pdf}
-  \includegraphics[width=\linewidth]{CrankNicolson-Nt12499-dt4_0e-05-Nx100-Error.pdf}
-  \includegraphics[width=\linewidth]{CrankNicolson-Nt8333-dt6_0e-05-Nx100-Error.pdf}
-  \caption{The difference between the computed values \(u_c(x, t)\) and the theoretical values \(u_t(x, t)\) as a function of \(x\) calculated using the Crank-Nicolson algorithm. The first plot is made with \(N_x = 10\) and thus \(\Delta x = 1/10\). For the second and third plot, we have \(N_x = 100\) and \(\Delta x = 1/100\). For the first two plots we have used a value of \(\Delta t\) such that \(\Delta t / \Delta x^2 = 0.4\). In the third plot, we used a value of \(\Delta t\) such that \(\Delta t / \Delta x^2 = 0.6\). Different colors correspond to different times. The mean absolute percentage error (MAPE) can be read from the title for the different times.}
-  \label{fig:CrankNicolson_error}
-\end{figure}
 
 Plots showing the actual values of \(u(x, t)\) as a function of \(x\) are not included in the report as they are visually indistinguishable from the last plot in figure \ref{fig:ForwardEuler}. The can be viewed in our GitHub repository previously linked to, and will be automatically produced by the code.
 
 In figure \ref{fig:3D} we have plotted the analytical and computed results for stable and unstable conditions (equation \eqref{eq:2D_von_neumann_stability} satisfied and not). The top four plots are the stable solutions, at four different times. The bottom four are the unstable results at the same times. Above all of them we have plotted the analytical solution with a black mesh plot. To produce the analytical results we have used equation \eqref{eq:2D_closed_sol} with $n = m = 50$ (larger values did not yield better results). Note that the unstable result has very large oscillations.
 
 Figure \ref{fig:3D_error} shows the difference between the analytical and stable computed result. We also made a table \ref{tab:error_2D} that shows MAPE (calculated using equation \eqref{eq:MAPE}) for the stable and unstable solution, at the different time steps displayed in figure \ref{fig:3D}. There was no point plotting the difference between unstable and theoretical solution, because it look identical to the unstable results in figure \ref{fig:3D}.
-\begin{figure*}[!htb]
-	\includegraphics[width=16cm]{TwoDimensions-Nt1250-dt8_0e-05-Nx50.pdf}
-	\includegraphics[width=16cm]{TwoDimensions-Nt833-dt1_2e-04-Nx50.pdf}
-	\caption{In this figure you see the analytical and computed result for the two dimensional problem. The colored plot is the computed, and the black mesh plot is the analytical plot. The top four plots are the stable solutions, and the bottom four are the unstable ones. They are all plotted at the same time steps, $n=m50$ Fourier addends and number of integration points in $x-$ and $y-$direction.
-	\label{fig:3D}}
-\end{figure*}
-
-\begin{figure*}[!htb]
-	\includegraphics[width=16cm]{TwoDimensions-Nt1250-dt8_0e-05-Nx50-Error.pdf}
-	\caption{In this figure we have plotted the difference between the theoretical and stable computed values. We used $n=m=50$ Fourier addends, and plotted the difference for three different time steps, the same as in figure \ref{fig:3D}.
-	\label{fig:3D_error}}
-\end{figure*}
-
 
 \begin{table}[!htb] %\cellcolor{grey!20}
 	\begin{tabular}{|l|l|l|l|} \hline
@@ -700,8 +664,51 @@ Figure \ref{fig:3D_error} shows the difference between the analytical and stable
 		9.38e+115              & 0.100 & 0.0013 & 0.100 \\ \hline
 	\end{tabular}
 	\caption{In this table we have calculated the MAPE (in percent) for the stable and unstable computed values, and for different time steps. The first two columns are the stable values, and the second two unstable ones.
-	\label{tab:error_2D}}
+		\label{tab:error_2D}}
 \end{table}
+
+
+\begin{figure}[!htb]
+	\includegraphics[width=\linewidth]{ForwardEuler-Nt125-dt4_0e-03-Nx10.pdf}
+	\includegraphics[width=\linewidth]{ForwardEuler-Nt83-dt6_0e-03-Nx10.pdf}
+	\includegraphics[width=\linewidth]{ForwardEuler-Nt12499-dt4_0e-05-Nx100.pdf}
+	\caption{\(u(x, t)\) as a function of \(x\) calculated using the Forward Euler algorithm. The dashed lines show the analytical results, calculated with 200 addends in the Fourier sum in equation \eqref{eq:exact_solution_1D}. The different colors denote the solution at different times. The top two figures show the solution with $N_x = 10$, that is, eleven grid points with a distance \(\Delta x = 1/10\) between. The bottom figure shows \(N_x = 100\), giving \(\Delta x = 1/100\). The first and third figure are produced with the stability condition satisfied (\(\Delta t / \Delta x^2 = 0.4\)), whereas the second has \(\Delta t / \Delta x^2 = 0.6\).}
+	\label{fig:ForwardEuler}
+\end{figure}
+\begin{figure}[!htb]
+	\includegraphics[width=\linewidth]{ForwardEuler-Nt125-dt4_0e-03-Nx10-Error.pdf}
+	\includegraphics[width=\linewidth]{ForwardEuler-Nt12499-dt4_0e-05-Nx100-Error.pdf}
+	\includegraphics[width=\linewidth]{ForwardEuler-Nt10000-dt5_0e-05-Nx100-Error.pdf}
+	\caption{The error for different number of integration points and values of \(\Delta t\) for the Forward Euler algorithm. Different colors correspond to different times. The mean absolute percentage error (MAPE) can be read from the title for the different times. The first and third plot have \(\Delta t / \Delta x^2 = 0.4\) and the second has \(\Delta t / \Delta x^2 = 0.5\). The first two plots have \(N_x = 10\), i.e. eleven integration points, and the third plot has \(N_x = 100\).}
+	\label{fig:ForwardEuler_error}
+\end{figure}
+\begin{figure}[!htb]
+	\includegraphics[width=\linewidth]{BackwardEuler-Nt125-dt4_0e-03-Nx10-Error.pdf}
+	\includegraphics[width=\linewidth]{BackwardEuler-Nt12499-dt4_0e-05-Nx100-Error.pdf}
+	\includegraphics[width=\linewidth]{BackwardEuler-Nt8333-dt6_0e-05-Nx100-Error.pdf}
+	\caption{The difference between the computed values \(u_c(x, t)\) and the theoretical values \(u_t(x, t)\) as a function of \(x\) calculated using the Backward Euler algorithm. The first plot is made with \(N_x = 10\) and thus \(\Delta x = 1/10\). For the second and third plot, we have \(N_x = 100\) and \(\Delta x = 1/100\). For the first two plots we have used a value of \(\Delta t\) such that \(\Delta t / \Delta x^2 = 0.4\). In the third plot, we used a value of \(\Delta t\) such that \(\Delta t / \Delta x^2 = 0.6\). Different colors correspond to different times. The mean absolute percentage error (MAPE) can be read from the title for the different times.}
+	\label{fig:BackwardEuler_error}
+\end{figure}
+\begin{figure}[!htb]
+	\includegraphics[width=\linewidth]{CrankNicolson-Nt125-dt4_0e-03-Nx10-Error.pdf}
+	\includegraphics[width=\linewidth]{CrankNicolson-Nt12499-dt4_0e-05-Nx100-Error.pdf}
+	\includegraphics[width=\linewidth]{CrankNicolson-Nt8333-dt6_0e-05-Nx100-Error.pdf}
+	\caption{The difference between the computed values \(u_c(x, t)\) and the theoretical values \(u_t(x, t)\) as a function of \(x\) calculated using the Crank-Nicolson algorithm. The first plot is made with \(N_x = 10\) and thus \(\Delta x = 1/10\). For the second and third plot, we have \(N_x = 100\) and \(\Delta x = 1/100\). For the first two plots we have used a value of \(\Delta t\) such that \(\Delta t / \Delta x^2 = 0.4\). In the third plot, we used a value of \(\Delta t\) such that \(\Delta t / \Delta x^2 = 0.6\). Different colors correspond to different times. The mean absolute percentage error (MAPE) can be read from the title for the different times.}
+	\label{fig:CrankNicolson_error}
+\end{figure}
+\begin{figure*}[!htb]
+	\includegraphics[width=16cm]{TwoDimensions-Nt1250-dt8_0e-05-Nx50.pdf}
+	\includegraphics[width=16cm]{TwoDimensions-Nt833-dt1_2e-04-Nx50.pdf}
+	\caption{In this figure you see the analytical and computed result for the two dimensional problem. The colored plot is the computed, and the black mesh plot is the analytical plot. The top four plots are the stable solutions, and the bottom four are the unstable ones. They are all plotted at the same time steps, $n=m50$ Fourier addends and number of integration points in $x-$ and $y-$direction.
+		\label{fig:3D}}
+\end{figure*}
+
+\begin{figure*}[!htb]
+	\includegraphics[width=16cm]{TwoDimensions-Nt1250-dt8_0e-05-Nx50-Error.pdf}
+	\caption{In this figure we have plotted the difference between the theoretical and stable computed values. We used $n=m=50$ Fourier addends, and plotted the difference for three different time steps, the same as in figure \ref{fig:3D}.
+		\label{fig:3D_error}}
+\end{figure*}
+
 
 \section{Discussion}
 
@@ -737,6 +744,8 @@ In one dimension, forward and backward Euler performed similarly when stability 
 For our two dimensional problem we used forward Euler as our solver. Here we also tested right above and below the stability conditions. As we saw in the one dimensional case, when below stability conditions we got good results (MAPE of around $10^{-3}\%$). When above the condition however, the solver produced results in the order of $10^{35-116}$, and MAPE in the same order.
 
 When it comes to which algorithm to use, there are some things to consider. Crank-Nicolson has better results, however is harder to implement. Backward Euler is easy to implement and unconditionally stable. Forward Euler is conditionally stable, and if these conditions are not met, the results does not correspond with the closed solution.
+
+We have had a lot of focus code-implementation in this report. Extensive unit-tests have made us confident in our results. Our parallelization has made the code around twice as fast when running with eight cores. We suspect this is not fully optimized however, and we recommend reading the discussion section on parallelization if one plans on implementing this themselves. There we have discussed many ways of optimizing the code to make it run quicker.
 
 \onecolumngrid
 \vspace{1cm} % some extra space
@@ -815,6 +824,5 @@ Using this and the definition of the vector $\vc v_j$ from \eqref{def:vector_v},
   \vc A \vc v_j = \vc b_j
 \end{equation*}
 where the matrix $\vc A$ is a tridiagonal matrix with $2 (1 + \alpha)$ on the diagonal and $-\alpha$ directly above and below the diagonal.
-
 
 \end{document}
