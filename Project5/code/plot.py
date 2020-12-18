@@ -156,8 +156,8 @@ def plot_evolution_2D(params, fname):
     title += f', $\Delta t = {params.dt:.1e}' + r'}$'
     title += f'\n{N_fourier} Fourier addends'
     title = title.replace(r'e-0', r'\cdot 10^{-')
-    fig.suptitle(title, fontsize=20)
-    fig.tight_layout(pad=2.0)
+    fig.suptitle(title, fontsize=14)
+    fig.tight_layout(pad=2.5)
     fig.savefig(os.path.join(path_plots, fname + '.pdf'))
     plt.close()
 
@@ -209,8 +209,8 @@ def plot_evolution_2D_error(params, fname):
     title += f', $\Delta t = {params.dt:.1e}' + r'}$'
     title += f'\n{N_fourier} Fourier addends'
     title = title.replace(r'e-0', r'\cdot 10^{-')
-    fig.suptitle(title, fontsize=20)
-    fig.tight_layout(pad=2.0)
+    fig.suptitle(title, fontsize=14)
+    fig.tight_layout(pad=2.5)
     fig.savefig(os.path.join(path_plots, fname + '-Error' + '.pdf'))
     plt.close()
     print('------------------------------')
