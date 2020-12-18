@@ -13,7 +13,7 @@
 \usepackage{physics,amssymb}  % mathematical symbols (physics imports amsmath)
 \usepackage{graphicx}         % include graphics such as plots
 
-\usepackage{xcolor}           % set colors
+\usepackage[table]{xcolor}           % set colors
 \usepackage{hyperref}         % automagic cross-referencing (this is GODLIKE)
 \usepackage{tikz}             % draw figures manually
 \usepackage{tikz-3dplot}
@@ -545,10 +545,13 @@ Inserting our initial conditions \eqref{eq:2D_init} and $a=b=1$ into the equatio
 	&= \frac{4}{\pi^2}\left(\frac{\left((-1)^m - 1\right)\left(\cos(\frac{n\pi}{2}) - 1\right)}{mn}\right)
 \end{align*}
 Inserting this into equation \eqref{eq:2D_gen_sol}
-\begin{align*}
+\begin{align}
+\begin{split}
+\label{eq:2D_closed_sol}
 	u(x,y,t) =& \sum_{m=1}^{\infty}\sum_{n=1}^{\infty}\frac{4}{\pi^2}\left(\frac{\left((-1)^m - 1\right)\left(\cos(\frac{n\pi}{2}) - 1\right)}{mn}\right)\cdot\\
 	&\sin(m\pi x)\sin(n\pi y)\exp(-((m\pi)^2 + (n\pi)^2)t)
-\end{align*}
+\end{split}
+\end{align}
 
 
 \subsection{Unit testing}
@@ -667,9 +670,35 @@ Figure \ref{fig:CrankNicolson} shows the same for the Crank-Nicolson scheme.
 
 Plots showing the actual values of \(u(x, t)\) as a function of \(x\) are not included in the report as they are visually indistinguishable from the last plot in figure \ref{fig:ForwardEuler}. The can be viewed in our GitHub repository previously linked to, and will be automatically produced by the code.
 
-To plots for 3D, en med stabilitetsbet. oppfylt, en uten
+In figure \ref{fig:3D} we have plotted the analytical and computed results for stable and unstable conditions (equation \eqref{eq:2D_von_neumann_stability} satisfied and not). The top four plots are the stable solutions, at four different times. The bottom four are the unstable results at the same times. Above all of them we have plotted the analytical solution with a black mesh plot. To produce the analytical results we have used equation \eqref{eq:2D_closed_sol} with $n = m = 50$ (larger values did not yield better results). Note that the unstable result has very large oscillations.
+
+Figure \ref{fig:3D_error} shows the difference between the analytical and stable computed result. We also made a table \ref{tab:error_2D} that shows MAPE (calculated using equation \eqref{eq:MAPE}) for the stable and unstable solution, at the different time steps displayed in figure \ref{fig:3D}. There was no point plotting the difference between unstable and theoretical solution, because it look identical to the unstable results in figure \ref{fig:3D}.
+\begin{figure*}[!htb]
+	\includegraphics[width=16cm]{TwoDimensions-Nt1250-dt8_0e-05-Nx50.pdf}
+	\includegraphics[width=16cm]{TwoDimensions-Nt833-dt1_2e-04-Nx50.pdf}
+	\caption{In this figure you see the analytical and computed result for the two dimensional problem. The colored plot is the computed, and the black mesh plot is the analytical plot. The top four plots are the stable solutions, and the bottom four are the unstable ones. They are all plotted at the same time steps, $n=m50$ Fourier addends and number of integration points in $x-$ and $y-$direction.
+	\label{fig:3D}}
+\end{figure*}
+
+\begin{figure*}[!htb]
+	\includegraphics[width=16cm]{TwoDimensions-Nt1250-dt8_0e-05-Nx50-Error.pdf}
+	\caption{In this figure we have plotted the difference between the theoretical and stable computed values. We used $n=m=50$ Fourier addends, and plotted the difference for three different time steps, the same as in figure \ref{fig:3D}.
+	\label{fig:3D_error}}
+\end{figure*}
 
 
+\begin{table}[!htb] %\cellcolor{grey!20}
+	\begin{tabular}{|l|l|l|l|} \hline
+		Unstable&& Stable &\\ \hline
+		MAPE [\%]   & Time  & MAPE [\%]  & Time  \\ \hline
+		0.039               & 0.000 & 0.039 & 0.000 \\ \hline
+		3.95e+34               & 0.033 & 0.0049 & 0.033 \\ \hline
+		1.27e+74               & 0.067 & 0.0026 & 0.067 \\ \hline
+		9.38e+115              & 0.100 & 0.0013 & 0.100 \\ \hline
+	\end{tabular}
+	\caption{In this table we have calculated the MAPE (in percent) for the stable and unstable computed values, and for different time steps. The first two columns are the stable values, and the second two unstable ones.
+	\label{tab:error_2D}}
+\end{table}
 
 \section{Discussion}
 
