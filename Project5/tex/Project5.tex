@@ -91,23 +91,23 @@
 \end{titlepage}
 
 \begin{abstract}
-	The diffusion equation is used to predict the evolution of many phenomena. In this report we are working with a constiant collective diffusion coefficient, giving us a linear differential equation identical to the heat equation. We study it in both one an two dimensions. In one dimension we use explicit forward Euler, implicit backward Euler and implicit Crank-Nicolson, and in two dimensions only forward Euler.
-	
-	Crank-Nicolson outperformed both algorithms in one dimension. both when looking at mean absolute percentage error (MAPE) and when looking at the pure difference between the closed form and computed result. Forward and backward Euler performed similarly when stability conditions were complied with. When they weren't, forward Euler became unstable and produced values in the order of magnitude $10^8$ (expected values in the range 0-10).
-	
+	The diffusion equation is used to predict the evolution of many phenomena. In this report we are working with a constant collective diffusion coefficient, giving us a linear differential equation identical to the heat equation. We study it in both one and two dimensions, for each comparing numerical results with analytic results for various values of parameters such as the the number of integration points and time step size. In one dimension we use explicit forward Euler, implicit backward Euler and implicit Crank-Nicolson, and in two dimensions only forward Euler.
+
+	Crank-Nicolson outperformed both the other algorithms in one dimension in terms of accuracy. The mean absolute percentage error (MAPE) was consistently approximately twice as large for forward and backward Euler compared to Crank-Nicolson. With 101 integration points between 0 and 1 and \(\Delta t = 4 \cdot 10^{-5}\), MAPE scores were on the scale of 0.01\%-0.02\% when the temperature/energy distribution was smooth but still significantly curved, and under 0.001\% when close to the stationary state. Forward and backward Euler performed similarly when stability conditions were complied with, though forward Euler often gave slightly more precise results than backward (mean absolute percentage error scores around 10\% lower). When the stability condition was not satisfied, forward Euler became unstable and produced values in the order of magnitude $10^8$ (analytic values in the range 0-1). No such problems were experienced with backward Euler or Crank-Nicolson.
+
 	For our two dimensional problem we used forward Euler as our solver. Here we also tested above and below the stability conditions. As we saw in the one dimensional case, when below stability conditions we got good results (MAPE of around $10^{-3}\%$). When above the condition however, the solver produced results in the order of $10^{35-116}$, and MAPE in the same order.
 
-	In this report we explain ways to implement and optimize code for solving the algorithms. We did not arrive at the best algorithm, however we have discussed this extensively in the discussion-section.
+	We explain ways to implement the algorithms and optimize the code for the two-dimensional case. Through parallelization with eight cores, we reduced computing time by about 50\%-55\%. We expect it is possible to improve on this a great deal, and we have included extensive discussions of possible strategies to achieve this.
 \end{abstract}
 \maketitle                              % creates the title
 
 
 \section{Introduction}
-The diffusion equation is used in many areas. Everything from how heat is transferred through a stick, to how an oil spill will spread. In this report we will try to solve the diffusion equation for one and two dimensions, and using different algorithms. We are going to study the diffusion equation with a constant collective diffusion coefficient, giving us a linear differential equation identical to the heat equation. All central theory is covered in the theory section, and we recommend reading it even before the introduction.
+The diffusion equation is applicable to many situations. Examples range from how heat is transferred through a stick, to how an oil spill will spread. In this report we will try to solve the diffusion equation for one and two dimensions, and using different algorithms. We are going to study the diffusion equation with a constant collective diffusion coefficient, giving us a linear differential equation identical to the heat equation. All central theory is covered in the theory section, and we recommend reading it even before the introduction.
 
-For our one dimensional problem we are using dirichlet boundary conditions. We use three different algorithms, explicit Forward Euler, implicit Backward Euler and implicit Crank-Nicolson. The situation we are looking at is $x\in[0,1]$, zero in one end and one in the other as boundary conditions. We implement the aforementioned algorithms for $N_x = 10, 100$ steps in x-direction. The $\Delta t$ is decided by the stability condition of forward Euler. We try a $\Delta t$ just above and below the stability condition, looking at how the algorithms differ. Since forward Euler is conditionally stable (the condition mentioned above) we expect large errors. However since backward Euler and Crank-Nicolson is unconditionally stable, they should still give sensible results. We also look at how the errors vary between the methods, plotting the closed solution above the computed values. To further investigate the performance we also plot the difference between closed and computed results, calculating mean absolute percentage error while we are at it.
+For our one dimensional problem we are using dirichlet boundary conditions. We use three different algorithms, explicit forward Euler, implicit backward Euler and implicit Crank-Nicolson. The situation we are looking at is $x\in[0,1]$ with boundary conditions \(u(x=0, t) = 0\) and \(u(x=1, t) = 1\). We implement the aforementioned algorithms for $N_x = 10, 100$ integration points in the x-direction. Forward Euler is conditionally stable, and we expect large errors when it is not satisfied. The $\Delta t$ in our calculations is decided by the stability condition of forward Euler. We try a $\Delta t$ just above and below the stability condition, looking at how the algorithms differ. Since backward Euler and Crank-Nicolson are unconditionally stable, they should give sensible results in both cases. We also look at how the errors vary between the methods by plotting the closed solution above the computed values and calculating the difference between analytic and computed results along with mean absolute percentage error.
 
-In our two dimensional problem we use forward Euler as a solver, with homogeneous dirichlet boundary conditions (zero along all edges). Similarly to the one dimensional problem we also use $x,y\in [0,1]$ and the same number of grid points in x- and y-direction ($N_x = N_y = 50$). The $\Delta t$ is again decided by the stability conditions, running for $\Delta t$ just above and below the condition. We then look at how the results compare with the closed solution. Like we did in the one dimensional we plot the difference as a plane, and calculate the mean percentage error. Again we expect worse results when the stability condition is broken, however it is interesting to see how much. 
+In our two dimensional problem we use forward Euler as a solver, with homogeneous dirichlet boundary conditions (zero along all edges). Similarly to the one dimensional problem we also use $x,y\in [0,1]$ and the same number of grid points in x- and y-direction ($N_x = N_y = 50$ in the results included in the report). The $\Delta t$ is again decided by the stability conditions, running for $\Delta t$ just above and below the condition. We then look at how the results compare with the closed solution. Like we did in the one dimensional we plot the difference as a plane, and calculate the mean percentage error. Again we expect worse results when the stability condition is broken, however it is interesting to see how much.
 
 For those interested we have included our methods of implementation, as well as discussion. For our studies we have used c++ for heavy computation, python for visualization and automation. All the code along with instructions on how to run it, can be cloned from our GitHub repository\footnote{github.com/sigurdru/FYS3150/tree/master/Project5}. In our code we have done extensive unit-tests in order to make sure our code is running correctly. The tests performed are covered in the method section under Unit-tests. We also parallelized our two dimensional solver. How this is done is also covered in the method section (under Parallelization), as well as extensive discussion on optimization of our parallelization in the discussion-section.
 
@@ -138,9 +138,9 @@ in cartesian coordinates. In this report we are mainly going to work with the di
 The mean absolute percentage error (MAPE), is used to predict the accuracy of a prediction. We will use it to measure how good our numerical methods are, compared to theoretical values. Equation \eqref{eq:MAPE} shows how to calculate MAPE in percentage,
 \begin{equation}
 	\label{eq:MAPE}
-	M = \left(\frac{1}{n}\sum_{n=1}^{n}\abs{\frac{A_\text{t} - A_\text{c}}{A_\text{t}}}\right)\cdot 100\%.
+	M = \left(\frac{1}{N}\sum_{n=1}^{N}\abs{\frac{A_\text{t} - A_\text{c}}{A_\text{t}}}\right)\cdot 100\%.
 \end{equation}
-Here $A_\text{t}$ and $A_\text{c}$ are the theoretical and computed values, $n$ number of data points and $M$ MAPE in percent.
+Here $A_\text{t}$ and $A_\text{c}$ are the theoretical and computed values, $N$ is the number of data points and $M$ is MAPE in percent.
 
 \subsection*{Discretization}
 
@@ -165,7 +165,7 @@ It is common to divide numerical algorithms into explicit and implicit schemes. 
 
 Using an implicit method instead of an explicit method usually requires more computation in every step, and they are often harder to implement. It can, in turn, save computation by allowing larger step sizes. Explicit methods are always conditionally stable, however the implicit methods we will use in this report are unconditionally stable. Of course, in order to achieve a desired \textit{accuracy}, the step sizes can not be arbitrarily large for either the explicit or implicit schemes. It is generally the case, though, that implicit schemes allow for larger step sizes than explicit schemes.
 
-\subsection*{Explicit Forward Euler}
+\subsection*{Explicit forward Euler}
 
 The algorithm for explicit forward Euler in one dimension (from \cite{lectures2015} chapter 10.2.1) reads
 \begin{equation}
@@ -218,9 +218,9 @@ where $u_{i,j}^l = u(i\Delta l, j \Delta l, l\Delta t)$ and $\alpha = \Delta t/\
 see \cite{MiT} for derivation.
 
 
-\subsection*{Implicit Backward Euler}
+\subsection*{Implicit backward Euler}
 
-The Backward Euler algorithm uses the same centered difference in space as Forward Euler to approximate the second derivative
+The backward Euler algorithm uses the same centered difference in space as forward Euler to approximate the second derivative
 \begin{equation}
   \label{eq:centered_2nd_deriv_space}
 	u_{xx} \approx \frac{u(x_i + \Delta x, t_j) - 2u(x_i,t_j) + u(x_i-\Delta x, t_j))}{\Delta x^2},
@@ -235,7 +235,7 @@ Again, defining
 \begin{equation*}
   \alpha = \frac{\Delta t}{(\Delta x)^2}
 \end{equation*}
-we obtain by inserting \eqref{eq:centered_2nd_deriv_space} and \eqref{eq:backward_deriv_time} into our differential equation the equation describing Backward Euler:
+we obtain by inserting \eqref{eq:centered_2nd_deriv_space} and \eqref{eq:backward_deriv_time} into our differential equation the equation describing backward Euler:
 \begin{equation}
   \label{eq:backward_euler}
   u_{i, j-1} = -\alpha u_{i-1, j} + (1 + 2 \alpha) u_{i, j} - \alpha u_{i+1, j}
@@ -298,7 +298,7 @@ where $\vc A$ is defined as
     0              & \ldots          & 0       & 0      &-\alpha         & (1 + 2 \alpha)  \\
   \end{bmatrix}
 \end{equation}
-This is a tridiagonal matrix with $(1 + 2 \alpha)$ on the diagonal and $-\alpha$ directly above and below the diagonal.
+This is a tridiagonal matrix with $(1 + 2 \alpha)$ on the diagonal and $-\alpha$ directly above and below the diagonal. The matrix equation \eqref{eq:backward_euler_matrix} can be solved for \(\vc v_j\) giving us all the unknown function values for the next time step.
 
 
 \subsection*{Implicit Crank-Nicolson}
@@ -308,18 +308,19 @@ The Crank-Nicolson algorithm uses a time-centered scheme centered around $t + \D
   \label{eq:forward_deriv_time}
   u_t \approx \frac{u(x_i, t_j + \Delta t) - u(x_i, t_j)}{\Delta t}
 \end{equation}
+and the approximation to the second order spatial derivative used is
 \begin{align*}
 	u_{xx} &\approx \frac{1}{2 \Delta x^2} \bigg(u(x_i+\Delta x, t_j) - 2u(x_i,t_j) + u(x_i-\Delta x, t_j) \\
   	&\quad + u(x_i+\Delta x, t_j + \Delta t) - 2u(x_i, t_j + \Delta t) \\
   	&\quad + u(x_i - \Delta x, t_j + \Delta t) \bigg)
 \end{align*}
 
-Inserting these two equations into our differential equation, we obtain (see Appendix, section \ref{sect:Crank-Nicolson_derivation} for derivation) that the equation describing the Crank-Nicolson algorithm can be written as a matrix equation
+Inserting these two equations into our differential equation, we obtain (see Appendix, section \ref{sect:Crank-Nicolson_derivation} for derivation) that the equation describing the Crank-Nicolson algorithm also can be written as a matrix equation
 \begin{equation}
   \label{eq:Crank-Nicolson_matrix}
   \vc A \vc v_j = \vc b_j
 \end{equation}
-The vector $\vc v_j$ is the same as in the case of Backward Euler, defined in \eqref{def:vector_v}. The matrix $\vc A$ is a tridiagonal matrix with $2 (1 + \alpha)$ on the diagonal and $-\alpha$ directly above and below the diagonal. The vector $\vc b_j$ is
+The vector $\vc v_j$ is the same as in the case of backward Euler, defined in \eqref{def:vector_v}. The matrix $\vc A$ is a tridiagonal matrix with $2 (1 + \alpha)$ on the diagonal and $-\alpha$ directly above and below the diagonal. The vector $\vc b_j$ is
 \begin{equation}
   \label{def:vector_b_CrankNicolson}
   \vc b_j =
@@ -354,7 +355,11 @@ and boundary conditions
   u(L, t) &= 1, \quad t \ge 0.
   \end{split}
 \end{align}
-As mentioned we use three methods, explicit forward Euler, implicit backward Euler and Crank-Nicolson. When using Explicit forward Euler, we only need to solve the difference-equation described by equation \eqref{eq:forward_euler}. When using Implicit backward Euler er Crank-Nicolson we need to solve the matrix-equations \eqref{eq:backward_euler_matrix} and \eqref{eq:Crank-Nicolson_matrix}. There are several methods for solving such tridiagonal matrix equations, however we will use the method covered in a previous project. see project\footnote{https://github.com/sigurdru/FYS3150/tree/master/Project1} page 2 (section A. Solve tridiagonal matrix equation). We will use $\Delta x = 1/10$, $\Delta x = 1/100$ and $\Delta t$ decided by equation \eqref{eq:von_neumann_stability}. We then study compare our results with analytical ones (analytical results are derived below), at two points in time. First $t_1$ where our solution is smooth but curved, then $t_2$ where we have a linear (stable) solution. Hopefully we will be able to decide on what method is best. We also check what happens when the difference in equation \eqref{eq:von_neumann_stability} is not satisfied. For all our results we also plot the difference between the results, as well as calculate the MAPE in percent (see equation \eqref{eq:MAPE}).
+As mentioned we use three methods, explicit forward Euler, implicit backward Euler and Crank-Nicolson. When using explicit forward Euler, we only need to solve the difference-equation described by equation \eqref{eq:forward_euler}. When using implicit backward Euler or Crank-Nicolson we need to solve the matrix-equations \eqref{eq:backward_euler_matrix} and \eqref{eq:Crank-Nicolson_matrix}. There are several methods for solving such tridiagonal matrix equations, we will use the method covered and implemented in a previous project\footnote{
+https://github.com/sigurdru/FYS3150/tree/master/Project1
+
+A description of the algorithm can be found on page 2 of the project report (section III.A. Solve tridiagonal matrix equation).}.
+We will use $\Delta x = 1/10$, $\Delta x = 1/100$ and $\Delta t$ decided by equation \eqref{eq:von_neumann_stability}. We then compare our results with analytical ones (analytical results are derived below), at two points in time. First $t_1$ where our solution is smooth but curved, then $t_2$ where we are close to the linear stable state solution. Hopefully we will be able to decide on what method is best. We also check what happens when the difference in equation \eqref{eq:von_neumann_stability} is not satisfied. For all our results we also plot the difference between the results, as well as calculate the MAPE in percent (see equation \eqref{eq:MAPE}).
 
 \subsection*{Analytic solution to the 1D diffusion equation}
 
@@ -370,7 +375,7 @@ The solution to this equation is
 \begin{equation*}
 u_E(x) = A x + B,
 \end{equation*}
-and the boundary conditions give
+where \(A\) and \(B\) are arbitrary constants. The boundary conditions give
 \begin{align*}
 u_E(0) &= B = 0 \\
 u_E(L) &= A L = 1 \quad \Rightarrow \quad u_E(x) = \frac{x}{L}
@@ -386,7 +391,7 @@ We then have
 \ddpart{u}{t} &= \ddpart{v}{t} + \ddpart{u_E}{t} = \ddpart{v}{t} \\
 \ddpartsq{u}{x} &= \ddpartsq{v}{x} + \ddpartsq{u_E}{x} = \ddpartsq{v}{x}
 \end{align*}
-Thus, $u(x, t)$ and $v(x, t)$ should both satisfy the same differential equation \eqref{eq:diffusion_equation_1D}. The intial and boundary conditions for $v(x, t)$ are
+Thus, $u(x, t)$ and $v(x, t)$ should both satisfy the same differential equation \eqref{eq:diffusion_equation_1D}. The initial and boundary conditions for $v(x, t)$ are
 \begin{align*}
 v(x, 0) &= u(x, 0) - u_E(x) = - u_E(x) \\
 v(0, t) &= u(0, t) - u_E(0) = 0 \\
@@ -448,7 +453,7 @@ and initial conditions given by
 	0\quad \text{if }\frac{1}{2}<y<1\text{ and } 0<x<1
 	\end{cases}
 \end{equation}
-As for the one we will test for different $\Delta t$'s, and compare it to the closed form solution covered bellow. We do one case where the difference in equation \eqref{eq:2D_von_neumann_stability} is satisfied and one where it's not. We then plot the result and difference between them, also calculating MAPE in percent (equation \eqref{eq:MAPE}). For all cases we used $\Delta x= \Delta y = 1/50$.
+As for the one-dimensional case we will test for different $\Delta t$'s, and compare it to the closed form solution covered below. We do one case where the difference in equation \eqref{eq:2D_von_neumann_stability} is satisfied and one where it's not. We then plot the result and difference between them, also calculating MAPE in percent (equation \eqref{eq:MAPE}). For all cases we used $\Delta x= \Delta y = 1/50$.
 
 \subsection*{Parallelization}
 When solving the difference equation \eqref{eq:3dEuler} we parallelize the program using OpenMp. While calculating $u_{i,j}^l$ we only need to worry about the surrounding points for the previous step, namely $u_{i,j}^{l-1}$ and $u_{i\pm 1,j\pm 1}^{l-1}$. In a grid pattern this would look something like:
@@ -581,9 +586,9 @@ which has the analytic solution
   \vc u = [6, \; 11, \; 14, \; 14, \; 10]^{\text T}
 \end{equation*}
 
-\subsubsection*{Explicit Forward Euler}
+\subsubsection*{Explicit forward Euler}
 
-Equation \eqref{eq:forward_euler} describes how the vector $\vc u$ changes from one time step to the next with Forward Euler. The test case we have used for this class is that with \(\alpha = 2\)
+Equation \eqref{eq:forward_euler} describes how the vector $\vc u$ changes from one time step to the next with forward Euler. The test case we have used for this class is that with \(\alpha = 2\)
 \begin{equation*}
   \vc u_j = [0, \; 1, \; 2, \; 3, \; 4, \; 5, \; 3, \; 2, \; 1, \; 4, \; 6]^{\text T}
 \end{equation*}
@@ -593,9 +598,9 @@ should give
 \end{equation*}
 in the next time step.
 
-\subsubsection*{Implicit Backward Euler}
+\subsubsection*{Implicit backward Euler}
 
-Equation \eqref{eq:backward_euler} describes how the vector $\vc u$ changes from one time step to the next with Backward Euler. Here, the test verifies that with \(\alpha = 2\)
+Equation \eqref{eq:backward_euler} describes how the vector $\vc u$ changes from one time step to the next with backward Euler. Here, the test verifies that with \(\alpha = 2\)
 \begin{equation*}
   \vc u_j = [1, \; 14, \; -10, \; 18, \; 4, \; 2]^{\text T}
 \end{equation*}
@@ -639,13 +644,13 @@ We run the 2D-solver using both one and two cores and verify that the computed r
 
 \section{Results}
 
-For all results in this section, we have used 200 addends in the Fourier sum in equation \eqref{eq:exact_solution_1D} for the analytic solution.
+In all results to the one-dimensional equation we have used 200 addends in the Fourier sum in equation \eqref{eq:exact_solution_1D} for the analytic solution.
 
-Figure \ref{fig:ForwardEuler} shows \(u(x, t)\) as a function of \(x\) calculated using the Forward Euler algorithm for a few select time steps. The dashed lines show the analytic solution. The top two figures show the solution with $N_x = 10$, that is, eleven grid points with a distance \(\Delta x = 1/10\) between. The bottom figure shows \(N_x = 100\), giving \(\Delta x = 1/100\). The first and third figure are produced with the stability condition satisfied (\(\Delta t / \Delta x^2 = 0.4\)), whereas the second has \(\Delta t / \Delta x^2 = 0.6\).
+Figure \ref{fig:ForwardEuler} shows \(u(x, t)\) as a function of \(x\) calculated using the forward Euler algorithm for a few select time steps. The dashed lines show the analytic solution. The top two figures show the solution with $N_x = 10$, that is, eleven grid points with a distance \(\Delta x = 1/10\) between. The bottom figure shows \(N_x = 100\), giving \(\Delta x = 1/100\). The first and third figure are produced with the stability condition satisfied (\(\Delta t / \Delta x^2 = 0.4\)), whereas the second has \(\Delta t / \Delta x^2 = 0.6\).
 
 Figure \ref{fig:ForwardEuler_error} shows the error for different number of integration points and values of \(\Delta t\). Since the error for \(\Delta x = 1/10\) and \(\Delta t / \Delta x^2 = 0.6\) is obviously very large (see the second plot in figure \ref{fig:ForwardEuler}), we have chosen to include here the errors for \(\Delta t / \Delta x^2 = 0.4\) (the first and third plot) and \(\Delta t / \Delta x^2 = 0.5\) (the second plot). The first two plots have \(N_x = 10\), i.e. eleven integration points, and the third plot has \(N_x = 100\). Different colors correspond to different times. The mean absolute percentage error (MAPE) can be read from the title for the different times.
 
-Figure \ref{fig:BackwardEuler_error} shows the difference between the computed values \(u_c(x, t)\) and the theoretical values \(u_t(x, t)\) as a function of \(x\) calculated using the Backward Euler algorithm. The first plot is made with \(N_x = 10\) and thus \(\Delta x = 1/10\). For the second and third plot, we have \(N_x = 100\) and \(\Delta x = 1/100\). For the first two plots we have used a value of \(\Delta t\) such that \(\Delta t / \Delta x^2 = 0.4\), i.e. the stability conditions for the explicit scheme were satisfied. In the third plot, we used a value of \(\Delta t\) such that \(\Delta t / \Delta x^2 = 0.6\) and the stability condition was not satisfied. Different colors correspond to different times. The mean absolute percentage error (MAPE) can be read from the title for the different times.
+Figure \ref{fig:BackwardEuler_error} shows the difference between the computed values \(u_c(x, t)\) and the theoretical values \(u_t(x, t)\) as a function of \(x\) calculated using the backward Euler algorithm. The first plot is made with \(N_x = 10\) and thus \(\Delta x = 1/10\). For the second and third plot, we have \(N_x = 100\) and \(\Delta x = 1/100\). For the first two plots we have used a value of \(\Delta t\) such that \(\Delta t / \Delta x^2 = 0.4\), i.e. the stability conditions for the explicit scheme were satisfied. In the third plot, we used a value of \(\Delta t\) such that \(\Delta t / \Delta x^2 = 0.6\) and the stability condition was not satisfied. Different colors correspond to different times. The mean absolute percentage error (MAPE) can be read from the title for the different times.
 Figure \ref{fig:CrankNicolson_error} shows the same for the Crank-Nicolson scheme.
 
 Plots showing the actual values of \(u(x, t)\) as a function of \(x\) are not included in the report as they are visually indistinguishable from the last plot in figure \ref{fig:ForwardEuler}. The can be viewed in our GitHub repository previously linked to, and will be automatically produced by the code.
@@ -672,21 +677,21 @@ Figure \ref{fig:3D_error} shows the difference between the analytical and stable
 	\includegraphics[width=\linewidth]{ForwardEuler-Nt125-dt4_0e-03-Nx10.pdf}
 	\includegraphics[width=\linewidth]{ForwardEuler-Nt83-dt6_0e-03-Nx10.pdf}
 	\includegraphics[width=\linewidth]{ForwardEuler-Nt12499-dt4_0e-05-Nx100.pdf}
-	\caption{\(u(x, t)\) as a function of \(x\) calculated using the Forward Euler algorithm. The dashed lines show the analytical results, calculated with 200 addends in the Fourier sum in equation \eqref{eq:exact_solution_1D}. The different colors denote the solution at different times. The top two figures show the solution with $N_x = 10$, that is, eleven grid points with a distance \(\Delta x = 1/10\) between. The bottom figure shows \(N_x = 100\), giving \(\Delta x = 1/100\). The first and third figure are produced with the stability condition satisfied (\(\Delta t / \Delta x^2 = 0.4\)), whereas the second has \(\Delta t / \Delta x^2 = 0.6\).}
+	\caption{\(u(x, t)\) as a function of \(x\) calculated using the forward Euler algorithm. The dashed lines show the analytical results, calculated with 200 addends in the Fourier sum in equation \eqref{eq:exact_solution_1D}. The different colors denote the solution at different times. The top two figures show the solution with $N_x = 10$, that is, eleven grid points with a distance \(\Delta x = 1/10\) between. The bottom figure shows \(N_x = 100\), giving \(\Delta x = 1/100\). The first and third figure are produced with the stability condition satisfied (\(\Delta t / \Delta x^2 = 0.4\)), whereas the second has \(\Delta t / \Delta x^2 = 0.6\).}
 	\label{fig:ForwardEuler}
 \end{figure}
 \begin{figure}[!htb]
 	\includegraphics[width=\linewidth]{ForwardEuler-Nt125-dt4_0e-03-Nx10-Error.pdf}
 	\includegraphics[width=\linewidth]{ForwardEuler-Nt12499-dt4_0e-05-Nx100-Error.pdf}
 	\includegraphics[width=\linewidth]{ForwardEuler-Nt10000-dt5_0e-05-Nx100-Error.pdf}
-	\caption{The error for different number of integration points and values of \(\Delta t\) for the Forward Euler algorithm. Different colors correspond to different times. The mean absolute percentage error (MAPE) can be read from the title for the different times. The first and third plot have \(\Delta t / \Delta x^2 = 0.4\) and the second has \(\Delta t / \Delta x^2 = 0.5\). The first two plots have \(N_x = 10\), i.e. eleven integration points, and the third plot has \(N_x = 100\).}
+	\caption{The error for different number of integration points and values of \(\Delta t\) for the forward Euler algorithm. Different colors correspond to different times. The mean absolute percentage error (MAPE) can be read from the title for the different times. The first and third plot have \(\Delta t / \Delta x^2 = 0.4\) and the second has \(\Delta t / \Delta x^2 = 0.5\). The first two plots have \(N_x = 10\), i.e. eleven integration points, and the third plot has \(N_x = 100\).}
 	\label{fig:ForwardEuler_error}
 \end{figure}
 \begin{figure}[!htb]
 	\includegraphics[width=\linewidth]{BackwardEuler-Nt125-dt4_0e-03-Nx10-Error.pdf}
 	\includegraphics[width=\linewidth]{BackwardEuler-Nt12499-dt4_0e-05-Nx100-Error.pdf}
 	\includegraphics[width=\linewidth]{BackwardEuler-Nt8333-dt6_0e-05-Nx100-Error.pdf}
-	\caption{The difference between the computed values \(u_c(x, t)\) and the theoretical values \(u_t(x, t)\) as a function of \(x\) calculated using the Backward Euler algorithm. The first plot is made with \(N_x = 10\) and thus \(\Delta x = 1/10\). For the second and third plot, we have \(N_x = 100\) and \(\Delta x = 1/100\). For the first two plots we have used a value of \(\Delta t\) such that \(\Delta t / \Delta x^2 = 0.4\). In the third plot, we used a value of \(\Delta t\) such that \(\Delta t / \Delta x^2 = 0.6\). Different colors correspond to different times. The mean absolute percentage error (MAPE) can be read from the title for the different times.}
+	\caption{The difference between the computed values \(u_c(x, t)\) and the theoretical values \(u_t(x, t)\) as a function of \(x\) calculated using the backward Euler algorithm. The first plot is made with \(N_x = 10\) and thus \(\Delta x = 1/10\). For the second and third plot, we have \(N_x = 100\) and \(\Delta x = 1/100\). For the first two plots we have used a value of \(\Delta t\) such that \(\Delta t / \Delta x^2 = 0.4\). In the third plot, we used a value of \(\Delta t\) such that \(\Delta t / \Delta x^2 = 0.6\). Different colors correspond to different times. The mean absolute percentage error (MAPE) can be read from the title for the different times.}
 	\label{fig:BackwardEuler_error}
 \end{figure}
 \begin{figure}[!htb]
@@ -712,24 +717,23 @@ Figure \ref{fig:3D_error} shows the difference between the analytical and stable
 
 \section{Discussion}
 
-From figure \ref{fig:ForwardEuler} we see very clearly the importance of satisfying the stability condition for the explicit Forward Euler scheme. The first and third plots show the function changing rapidly in the initial stage and then converging more and more slowly to a stationary state (which is a linear function of \(x\)), exactly as we expected. The second plot shows disastrous oscillations that leave the computed solution entirely useless. The function values oscillate between \(\pm 6 \cdot 10^8\), when we know for certain that the correct solution should always be in the range [0, 1]. This was caused by simply increasing the value of \(\Delta t\) by 50\% such that \(\Delta t / \Delta x^2\) changes from 0.4 to 0.6. It is therefore very important to be aware of and consider the stability condition when using the Forward Euler algorithm.
+From figure \ref{fig:ForwardEuler} we see very clearly the importance of satisfying the stability condition for the explicit forward Euler scheme. The first and third plots show the function changing rapidly in the initial stage and then converging more and more slowly to a stationary state (which is a linear function of \(x\)), exactly as we expected. The second plot shows disastrous oscillations that leave the computed solution entirely useless. The function values oscillate between \(\pm 6 \cdot 10^8\), when we know for certain that the correct solution should always be in the range [0, 1]. This was caused by simply increasing the value of \(\Delta t\) by 50\% such that \(\Delta t / \Delta x^2\) changes from 0.4 to 0.6. It is therefore very important to be aware of and consider the stability condition when using the forward Euler algorithm.
 
-We see from figure \ref{fig:ForwardEuler_error} that the error is reduced by approximately a factor of 100 when increasing the number of integration steps from 10 to 100, while also adjusting \(\Delta t\) such that \(\Delta t / \Delta x^2 = 0.4\) in both cases. This also seems to hold true for the mean absolute percentage error. The bottom plot, where \(\Delta t / \Delta x^2 = 0.5\) just satisfies the stability condition, we already see the start of the oscillations so clearly visible in figure \ref{fig:ForwardEuler}. The oscillations cause mean absolute percentage error to be over twice as large for \(t = 0.083\) (0.0350\% vs. 0.0155\%). We have verified that the error is not caused by too few addends in the Fourier sum by increasing the number from 200 to 400. To the degree of precision with which we have presented our results, the values for the errors were identical.
+We see from figure \ref{fig:ForwardEuler_error} that the error is reduced by approximately a factor of 100 when increasing the number of integration steps from 10 to 100, while also adjusting \(\Delta t\) such that \(\Delta t / \Delta x^2 = 0.4\) in both cases. This also seems to hold true for the mean absolute percentage error. In the bottom plot, where \(\Delta t / \Delta x^2 = 0.5\) just satisfies the stability condition, we already see the start of the oscillations so clearly visible in figure \ref{fig:ForwardEuler}.
+The oscillations cause mean absolute percentage error to be over twice as large for \(t = 0.083\) (0.0350\% vs. 0.0155\% for \(\Delta t / \Delta x^2 = 0.5\) and \(\Delta t / \Delta x^2 = 0.4\) respectively). We have verified that the error is not caused by too few addends in the Fourier sum by increasing the number from 200 to 400. To the degree of precision with which we have presented our results, the values for the errors were identical.
 From the stability condition, one might presume that \(\Delta t / \Delta x^2 = 0.5\) would be a safe choice. Indeed, the results are nowhere near as bad as with \(\Delta t / \Delta x^2 = 0.6\), but we do see the a tendency of the same problem with oscillations. It seems therefore that the wise approach is to make sure that you strictly satisfy the stability condition (\(\Delta t / \Delta x^2 < 0.5\)) in order to be confident in your results.
 
-The results produced by the Backward Euler and Crank-Nicolson schemes were not affected by the value of \(\Delta t / \Delta x^2\) in the same way as the Forward Euler algorithm. From figures \ref{fig:BackwardEuler_error} and \ref{fig:CrankNicolson_error} we see that all the values for the error is decreased by a factor of approximately 80-100 when increasing the number of integration points from 10 to 100 while keeping the value \(\Delta t / \Delta x^2 = 0.4\) constant.
+The results produced by the backward Euler and Crank-Nicolson schemes were not affected by the value of \(\Delta t / \Delta x^2\) in the same way as the forward Euler algorithm. The precision was best with the smallest time step size, but the destructive oscillations seen in the forward Euler case do not appear for larger step sizes. From figures \ref{fig:BackwardEuler_error} and \ref{fig:CrankNicolson_error} we see that all the values for the error is decreased by a factor of approximately 80-100 when increasing the number of integration points from 10 to 100 while keeping the value \(\Delta t / \Delta x^2 = 0.4\) constant.
 
-Like we observed in the two-dimensional case, satisfying the stability condition is paramount to having good results. Looking at table \ref{tab:error_2D} we see that the MAPE is around $10^{34-115}$\%, which means we are far away from the actual solution. When satisfying the condition however, we notice (also from table \ref{tab:error_2D}) good correlation between the actual values (MAPE of around $10^{-3}$\%). We tried to increase the number of Fourier addends, however saw no change in error, meaning the actual solution should be accurate. Another thing which we observed in the one dimensional problem was oscillations in the computed values. It seems to be a product of not satisfying the stability conditions. If you don't know the stability conditions, this could be something to be vary of.
+Like we observed in the two-dimensional case, satisfying the stability condition is paramount to having good results. Looking at table \ref{tab:error_2D} we see that the MAPE is around $10^{34-115}$\%, which means we are far away from the actual solution. When satisfying the condition however, we notice (also from table \ref{tab:error_2D}) good correlation between the actual values (MAPE of around $10^{-3}$\%). We tried to increase the number of Fourier addends, however saw no change in error, meaning the actual solution should be accurate. Another thing which we observed in the one dimensional problem was oscillations in the computed values. It seems to be a product of not satisfying the stability conditions. If you don't know the stability conditions, this could be something to be wary of.
 
 Each algorithm have their strength. Backward Euler and Crank-Nicolson are both unconditionally stable, giving it a clear edge over forward Euler. If stability conditions are not satisfied, the unconditionally algorithms still gave decent results, forward Euler however gave results with no resemblance of the actual result. On the other hand, when stability conditions were satisfied, forward performed similar to backward Euler in our tests. For $N_x = 10$, $N_x =100$ and $\Delta t = 4\cdot 10^{-3}$ forward Euler had around the same values of MAPE as backward. When $N_x = 10$ forward had MAPE$=0.0155\%$ ($t = 0.83$) and MAPE=$0.0005\%$ ($t=0.50$), backward had MAPE$=1.4169\%$ ($t = 0.83$) and MAPE=$0.1048\%$ ($t=0.50$). Looking at the plots \ref{fig:ForwardEuler_error} and \ref{fig:BackwardEuler_error}, they also seem similar. They both stray away from zero equally far (around $6\cdot10^{-3}$). We notice the same trend for $N_x = 100$, implying that forward is equal to backward Euler when stability conditions are satisfied. Crank-Nicolson outperformed forward and backward in all cases. The MAPE-percentages were lower for all cases, also looking at the error-plots, they do not stray as far away from zero as forward and backward. This is expected, as we mentioned in the theory section backward and forward has errors $O(\Delta t)$ and $O(\Delta x^2)$ and Crank-Nicolson errors $O(\Delta t^2)$ and $O(\Delta x^2)$. When considering ease of implementation, forward and backwards Euler comes on top. Forward Euler is notoriously easy to implement, and as we have seen in this report, it gives good solutions when stability conditions are satisfied.
 
 \subsection*{Code optimization}
 
-We did see a significant speed-up from the parallelization, the code was approximately twice as fast with eight cores as with one core. Given more time, there are several avenues we could have explored to improve on our solution, both to reduce memory consumption and computing time.
+We did see a significant speed-up from the parallelization, the code was approximately twice as fast with eight cores as with one core. Given more time, there are several avenues we could have explored to improve on our solution.
 
 One possibility is to use only one-dimensional arrays for storing our results. We have done this to some extent in our code by representing the three-dimensional array of results (\(\text{timesteps} \times x \times y\)) as a two-dimensional array. Here, one one-dimensional sub-array represents the matrix in the \(x, y\)-plane at one time step. We could have gone further and represented the entire result array with a one-dimensional array, which is generally thought to reduce computing times. We have made a working attempt at this, which can be viewed on a developmental branch in our GitHub repository\footnote{https://github.com/sigurdru/FYS3150/tree/vegard\_test/Project5/code}. We were surprised to find that this code was actually slower than our first implementation. Simple timing indicated that the computing time was around 50\% greater. It is possible that our way of indexing this one-dimensional array was sub-optimal and it is definitely something that would be interesting to investigate further.
-
-A possible improvement, mainly with regard to memory usage, is the way we keep track of which diagonals have been calculated by the different cores. This is now implemented as a boolean array with one value for each diagonal of each time step that is simultaneously being calculated. This is possibly ineff SKAL DETTE MED?
 
 Another alteration, which most certainly would increase the efficiency of our program, is to allow each core to calculate values for more than one time step between each time the threads are gathered and the result matrix reset. In our implementation, we let every core calculate the values for the entire grid in one time step each. After all the cores have completed this task, the threads are gathered, the result array is reset and the process is repeated. To split and gather the threads introduces overhead and takes time. By allowing each core to calculate more than one time step each before the reset, we could easily reduce this overhead cost manyfold over the course of the total calculation. If we for instance use two cores for calculation, then allowing the first core to calculate the first and third next time steps, and the second core to calculate the second and fourth next time steps before the reset would half the number of times the threads are split and gathered. This would require more memory as the result array would have to be larger. Representing the results for all time steps in one large array, while probably the fastest approach, would in most cases require more memory than is available. Our solution would have to land somewhere in-between, using enough memory to allow each core to calculate several time steps each, but not exhaust the memory resources of the computer. This tradeoff between memory consumption and computational efficiency is a recurring theme in computer science.
 
@@ -795,7 +799,7 @@ Written out explicitly for all $i$, the equation reads
     &= \alpha u_{n-2, j}  + 2 (1 - \alpha) u_{n-1,j} + \alpha u_{n, j}
 \end{align*}
 
-Similar to the case of Backward Euler, this set of equations can be rearranged as follows
+Similar to the case of backward Euler, this set of equations can be rearranged as follows
 \begin{align*}
   2 (1 + \alpha) u_{1, j+1} - \alpha u_{2, j+1}
     &= \alpha u_{0, j}  + 2 (1 - \alpha) u_{1,j} + \alpha u_{2, j} + \alpha u_{0, j+1} \\

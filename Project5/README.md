@@ -72,5 +72,5 @@ make compile
 python3 run.py -r all
 
 # to run a specific calulation, for example
-python3 run.py -Nx 2 -Nt 5 -dt 6 -m CrankNicolson
+python3 run.py -Nx 100 -Nt 2000 -dt 0.0003 -m CrankNicolson
 ```
