@@ -42,11 +42,9 @@ def compare_two_dimensional(num_cores=1):
     method = "TwoDimensions"
     dts = [0.6, 0.4]
     Nx = 50
-    Nx = 100
     for dti in dts:
         dt = dti/(2*Nx**2)
-        # Nt = int(0.1/dt) # denne tar litt tid
-        Nt = int(20.0/dt) # denne tar litt tid
+        Nt = int(0.1/dt) # denne tar litt tid
         params = Parameters(Nx, Nt, dt, method, num_cores)
         fname = params.create_filename()
         run_simulation(params, fname)

@@ -1,6 +1,13 @@
 # FYS3150 Project 5
 Sigurd Sørlie Rustad and Vegard Falmår.
 
+*Edit 25.12.2020:* We deleted two lines of code in `code/produce_results.py`.
+The lines were added at the very end of the project to time the code for large
+grids with many time steps and should have been deleted for the final delivery.
+Running the code with these parameters would have taken some time, and the
+results in the report are with smaller grids. The changes were cleared with the
+professor beforehand.
+
 The report Project5.pdf is found in the tex directory.
 
 Code dependencies:
